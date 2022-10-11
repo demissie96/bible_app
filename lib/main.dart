@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
+import 'main_page.dart';
+import 'passage_page.dart';
+import 'search_page.dart';
+import 'settings_page.dart';
 
-void main() {
-  runApp(MaterialApp(
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-          backgroundColor: Colors.orange,
-          appBar: AppBar(
-            backgroundColor: Colors.red[900],
-            title: Text('Szent Biblia'),
-          ),
-          body: SafeArea(
-            child: Text(
-              'Hello',
-              style: TextStyle(
-                fontFamily: 'Pacifico',
-                color: Colors.white,
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ))));
+      theme: ThemeData.light().copyWith(
+        colorScheme: const ColorScheme.light(
+            primary: Colors.white, secondary: Colors.purple),
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        colorScheme: const ColorScheme.dark(
+            primary: Color.fromARGB(255, 75, 75, 75), secondary: Colors.purple),
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MainPage(),
+        '/passage': (context) => PassagePage(),
+        '/search': (context) => SearchPage(),
+        '/settings': (context) => SettingsPage(),
+      },
+    );
+  }
 }
