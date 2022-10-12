@@ -12,12 +12,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
-        colorScheme: const ColorScheme.light(
-            primary: Colors.white, secondary: Colors.purple),
+        colorScheme:
+            const ColorScheme.light(primary: Colors.red, secondary: Colors.red),
       ),
       darkTheme: ThemeData.dark().copyWith(
-        colorScheme: const ColorScheme.dark(
-            primary: Color.fromARGB(255, 75, 75, 75), secondary: Colors.purple),
+        colorScheme:
+            const ColorScheme.dark(primary: Colors.red, secondary: Colors.red),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            onPrimary: Colors.white,
+          ),
+        ),
       ),
       initialRoute: '/',
       routes: {
