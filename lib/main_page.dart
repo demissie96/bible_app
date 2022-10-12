@@ -3,6 +3,16 @@ import "side_menu.dart";
 import 'dart:convert';
 import 'package:flutter/services.dart';
 
+List oldTestament = [];
+List newTestament = [];
+String bookRef = "GEN";
+String bookNameHu = "1 Mózes";
+String language = "chapters_hu";
+int chapter = 1;
+List totalChapter = [];
+int verse = 1;
+String appBarTitle = "Könyvek";
+
 class MainPage extends StatefulWidget {
   @override
   State<MainPage> createState() => _MainPageState();
@@ -13,29 +23,20 @@ class _MainPageState extends State<MainPage>
   // We need a TabController to control the selected tab programmatically
   late final _tabController = TabController(length: 3, vsync: this);
 
-  List _oldTestament = [];
-  List _newTestament = [];
-  String _bookRef = "GEN";
-  String _bookNameHu = "1 Mózes";
-  String _language = "chapters_hu";
-  int _chapter = 1;
-  int _verse = 1;
-  String _appBarTitle = "Könyvek";
-
   // Fetch content from the json file
   Future<void> readJson() async {
     final String response = await rootBundle.loadString('data/book_list.json');
     final data = await json.decode(response);
     for (var i = 0; i < 39; i++) {
-      _oldTestament.add(data[i]);
+      oldTestament.add(data[i]);
     }
     for (var i = 39; i < 66; i++) {
-      _newTestament.add(data[i]);
+      newTestament.add(data[i]);
     }
 
     setState(() {
-      _oldTestament;
-      _newTestament;
+      oldTestament;
+      newTestament;
     });
   }
 
@@ -44,6 +45,13 @@ class _MainPageState extends State<MainPage>
     // TODO: implement initState
     super.initState();
     readJson();
+    for (var i = 1; i <= 50; i++) {
+      totalChapter.add(i);
+    }
+    setState(() {
+      appBarTitle = bookNameHu;
+      totalChapter;
+    });
   }
 
   @override
@@ -53,7 +61,7 @@ class _MainPageState extends State<MainPage>
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.red,
-          title: Text(_appBarTitle),
+          title: Text(appBarTitle),
           bottom: TabBar(
             controller: _tabController,
             tabs: [
@@ -68,17 +76,17 @@ class _MainPageState extends State<MainPage>
           controller: _tabController,
           children: [
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10.0),
               child: Row(
                 children: [
                   Expanded(
                     child: Column(
                       children: [
                         // Display the data loaded from sample.json
-                        _oldTestament.isNotEmpty
+                        oldTestament.isNotEmpty
                             ? Expanded(
                                 child: ListView.builder(
-                                  itemCount: _oldTestament.length,
+                                  itemCount: oldTestament.length,
                                   itemBuilder: (context, index) {
                                     return Container(
                                       margin: const EdgeInsets.only(
@@ -92,18 +100,26 @@ class _MainPageState extends State<MainPage>
                                             EdgeInsets.all(13),
                                           ),
                                         ),
-                                        key: ValueKey(_oldTestament[index][0]),
+                                        key: ValueKey(oldTestament[index][0]),
                                         onPressed: () {
-                                          print(_oldTestament[index][0]);
-                                          _bookRef = _oldTestament[index][0];
-                                          _bookNameHu = _oldTestament[index][3];
+                                          print(oldTestament[index][0]);
+                                          bookRef = oldTestament[index][0];
+                                          bookNameHu = oldTestament[index][3];
+                                          totalChapter = [];
+                                          for (var i = 1;
+                                              i <= oldTestament[index][1];
+                                              i++) {
+                                            totalChapter.add(i);
+                                          }
+
+                                          print(totalChapter.length);
                                           setState(() {
-                                            _appBarTitle = _bookNameHu;
+                                            appBarTitle = bookNameHu;
                                           });
                                           _tabController.index = 1;
                                         },
                                         child: Text(
-                                          _oldTestament[index][3],
+                                          oldTestament[index][3],
                                         ),
                                       ),
                                     );
@@ -118,10 +134,10 @@ class _MainPageState extends State<MainPage>
                     child: Column(
                       children: [
                         // Display the data loaded from sample.json
-                        _newTestament.isNotEmpty
+                        newTestament.isNotEmpty
                             ? Expanded(
                                 child: ListView.builder(
-                                  itemCount: _newTestament.length,
+                                  itemCount: newTestament.length,
                                   itemBuilder: (context, index) {
                                     return Container(
                                       margin: const EdgeInsets.only(
@@ -133,17 +149,25 @@ class _MainPageState extends State<MainPage>
                                             EdgeInsets.all(13),
                                           ),
                                         ),
-                                        key: ValueKey(_newTestament[index][0]),
+                                        key: ValueKey(newTestament[index][0]),
                                         onPressed: () {
-                                          print(_newTestament[index][0]);
-                                          _bookRef = _newTestament[index][0];
-                                          _bookNameHu = _newTestament[index][3];
+                                          print(newTestament[index][0]);
+                                          bookRef = newTestament[index][0];
+                                          bookNameHu = newTestament[index][3];
+                                          totalChapter = [];
+                                          for (var i = 1;
+                                              i <= newTestament[index][1];
+                                              i++) {
+                                            totalChapter.add(i);
+                                          }
+
+                                          print(totalChapter.length);
                                           setState(() {
-                                            _appBarTitle = _bookNameHu;
+                                            appBarTitle = bookNameHu;
                                           });
                                           _tabController.index = 1;
                                         },
-                                        child: Text(_newTestament[index][3]),
+                                        child: Text(newTestament[index][3]),
                                       ),
                                     );
                                   },
@@ -156,11 +180,60 @@ class _MainPageState extends State<MainPage>
                 ],
               ),
             ),
-            Text("Hello Chapters"),
-            Text("Hello Verses"),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ChapterList(),
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text("Hello Verses"),
+            ),
           ],
         ),
       ),
     );
+  }
+}
+
+class ChapterList extends StatefulWidget {
+  const ChapterList({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<ChapterList> createState() => _ChapterListState();
+}
+
+class _ChapterListState extends State<ChapterList> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: totalChapter.length,
+        itemBuilder: (context, index) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 60,
+                  width: 80,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      "${index + 1}",
+                      style: TextStyle(fontSize: 25.0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
   }
 }
