@@ -12,6 +12,8 @@ int chapter = 1;
 List totalChapter = [];
 int verse = 1;
 String appBarTitle = "Könyvek";
+late TabController tabController;
+late Function updateTitle;
 
 class MainPage extends StatefulWidget {
   @override
@@ -20,8 +22,9 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
-  // We need a TabController to control the selected tab programmatically
-  late final _tabController = TabController(length: 3, vsync: this);
+  JumpOneTab() {
+    tabController.index += 1;
+  }
 
   // Fetch content from the json file
   Future<void> readJson() async {
@@ -44,6 +47,8 @@ class _MainPageState extends State<MainPage>
   void initState() {
     // TODO: implement initState
     super.initState();
+    // We need a TabController to control the selected tab programmatically
+    tabController = TabController(vsync: this, length: 3);
     readJson();
     for (var i = 1; i <= 50; i++) {
       totalChapter.add(i);
@@ -52,6 +57,11 @@ class _MainPageState extends State<MainPage>
       appBarTitle = bookNameHu;
       totalChapter;
     });
+    updateTitle = () {
+      setState(() {
+        appBarTitle;
+      });
+    };
   }
 
   @override
@@ -63,7 +73,7 @@ class _MainPageState extends State<MainPage>
           backgroundColor: Colors.red,
           title: Text(appBarTitle),
           bottom: TabBar(
-            controller: _tabController,
+            controller: tabController,
             tabs: [
               Tab(text: "Könyv"),
               Tab(text: "Fejezet"),
@@ -73,7 +83,7 @@ class _MainPageState extends State<MainPage>
         ),
         drawer: SideMenu(),
         body: TabBarView(
-          controller: _tabController,
+          controller: tabController,
           children: [
             Padding(
               padding: const EdgeInsets.all(10.0),
@@ -116,7 +126,7 @@ class _MainPageState extends State<MainPage>
                                           setState(() {
                                             appBarTitle = bookNameHu;
                                           });
-                                          _tabController.index = 1;
+                                          tabController.index = 1;
                                         },
                                         child: Text(
                                           oldTestament[index][3],
@@ -165,7 +175,7 @@ class _MainPageState extends State<MainPage>
                                           setState(() {
                                             appBarTitle = bookNameHu;
                                           });
-                                          _tabController.index = 1;
+                                          tabController.index = 1;
                                         },
                                         child: Text(newTestament[index][3]),
                                       ),
@@ -185,7 +195,7 @@ class _MainPageState extends State<MainPage>
               child: Column(
                 children: [
                   Expanded(
-                    child: ChapterList(),
+                    child: ChapterList(tabController),
                   )
                 ],
               ),
@@ -202,7 +212,8 @@ class _MainPageState extends State<MainPage>
 }
 
 class ChapterList extends StatefulWidget {
-  const ChapterList({
+  const ChapterList(
+    TabController tabController, {
     Key? key,
   }) : super(key: key);
 
@@ -213,27 +224,35 @@ class ChapterList extends StatefulWidget {
 class _ChapterListState extends State<ChapterList> {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: totalChapter.length,
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  height: 60,
-                  width: 80,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      "${index + 1}",
-                      style: TextStyle(fontSize: 25.0),
-                    ),
+    return SingleChildScrollView(
+      child: Wrap(
+        children: [
+          for (var i in totalChapter)
+            Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: SizedBox(
+                height: 60,
+                width: 80,
+                child: ElevatedButton(
+                  onPressed: () {
+                    chapter = i;
+
+                    appBarTitle = "$bookNameHu $chapter";
+                    print(appBarTitle);
+                    updateTitle();
+
+                    print("Chapter $i is selected");
+                    tabController.index = 2;
+                  },
+                  child: Text(
+                    "$i",
+                    style: TextStyle(fontSize: 25.0),
                   ),
                 ),
               ),
-            ],
-          );
-        });
+            ),
+        ],
+      ),
+    );
   }
 }
