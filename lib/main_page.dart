@@ -1,3 +1,4 @@
+import 'package:bible_app/passage_page.dart';
 import 'package:flutter/material.dart';
 import "side_menu.dart";
 import 'dart:convert';
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 List oldTestament = [];
 List newTestament = [];
 String bookRef = "GEN";
+String oldOrNew = "old";
 String bookNameHu = "1 Mózes";
 String language = "chapters_hu";
 int chapter = 1;
@@ -14,6 +16,7 @@ int verse = 1;
 String appBarTitle = "Könyvek";
 late TabController tabController;
 late Function updateTitle;
+late var bibleJson;
 
 class MainPage extends StatefulWidget {
   @override
@@ -27,7 +30,7 @@ class _MainPageState extends State<MainPage>
   }
 
   // Fetch content from the json file
-  Future<void> readJson() async {
+  Future<void> bookListJson() async {
     final String response = await rootBundle.loadString('data/book_list.json');
     final data = await json.decode(response);
     for (var i = 0; i < 39; i++) {
@@ -43,13 +46,21 @@ class _MainPageState extends State<MainPage>
     });
   }
 
+  Future<void> bibleJsonGet() async {
+    final String res = await rootBundle.loadString('data/bible_hu_en.json');
+    bibleJson = await json.decode(res);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    bibleJsonGet();
+
     // We need a TabController to control the selected tab programmatically
     tabController = TabController(vsync: this, length: 3);
-    readJson();
+    bookListJson();
     for (var i = 1; i <= 50; i++) {
       totalChapter.add(i);
     }
@@ -112,6 +123,7 @@ class _MainPageState extends State<MainPage>
                                         ),
                                         key: ValueKey(oldTestament[index][0]),
                                         onPressed: () {
+                                          oldOrNew = "old";
                                           print(oldTestament[index][0]);
                                           bookRef = oldTestament[index][0];
                                           bookNameHu = oldTestament[index][3];
@@ -161,6 +173,7 @@ class _MainPageState extends State<MainPage>
                                         ),
                                         key: ValueKey(newTestament[index][0]),
                                         onPressed: () {
+                                          oldOrNew = "new";
                                           print(newTestament[index][0]);
                                           bookRef = newTestament[index][0];
                                           bookNameHu = newTestament[index][3];
@@ -191,18 +204,24 @@ class _MainPageState extends State<MainPage>
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
               child: Column(
                 children: [
                   Expanded(
-                    child: ChapterList(tabController),
+                    child: ChapterList(),
                   )
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text("Hello Verses"),
+              padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: VerseList(),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -211,9 +230,64 @@ class _MainPageState extends State<MainPage>
   }
 }
 
+class VerseList extends StatefulWidget {
+  const VerseList({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<VerseList> createState() => _VerseListState();
+}
+
+class _VerseListState extends State<VerseList> {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Wrap(
+        children: [
+          for (var i = 1;
+              i <=
+                  int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"]
+                      .last["num"]);
+              i++)
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: SizedBox(
+                height: 40,
+                width: 60,
+                child: ElevatedButton(
+                  onPressed: () {
+                    print(bibleJson[oldOrNew][bookRef][language]["$chapter"]
+                        .last);
+
+                    verse = int.parse(bibleJson[oldOrNew][bookRef][language]
+                            ["$chapter"]
+                        .last["num"]);
+                    print(verse);
+                    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
+                    appBarTitle = "$bookNameHu $chapter:$i";
+                    print(appBarTitle);
+                    updateTitle();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PassagePage(
+                            text: appBarTitle,
+                          ),
+                        ));
+                  },
+                  child: Text("$i"),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 class ChapterList extends StatefulWidget {
-  const ChapterList(
-    TabController tabController, {
+  const ChapterList({
     Key? key,
   }) : super(key: key);
 
@@ -229,10 +303,10 @@ class _ChapterListState extends State<ChapterList> {
         children: [
           for (var i in totalChapter)
             Padding(
-              padding: const EdgeInsets.all(1.0),
+              padding: const EdgeInsets.all(2.0),
               child: SizedBox(
-                height: 60,
-                width: 80,
+                height: 40,
+                width: 60,
                 child: ElevatedButton(
                   onPressed: () {
                     chapter = i;
@@ -246,7 +320,7 @@ class _ChapterListState extends State<ChapterList> {
                   },
                   child: Text(
                     "$i",
-                    style: TextStyle(fontSize: 25.0),
+                    style: TextStyle(),
                   ),
                 ),
               ),

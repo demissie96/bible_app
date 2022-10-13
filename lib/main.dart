@@ -27,7 +27,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MainPage(),
-        '/passage': (context) => PassagePage(),
+        '/passage': (context) => PassagePage(
+              text: "Szent Biblia",
+            ),
         '/search': (context) => SearchPage(),
         '/settings': (context) => SettingsPage(),
       },
