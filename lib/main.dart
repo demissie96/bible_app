@@ -42,6 +42,10 @@ class MyApp extends StatelessWidget {
         '/passage': (context) => PassagePage(
               appBarTitle: "",
               chapter: "",
+              oldOrNew: "old",
+              bookRef: "GEN",
+              language: "chapters_hu",
+              chapterSum: 50,
               bible: [],
             ),
         '/search': (context) => SearchPage(),

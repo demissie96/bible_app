@@ -286,8 +286,11 @@ class _VerseListState extends State<VerseList> {
                           builder: (context) => PassagePage(
                             appBarTitle: appBarTitle,
                             chapter: "$chapter",
-                            bible: bibleJson[oldOrNew][bookRef][language]
-                                ["$chapter"],
+                            bible: bibleJson,
+                            oldOrNew: oldOrNew,
+                            bookRef: bookRef,
+                            language: language,
+                            chapterSum: totalChapter.length,
                           ),
                         ));
                   },
