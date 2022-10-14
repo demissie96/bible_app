@@ -51,10 +51,24 @@ class _MainPageState extends State<MainPage>
     bibleJson = await json.decode(res);
   }
 
+  restoreData() {
+    oldTestament = [];
+    newTestament = [];
+    bookRef = "GEN";
+    oldOrNew = "old";
+    bookNameHu = "1 Mózes";
+    language = "chapters_hu";
+    chapter = 1;
+    totalChapter = [];
+    verse = 1;
+    appBarTitle = "Könyvek";
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    restoreData();
 
     bibleJsonGet();
 
@@ -265,14 +279,15 @@ class _VerseListState extends State<VerseList> {
                         .last["num"]);
                     print(verse);
                     // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
-                    appBarTitle = "$bookNameHu $chapter:$i";
-                    print(appBarTitle);
                     updateTitle();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => PassagePage(
-                            text: appBarTitle,
+                            appBarTitle: appBarTitle,
+                            chapter: "$chapter",
+                            bible: bibleJson[oldOrNew][bookRef][language]
+                                ["$chapter"],
                           ),
                         ));
                   },
