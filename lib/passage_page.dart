@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "side_menu.dart";
+import 'extension/string_extension.dart';
 
 class PassagePage extends StatefulWidget {
   String appBarTitle;
@@ -112,7 +113,8 @@ class _PassagePageState extends State<PassagePage> {
                                   ),
                                   TextSpan(
                                     text:
-                                        " ${bibleCurrent["$chap"][index]["text_hu"]}",
+                                        "${bibleCurrent["$chap"][index]["text_hu"]}"
+                                            .capitalizeFirst(),
                                     style:
                                         Theme.of(context).textTheme.bodyText1,
                                   ),
