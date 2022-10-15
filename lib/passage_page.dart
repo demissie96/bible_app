@@ -133,7 +133,7 @@ class _PassagePageState extends State<PassagePage> {
                             Padding(
                               padding: const EdgeInsets.only(
                                   left: 30.0,
-                                  right: 35.0,
+                                  right: 30.0,
                                   top: 8.0,
                                   bottom: 8.0),
                               child: RichText(
@@ -161,16 +161,17 @@ class _PassagePageState extends State<PassagePage> {
                                 right: 0.0,
                                 bottom: 0.0,
                                 child: SizedBox(
-                                  width: 40,
-                                  height: 40,
+                                  width: 38,
+                                  height: 38,
                                   child: IconButton(
                                     onPressed: () {
                                       print(
                                           "${bibleCurrent["$chap"][index]["ref"]}");
                                     },
                                     icon: Icon(
-                                      Icons.link,
-                                      color: Colors.blue,
+                                      Icons.library_books,
+                                      color: Colors.red,
+                                      size: 20,
                                     ),
                                   ),
                                 ),

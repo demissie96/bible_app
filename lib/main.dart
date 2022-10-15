@@ -29,29 +29,14 @@ class MyApp extends StatelessWidget {
             const ColorScheme.dark(primary: Colors.red, secondary: Colors.red),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            onPrimary: Colors.white,
+            foregroundColor: Colors.white,
           ),
         ),
         textTheme: const TextTheme(
           bodyText1: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
         ),
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => MainPage(),
-        // '/passage': (context) => PassagePage(
-        //       appBarTitle: "",
-        //       chapter: "",
-        //       oldOrNew: "old",
-        //       bookRef: "GEN",
-        //       language: "chapters_hu",
-        //       chapterSum: 50,
-        //       verse: 1,
-        //       bible: [],
-        //     ),
-        '/search': (context) => SearchPage(),
-        '/settings': (context) => SettingsPage(),
-      },
+      home: MainPage(),
     );
   }
 }

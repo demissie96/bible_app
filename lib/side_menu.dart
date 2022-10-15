@@ -1,3 +1,6 @@
+import 'package:bible_app/main_page.dart';
+import 'package:bible_app/search_page.dart';
+import 'package:bible_app/settings_page.dart';
 import 'package:flutter/material.dart';
 
 class SideMenu extends StatelessWidget {
@@ -44,7 +47,8 @@ class SideMenu extends StatelessWidget {
             ),
             child: TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/search');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SearchPage()));
               },
               child: const ListTile(
                 leading: Icon(Icons.search, color: Colors.red),
@@ -61,7 +65,8 @@ class SideMenu extends StatelessWidget {
             ),
             child: TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainPage()));
               },
               child: const ListTile(
                 leading: Icon(Icons.menu_book_outlined, color: Colors.red),
@@ -74,7 +79,8 @@ class SideMenu extends StatelessWidget {
             decoration: const BoxDecoration(),
             child: TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/settings');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()));
               },
               child: const ListTile(
                 leading: Icon(Icons.settings, color: Colors.red),
