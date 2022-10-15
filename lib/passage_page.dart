@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import "side_menu.dart";
 import 'extension/string_extension.dart';
@@ -7,6 +9,8 @@ class PassagePage extends StatefulWidget {
   String chapter;
   int chapterSum;
   var bible;
+  int verse;
+  int verseSum;
 
   String oldOrNew;
   String bookRef;
@@ -19,6 +23,8 @@ class PassagePage extends StatefulWidget {
     required this.language,
     required this.oldOrNew,
     required this.chapterSum,
+    required this.verse,
+    required this.verseSum,
   });
 
   @override
@@ -26,12 +32,40 @@ class PassagePage extends StatefulWidget {
 }
 
 class _PassagePageState extends State<PassagePage> {
+  ScrollController itemController = ScrollController();
+
   _onPageViewChange(int page) {
     print("Current Page: " + page.toString());
     widget.chapter = (page + 1).toString();
     setState(() {
       widget.appBarTitle =
           "${widget.bible[widget.oldOrNew][widget.bookRef]["short_hu"]} ${widget.chapter}";
+    });
+    widget.verse = 1;
+  }
+
+  Future scroolToVerse() async {
+    double verseMaxScroll = itemController.position.maxScrollExtent;
+    double versePosition = verseMaxScroll / widget.verseSum * widget.verse;
+    await itemController.animateTo(versePosition,
+        duration: Duration(milliseconds: 800), curve: Curves.ease);
+    scroolToVerse2();
+  }
+
+  Future scroolToVerse2() async {
+    double verseMaxScroll = itemController.position.maxScrollExtent;
+    double versePosition = verseMaxScroll / widget.verseSum * widget.verse;
+    // itemController.jumpTo(versePosition);
+    await itemController.animateTo(versePosition,
+        duration: Duration(milliseconds: 200), curve: Curves.ease);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scroolToVerse();
     });
   }
 
@@ -58,6 +92,7 @@ class _PassagePageState extends State<PassagePage> {
             for (var chap = 1; chap <= widget.chapterSum; chap++)
               ListView.builder(
                   itemCount: bibleCurrent["$chap"].length,
+                  controller: itemController,
                   itemBuilder: (context, index) {
                     if (bibleCurrent["$chap"][index]["num"] == "Title") {
                       if ('$chap. fejezet' !=
@@ -146,6 +181,11 @@ class _PassagePageState extends State<PassagePage> {
                     }
                   }),
           ]),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     scroolToVerse();
+      //   },
+      // ),
     );
   }
 }

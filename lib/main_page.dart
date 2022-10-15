@@ -253,17 +253,17 @@ class VerseList extends StatefulWidget {
   State<VerseList> createState() => _VerseListState();
 }
 
+// Delete VerseList and put into ChapterList.
+// Delete Vers tab.
 class _VerseListState extends State<VerseList> {
+  int verseSum =
+      int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Wrap(
         children: [
-          for (var i = 1;
-              i <=
-                  int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"]
-                      .last["num"]);
-              i++)
+          for (var i = 1; i <= verseSum; i++)
             Padding(
               padding: const EdgeInsets.all(2.0),
               child: SizedBox(
@@ -279,6 +279,7 @@ class _VerseListState extends State<VerseList> {
                         .last["num"]);
                     print(verse);
                     // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
+                    print("Verse $i was clicked!");
                     updateTitle();
                     Navigator.push(
                         context,
@@ -291,6 +292,8 @@ class _VerseListState extends State<VerseList> {
                             bookRef: bookRef,
                             language: language,
                             chapterSum: totalChapter.length,
+                            verse: i,
+                            verseSum: verseSum,
                           ),
                         ));
                   },
