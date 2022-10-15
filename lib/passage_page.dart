@@ -45,11 +45,15 @@ class _PassagePageState extends State<PassagePage> {
   }
 
   Future scroolToVerse() async {
-    double verseMaxScroll = itemController.position.maxScrollExtent;
-    double versePosition = verseMaxScroll / widget.verseSum * widget.verse;
-    await itemController.animateTo(versePosition,
-        duration: Duration(milliseconds: 800), curve: Curves.ease);
-    scroolToVerse2();
+    if (widget.verse > 2) {
+      double verseMaxScroll = itemController.position.maxScrollExtent;
+      double versePosition = verseMaxScroll / widget.verseSum * widget.verse;
+      await itemController.animateTo(versePosition,
+          duration: Duration(milliseconds: 800), curve: Curves.ease);
+      scroolToVerse2();
+    } else {
+      null;
+    }
   }
 
   Future scroolToVerse2() async {
