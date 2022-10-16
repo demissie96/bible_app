@@ -179,6 +179,9 @@ class _PassagePageState extends State<PassagePage> {
                           "Subtitle") {
                         indexMinus++;
                         return Column(
+                          crossAxisAlignment: language == "chapters_hu"
+                              ? CrossAxisAlignment.center
+                              : CrossAxisAlignment.start,
                           children: [
                             Visibility(
                               visible: language == "chapters_hu" ? true : false,
@@ -240,6 +243,7 @@ class _PassagePageState extends State<PassagePage> {
                           controller: itemController,
                           index: index - indexMinus,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Visibility(
                                 visible:
@@ -488,6 +492,9 @@ class _PassagePageState extends State<PassagePage> {
                           bibleCurrentHu["$chap"][index]["num"] == "Subtitle") {
                         indexMinus++;
                         return Column(
+                          crossAxisAlignment: language == "chapters_hu"
+                              ? CrossAxisAlignment.center
+                              : CrossAxisAlignment.start,
                           children: [
                             if (index <= bibleCurrentHu["$chap"].length)
                               Visibility(
@@ -549,6 +556,7 @@ class _PassagePageState extends State<PassagePage> {
                           controller: itemController,
                           index: index,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (index < bibleCurrentHu["$chap"].length)
                                 Visibility(
