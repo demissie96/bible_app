@@ -15,6 +15,7 @@ class SideMenu extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
+            padding: const EdgeInsets.only(bottom: 12.0),
             decoration: const BoxDecoration(
                 image: DecorationImage(
               image: AssetImage('images/side_menu.jpg'),
