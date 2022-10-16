@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
               fontSize: 20.0,
               fontWeight: FontWeight.normal),
           headline5: TextStyle(color: Colors.black87),
+          headline6: TextStyle(color: Colors.black87),
         ),
       ),
       darkTheme: ThemeData.dark().copyWith(

@@ -267,9 +267,9 @@ class _VerseListState extends State<VerseList> {
             Padding(
               padding: const EdgeInsets.all(2.0),
               child: SizedBox(
-                height: 40,
+                height: 50,
                 width: 60,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () {
                     print(bibleJson[oldOrNew][bookRef][language]["$chapter"]
                         .last);
@@ -297,7 +297,12 @@ class _VerseListState extends State<VerseList> {
                           ),
                         ));
                   },
-                  child: Text("$i"),
+                  child: Text(
+                    "$i",
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -326,9 +331,9 @@ class _ChapterListState extends State<ChapterList> {
             Padding(
               padding: const EdgeInsets.all(2.0),
               child: SizedBox(
-                height: 40,
+                height: 50,
                 width: 60,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () {
                     chapter = i;
 
@@ -341,7 +346,9 @@ class _ChapterListState extends State<ChapterList> {
                   },
                   child: Text(
                     "$i",
-                    style: TextStyle(),
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
                   ),
                 ),
               ),
