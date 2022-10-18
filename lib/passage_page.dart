@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bible_app/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import "side_menu.dart";
 import 'extension/string_extension.dart';
@@ -83,37 +84,110 @@ class _PassagePageState extends State<PassagePage> {
 
     return WillPopScope(
       onWillPop: () async {
+        // For controlling system back button action
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => MainPage()));
         return true;
       },
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.red,
-          title: Text(widget.appBarTitle),
+      child: AnnotatedRegion(
+        value: SystemUiOverlayStyle(
+          systemNavigationBarColor: Theme.of(context).colorScheme.background,
         ),
-        drawer: SideMenu(),
-        body: PageView(
-            controller: PageController(
-              initialPage: int.parse(widget.chapter) - 1,
-              keepPage: true,
-            ),
-            onPageChanged: _onPageViewChange,
-            children: [
-              for (int chap = 1; chap <= widget.chapterSum; chap++)
-                if (bibleCurrentHu["$chap"].length >
-                    bibleCurrentEn["$chap"].length) ...[
-                  ListView.builder(
-                    // To remember scroll position
-                    key: PageStorageKey(chap.toString()),
-                    itemCount: bibleCurrentHu["$chap"].length,
-                    scrollDirection: scrollDirection,
-                    controller: itemController,
-                    itemBuilder: (context, index) {
-                      if (bibleCurrentHu["$chap"][index]["num"] == "Title") {
-                        if ('$chap. fejezet' !=
-                            '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+            title: Text(widget.appBarTitle),
+          ),
+          drawer: SideMenu(),
+          body: PageView(
+              controller: PageController(
+                initialPage: int.parse(widget.chapter) - 1,
+                keepPage: true,
+              ),
+              onPageChanged: _onPageViewChange,
+              children: [
+                for (int chap = 1; chap <= widget.chapterSum; chap++)
+                  if (bibleCurrentHu["$chap"].length >
+                      bibleCurrentEn["$chap"].length) ...[
+                    ListView.builder(
+                      // To remember scroll position
+                      key: PageStorageKey(chap.toString()),
+                      itemCount: bibleCurrentHu["$chap"].length,
+                      scrollDirection: scrollDirection,
+                      controller: itemController,
+                      itemBuilder: (context, index) {
+                        if (bibleCurrentHu["$chap"][index]["num"] == "Title") {
+                          if ('$chap. fejezet' !=
+                              '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
+                            return Column(
+                              children: [
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? true : false,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? false : true,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Chapter $chap',
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Column(
+                              children: [
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? true : false,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      '$chap. fejezet',
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? false : true,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Chapter $chap',
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        } else if (bibleCurrentHu["$chap"][index]["num"] ==
+                            "Subtitle") {
+                          indexMinus++;
                           return Column(
+                            crossAxisAlignment: language == "chapters_hu"
+                                ? CrossAxisAlignment.center
+                                : CrossAxisAlignment.start,
                             children: [
                               Visibility(
                                 visible:
@@ -121,187 +195,10 @@ class _PassagePageState extends State<PassagePage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
+                                    bibleCurrentHu["$chap"][index]["text_hu"],
                                     style:
                                         Theme.of(context).textTheme.headline5,
                                     textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? false : true,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Chapter $chap',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Column(
-                            children: [
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? true : false,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    '$chap. fejezet',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? false : true,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Chapter $chap',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                      } else if (bibleCurrentHu["$chap"][index]["num"] ==
-                          "Subtitle") {
-                        indexMinus++;
-                        return Column(
-                          crossAxisAlignment: language == "chapters_hu"
-                              ? CrossAxisAlignment.center
-                              : CrossAxisAlignment.start,
-                          children: [
-                            Visibility(
-                              visible: language == "chapters_hu" ? true : false,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  bibleCurrentHu["$chap"][index]["text_hu"],
-                                  style: Theme.of(context).textTheme.headline5,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                            if (index <= bibleCurrentEn["$chap"].length)
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? false : true,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
-                                  child: Stack(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 30.0,
-                                            right: 30.0,
-                                            top: 8.0,
-                                            bottom: 8.0),
-                                        child: RichText(
-                                          text: TextSpan(children: [
-                                            TextSpan(
-                                              text:
-                                                  "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text:
-                                                  "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                      .capitalizeFirst(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1,
-                                            ),
-                                          ]),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                          ],
-                        );
-                      } else {
-                        return AutoScrollTag(
-                          key: ValueKey(
-                              int.parse(bibleCurrentHu["$chap"][index]["num"]) -
-                                  indexMinus),
-                          controller: itemController,
-                          index: index - indexMinus,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? true : false,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
-                                  child: Stack(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 30.0,
-                                            right: 30.0,
-                                            top: 8.0,
-                                            bottom: 8.0),
-                                        child: RichText(
-                                          text: TextSpan(children: [
-                                            TextSpan(
-                                              text:
-                                                  "${bibleCurrentHu["$chap"][index]["num"]}",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text:
-                                                  "${bibleCurrentHu["$chap"][index]["text_hu"]}"
-                                                      .capitalizeFirst(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1,
-                                            ),
-                                          ]),
-                                        ),
-                                      ),
-                                      if (bibleCurrentHu["$chap"][index]
-                                              ["ref"] !=
-                                          null)
-                                        Positioned(
-                                          right: 0.0,
-                                          bottom: 0.0,
-                                          child: SizedBox(
-                                            width: 38,
-                                            height: 38,
-                                            child: IconButton(
-                                              onPressed: () {
-                                                print(
-                                                    "${bibleCurrentHu["$chap"][index]["ref"]}");
-                                              },
-                                              icon: Icon(
-                                                Icons.library_books,
-                                                color: Colors.red,
-                                                size: 20,
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                    ],
                                   ),
                                 ),
                               ),
@@ -321,35 +218,24 @@ class _PassagePageState extends State<PassagePage> {
                                               bottom: 8.0),
                                           child: RichText(
                                             text: TextSpan(children: [
-                                              if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" ==
-                                                  "0")
-                                                TextSpan(
-                                                  text:
-                                                      "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline6,
+                                              TextSpan(
+                                                text:
+                                                    "${bibleCurrentEn["$chap"][index - 1]["num"]}",
+                                                style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .tertiary,
+                                                  fontSize: 15,
                                                 ),
-                                              if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" !=
-                                                  "0")
-                                                TextSpan(
-                                                  text:
-                                                      "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 15,
-                                                  ),
-                                                ),
-                                              if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" !=
-                                                  "0")
-                                                TextSpan(
-                                                  text:
-                                                      "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                          .capitalizeFirst(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1,
-                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                        .capitalizeFirst(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1,
+                                              ),
                                             ]),
                                           ),
                                         ),
@@ -357,212 +243,18 @@ class _PassagePageState extends State<PassagePage> {
                                     ),
                                   ),
                                 ),
-                              if (index == bibleCurrentHu["$chap"].length - 1)
-                                SizedBox(
-                                  height: 75.0,
-                                ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ] else ...[
-                  ListView.builder(
-                    // To remember scroll position
-                    key: PageStorageKey(chap.toString()),
-                    itemCount: bibleCurrentEn["$chap"].length,
-                    scrollDirection: scrollDirection,
-                    controller: itemController,
-                    itemBuilder: (context, index) {
-                      if (index < bibleCurrentHu["$chap"].length &&
-                          bibleCurrentHu["$chap"][index]["num"] == "Title") {
-                        if ('$chap. fejezet' !=
-                            '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
-                          return Column(
-                            children: [
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? true : false,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? false : true,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Chapter $chap',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-
-                              // Verse comes
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? false : true,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
-                                  child: Stack(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 30.0,
-                                            right: 30.0,
-                                            top: 8.0,
-                                            bottom: 8.0),
-                                        child: RichText(
-                                          text: TextSpan(children: [
-                                            if ("${bibleCurrentEn["$chap"][index]["num"]}" ==
-                                                "0") ...[
-                                              TextSpan(
-                                                text:
-                                                    "${bibleCurrentEn["$chap"][index]["text_en"]}",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline6,
-                                              ),
-                                            ] else ...[
-                                              TextSpan(
-                                                text:
-                                                    "${bibleCurrentEn["$chap"][index]["num"]}",
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text:
-                                                    "${bibleCurrentEn["$chap"][index]["text_en"]}"
-                                                        .capitalizeFirst(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1,
-                                              ),
-                                            ]
-                                          ]),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
                             ],
                           );
                         } else {
-                          return Column(
-                            children: [
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? true : false,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    '$chap. fejezet',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? false : true,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Chapter $chap',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                      } else if (index < bibleCurrentHu["$chap"].length &&
-                          bibleCurrentHu["$chap"][index]["num"] == "Subtitle") {
-                        indexMinus++;
-                        return Column(
-                          crossAxisAlignment: language == "chapters_hu"
-                              ? CrossAxisAlignment.center
-                              : CrossAxisAlignment.start,
-                          children: [
-                            if (index <= bibleCurrentHu["$chap"].length)
-                              Visibility(
-                                visible:
-                                    language == "chapters_hu" ? true : false,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    bibleCurrentHu["$chap"][index]["text_hu"],
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            Visibility(
-                              visible: language == "chapters_hu" ? false : true,
-                              child: Padding(
-                                padding: const EdgeInsets.all(0.0),
-                                child: Stack(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 30.0,
-                                          right: 30.0,
-                                          top: 8.0,
-                                          bottom: 8.0),
-                                      child: RichText(
-                                        text: TextSpan(children: [
-                                          TextSpan(
-                                            text:
-                                                "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                    .capitalizeFirst(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1,
-                                          ),
-                                        ]),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return AutoScrollTag(
-                          key: ValueKey(
-                              int.parse(bibleCurrentEn["$chap"][index]["num"])),
-                          controller: itemController,
-                          index: index,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (index < bibleCurrentHu["$chap"].length)
+                          return AutoScrollTag(
+                            key: ValueKey(int.parse(
+                                    bibleCurrentHu["$chap"][index]["num"]) -
+                                indexMinus),
+                            controller: itemController,
+                            index: index - indexMinus,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 Visibility(
                                   visible:
                                       language == "chapters_hu" ? true : false,
@@ -582,7 +274,9 @@ class _PassagePageState extends State<PassagePage> {
                                                 text:
                                                     "${bibleCurrentHu["$chap"][index]["num"]}",
                                                 style: TextStyle(
-                                                  color: Colors.red,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .tertiary,
                                                   fontSize: 15,
                                                 ),
                                               ),
@@ -613,13 +307,230 @@ class _PassagePageState extends State<PassagePage> {
                                                 },
                                                 icon: Icon(
                                                   Icons.library_books,
-                                                  color: Colors.red,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .tertiary,
                                                   size: 20,
                                                 ),
                                               ),
                                             ),
                                           )
                                       ],
+                                    ),
+                                  ),
+                                ),
+                                if (index <= bibleCurrentEn["$chap"].length)
+                                  Visibility(
+                                    visible: language == "chapters_hu"
+                                        ? false
+                                        : true,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Stack(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 30.0,
+                                                right: 30.0,
+                                                top: 8.0,
+                                                bottom: 8.0),
+                                            child: RichText(
+                                              text: TextSpan(children: [
+                                                if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" ==
+                                                    "0")
+                                                  TextSpan(
+                                                    text:
+                                                        "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline6,
+                                                  ),
+                                                if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" !=
+                                                    "0")
+                                                  TextSpan(
+                                                    text:
+                                                        "${bibleCurrentEn["$chap"][index - 1]["num"]}",
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .tertiary,
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" !=
+                                                    "0")
+                                                  TextSpan(
+                                                    text:
+                                                        "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                            .capitalizeFirst(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText1,
+                                                  ),
+                                              ]),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                if (index == bibleCurrentHu["$chap"].length - 1)
+                                  SizedBox(
+                                    height: 75.0,
+                                  ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ] else ...[
+                    ListView.builder(
+                      // To remember scroll position
+                      key: PageStorageKey(chap.toString()),
+                      itemCount: bibleCurrentEn["$chap"].length,
+                      scrollDirection: scrollDirection,
+                      controller: itemController,
+                      itemBuilder: (context, index) {
+                        if (index < bibleCurrentHu["$chap"].length &&
+                            bibleCurrentHu["$chap"][index]["num"] == "Title") {
+                          if ('$chap. fejezet' !=
+                              '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
+                            return Column(
+                              children: [
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? true : false,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? false : true,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Chapter $chap',
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+
+                                // Verse comes
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? false : true,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(0.0),
+                                    child: Stack(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 30.0,
+                                              right: 30.0,
+                                              top: 8.0,
+                                              bottom: 8.0),
+                                          child: RichText(
+                                            text: TextSpan(children: [
+                                              if ("${bibleCurrentEn["$chap"][index]["num"]}" ==
+                                                  "0") ...[
+                                                TextSpan(
+                                                  text:
+                                                      "${bibleCurrentEn["$chap"][index]["text_en"]}",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline6,
+                                                ),
+                                              ] else ...[
+                                                TextSpan(
+                                                  text:
+                                                      "${bibleCurrentEn["$chap"][index]["num"]}",
+                                                  style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .tertiary,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      "${bibleCurrentEn["$chap"][index]["text_en"]}"
+                                                          .capitalizeFirst(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1,
+                                                ),
+                                              ]
+                                            ]),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Column(
+                              children: [
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? true : false,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      '$chap. fejezet',
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? false : true,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Chapter $chap',
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                        } else if (index < bibleCurrentHu["$chap"].length &&
+                            bibleCurrentHu["$chap"][index]["num"] ==
+                                "Subtitle") {
+                          indexMinus++;
+                          return Column(
+                            crossAxisAlignment: language == "chapters_hu"
+                                ? CrossAxisAlignment.center
+                                : CrossAxisAlignment.start,
+                            children: [
+                              if (index <= bibleCurrentHu["$chap"].length)
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? true : false,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      bibleCurrentHu["$chap"][index]["text_hu"],
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
@@ -638,33 +549,24 @@ class _PassagePageState extends State<PassagePage> {
                                             bottom: 8.0),
                                         child: RichText(
                                           text: TextSpan(children: [
-                                            if ("${bibleCurrentEn["$chap"][index]["num"]}" ==
-                                                "0") ...[
-                                              TextSpan(
-                                                text:
-                                                    "${bibleCurrentEn["$chap"][index]["text_en"]}",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline6,
+                                            TextSpan(
+                                              text:
+                                                  "${bibleCurrentEn["$chap"][index - 1]["num"]}",
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .tertiary,
+                                                fontSize: 15,
                                               ),
-                                            ] else ...[
-                                              TextSpan(
-                                                text:
-                                                    "${bibleCurrentEn["$chap"][index]["num"]}",
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text:
-                                                    "${bibleCurrentEn["$chap"][index]["text_en"]}"
-                                                        .capitalizeFirst(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1,
-                                              ),
-                                            ]
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                      .capitalizeFirst(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1,
+                                            ),
                                           ]),
                                         ),
                                       ),
@@ -672,33 +574,163 @@ class _PassagePageState extends State<PassagePage> {
                                   ),
                                 ),
                               ),
-                              if (index == bibleCurrentEn["$chap"].length - 1)
-                                SizedBox(
-                                  height: 75.0,
-                                ),
                             ],
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-            ]),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
-          child: Text(
-            language == "chapters_hu" ? "🇺🇲" : "🇭🇺",
-            style: TextStyle(fontSize: 35.0),
+                          );
+                        } else {
+                          return AutoScrollTag(
+                            key: ValueKey(int.parse(
+                                bibleCurrentEn["$chap"][index]["num"])),
+                            controller: itemController,
+                            index: index,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (index < bibleCurrentHu["$chap"].length)
+                                  Visibility(
+                                    visible: language == "chapters_hu"
+                                        ? true
+                                        : false,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Stack(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 30.0,
+                                                right: 30.0,
+                                                top: 8.0,
+                                                bottom: 8.0),
+                                            child: RichText(
+                                              text: TextSpan(children: [
+                                                TextSpan(
+                                                  text:
+                                                      "${bibleCurrentHu["$chap"][index]["num"]}",
+                                                  style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .tertiary,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      "${bibleCurrentHu["$chap"][index]["text_hu"]}"
+                                                          .capitalizeFirst(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1,
+                                                ),
+                                              ]),
+                                            ),
+                                          ),
+                                          if (bibleCurrentHu["$chap"][index]
+                                                  ["ref"] !=
+                                              null)
+                                            Positioned(
+                                              right: 0.0,
+                                              bottom: 0.0,
+                                              child: SizedBox(
+                                                width: 38,
+                                                height: 38,
+                                                child: IconButton(
+                                                  onPressed: () {
+                                                    print(
+                                                        "${bibleCurrentHu["$chap"][index]["ref"]}");
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.library_books,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .tertiary,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                Visibility(
+                                  visible:
+                                      language == "chapters_hu" ? false : true,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(0.0),
+                                    child: Stack(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 30.0,
+                                              right: 30.0,
+                                              top: 8.0,
+                                              bottom: 8.0),
+                                          child: RichText(
+                                            text: TextSpan(children: [
+                                              if ("${bibleCurrentEn["$chap"][index]["num"]}" ==
+                                                  "0") ...[
+                                                TextSpan(
+                                                  text:
+                                                      "${bibleCurrentEn["$chap"][index]["text_en"]}",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline6,
+                                                ),
+                                              ] else ...[
+                                                TextSpan(
+                                                  text:
+                                                      "${bibleCurrentEn["$chap"][index]["num"]}",
+                                                  style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .tertiary,
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      "${bibleCurrentEn["$chap"][index]["text_en"]}"
+                                                          .capitalizeFirst(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1,
+                                                ),
+                                              ]
+                                            ]),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (index == bibleCurrentEn["$chap"].length - 1)
+                                  SizedBox(
+                                    height: 75.0,
+                                  ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+              ]),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor:
+                Theme.of(context).floatingActionButtonTheme.backgroundColor,
+            child: Text(
+              language == "chapters_hu" ? "🇺🇲" : "🇭🇺",
+              style: TextStyle(fontSize: 35.0),
+            ),
+            onPressed: () {
+              setState(() {
+                if (language == "chapters_hu") {
+                  language = "chapters_eng";
+                } else {
+                  language = "chapters_hu";
+                }
+              });
+            },
           ),
-          onPressed: () {
-            setState(() {
-              if (language == "chapters_hu") {
-                language = "chapters_eng";
-              } else {
-                language = "chapters_hu";
-              }
-            });
-          },
         ),
       ),
     );

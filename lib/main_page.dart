@@ -70,13 +70,7 @@ class _MainPageState extends State<MainPage>
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.red,
-        ),
-      );
-    }
+
     restoreData();
 
     bibleJsonGet();
@@ -100,153 +94,184 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
+    // if (Platform.isAndroid) {
+    //   SystemChrome.setSystemUIOverlayStyle(
+    //     SystemUiOverlayStyle(
+    //       systemNavigationBarColor: Theme.of(context).colorScheme.background,
+    //     ),
+    //   );
+    // }
     return DefaultTabController(
       length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.red,
-          title: Text(appBarTitle),
-          bottom: TabBar(
+      child: AnnotatedRegion(
+        value: SystemUiOverlayStyle(
+          systemNavigationBarColor: Theme.of(context).colorScheme.background,
+        ),
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+            title: Text(
+              appBarTitle,
+              style: TextStyle(
+                color: Theme.of(context).appBarTheme.foregroundColor,
+              ),
+            ),
+            bottom: TabBar(
+              indicatorColor: Theme.of(context).colorScheme.tertiary,
+              labelColor: Theme.of(context).appBarTheme.foregroundColor,
+              controller: tabController,
+              tabs: [
+                Tab(text: "Könyv"),
+                Tab(text: "Fejezet"),
+                Tab(text: "Vers"),
+              ],
+            ),
+          ),
+          drawer: SideMenu(),
+          body: TabBarView(
             controller: tabController,
-            tabs: [
-              Tab(text: "Könyv"),
-              Tab(text: "Fejezet"),
-              Tab(text: "Vers"),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          // Display the data loaded from sample.json
+                          oldTestament.isNotEmpty
+                              ? Expanded(
+                                  child: ListView.builder(
+                                    itemCount: oldTestament.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        margin: const EdgeInsets.only(
+                                          left: 10.0,
+                                          right: 10.0,
+                                        ),
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            padding: MaterialStateProperty.all<
+                                                EdgeInsets>(
+                                              EdgeInsets.all(13),
+                                            ),
+                                          ),
+                                          key: ValueKey(oldTestament[index][0]),
+                                          onPressed: () {
+                                            oldOrNew = "old";
+                                            print(oldTestament[index][0]);
+                                            bookRef = oldTestament[index][0];
+                                            bookNameHu = oldTestament[index][3];
+                                            totalChapter = [];
+                                            for (var i = 1;
+                                                i <= oldTestament[index][1];
+                                                i++) {
+                                              totalChapter.add(i);
+                                            }
+
+                                            print(totalChapter.length);
+                                            setState(() {
+                                              appBarTitle = bookNameHu;
+                                            });
+                                            tabController.index = 1;
+                                          },
+                                          child: Text(
+                                            oldTestament[index][3],
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .appBarTheme
+                                                  .foregroundColor,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container()
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          // Display the data loaded from sample.json
+                          newTestament.isNotEmpty
+                              ? Expanded(
+                                  child: ListView.builder(
+                                    itemCount: newTestament.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 10.0, right: 10.0),
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            padding: MaterialStateProperty.all<
+                                                EdgeInsets>(
+                                              EdgeInsets.all(13),
+                                            ),
+                                          ),
+                                          key: ValueKey(newTestament[index][0]),
+                                          onPressed: () {
+                                            oldOrNew = "new";
+                                            print(newTestament[index][0]);
+                                            bookRef = newTestament[index][0];
+                                            bookNameHu = newTestament[index][3];
+                                            totalChapter = [];
+                                            for (var i = 1;
+                                                i <= newTestament[index][1];
+                                                i++) {
+                                              totalChapter.add(i);
+                                            }
+
+                                            print(totalChapter.length);
+                                            setState(() {
+                                              appBarTitle = bookNameHu;
+                                            });
+                                            tabController.index = 1;
+                                          },
+                                          child: Text(
+                                            newTestament[index][3],
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .appBarTheme
+                                                  .foregroundColor,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container()
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ChapterList(),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: VerseList(),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
-        ),
-        drawer: SideMenu(),
-        body: TabBarView(
-          controller: tabController,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        // Display the data loaded from sample.json
-                        oldTestament.isNotEmpty
-                            ? Expanded(
-                                child: ListView.builder(
-                                  itemCount: oldTestament.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      margin: const EdgeInsets.only(
-                                        left: 10.0,
-                                        right: 10.0,
-                                      ),
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                          padding: MaterialStateProperty.all<
-                                              EdgeInsets>(
-                                            EdgeInsets.all(13),
-                                          ),
-                                        ),
-                                        key: ValueKey(oldTestament[index][0]),
-                                        onPressed: () {
-                                          oldOrNew = "old";
-                                          print(oldTestament[index][0]);
-                                          bookRef = oldTestament[index][0];
-                                          bookNameHu = oldTestament[index][3];
-                                          totalChapter = [];
-                                          for (var i = 1;
-                                              i <= oldTestament[index][1];
-                                              i++) {
-                                            totalChapter.add(i);
-                                          }
-
-                                          print(totalChapter.length);
-                                          setState(() {
-                                            appBarTitle = bookNameHu;
-                                          });
-                                          tabController.index = 1;
-                                        },
-                                        child: Text(
-                                          oldTestament[index][3],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                            : Container()
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        // Display the data loaded from sample.json
-                        newTestament.isNotEmpty
-                            ? Expanded(
-                                child: ListView.builder(
-                                  itemCount: newTestament.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      margin: const EdgeInsets.only(
-                                          left: 10.0, right: 10.0),
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                          padding: MaterialStateProperty.all<
-                                              EdgeInsets>(
-                                            EdgeInsets.all(13),
-                                          ),
-                                        ),
-                                        key: ValueKey(newTestament[index][0]),
-                                        onPressed: () {
-                                          oldOrNew = "new";
-                                          print(newTestament[index][0]);
-                                          bookRef = newTestament[index][0];
-                                          bookNameHu = newTestament[index][3];
-                                          totalChapter = [];
-                                          for (var i = 1;
-                                              i <= newTestament[index][1];
-                                              i++) {
-                                            totalChapter.add(i);
-                                          }
-
-                                          print(totalChapter.length);
-                                          setState(() {
-                                            appBarTitle = bookNameHu;
-                                          });
-                                          tabController.index = 1;
-                                        },
-                                        child: Text(newTestament[index][3]),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                            : Container()
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ChapterList(),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: VerseList(),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );

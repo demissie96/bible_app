@@ -52,7 +52,9 @@ class SideMenu extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => SearchPage()));
               },
               child: const ListTile(
-                leading: Icon(Icons.search, color: Colors.red),
+                leading: Icon(
+                  Icons.search,
+                ),
                 title: Text('Keresés'),
               ),
             ),
@@ -70,7 +72,9 @@ class SideMenu extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => MainPage()));
               },
               child: const ListTile(
-                leading: Icon(Icons.menu_book_outlined, color: Colors.red),
+                leading: Icon(
+                  Icons.menu_book_outlined,
+                ),
                 title: Text('Könyvek'),
               ),
             ),
@@ -84,7 +88,9 @@ class SideMenu extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => SettingsPage()));
               },
               child: const ListTile(
-                leading: Icon(Icons.settings, color: Colors.red),
+                leading: Icon(
+                  Icons.settings,
+                ),
                 title: Text('Beállítások'),
               ),
             ),
