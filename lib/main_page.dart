@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bible_app/passage_page.dart';
 import 'package:flutter/material.dart';
 import "side_menu.dart";
@@ -68,6 +70,13 @@ class _MainPageState extends State<MainPage>
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (Platform.isAndroid) {
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.red,
+        ),
+      );
+    }
     restoreData();
 
     bibleJsonGet();
