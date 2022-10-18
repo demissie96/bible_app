@@ -357,6 +357,10 @@ class _PassagePageState extends State<PassagePage> {
                                     ),
                                   ),
                                 ),
+                              if (index == bibleCurrentHu["$chap"].length - 1)
+                                SizedBox(
+                                  height: 75.0,
+                                ),
                             ],
                           ),
                         );
@@ -668,15 +672,24 @@ class _PassagePageState extends State<PassagePage> {
                                   ),
                                 ),
                               ),
+                              if (index == bibleCurrentEn["$chap"].length - 1)
+                                SizedBox(
+                                  height: 75.0,
+                                ),
                             ],
                           ),
                         );
                       }
                     },
                   ),
-                ]
+                ],
             ]),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
+          child: Text(
+            language == "chapters_hu" ? "🇺🇲" : "🇭🇺",
+            style: TextStyle(fontSize: 35.0),
+          ),
           onPressed: () {
             setState(() {
               if (language == "chapters_hu") {
