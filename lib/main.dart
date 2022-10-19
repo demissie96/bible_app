@@ -13,63 +13,76 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: Colors.red,
-            secondary: Colors.white,
-            tertiary: Colors.red,
-            background: Colors.white,
+        colorScheme: const ColorScheme.light(
+          primary: Colors.red,
+          secondary: Colors.white,
+          tertiary: Colors.red,
+          background: Colors.white,
+        ),
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.white,
+          labelStyle: TextStyle(fontFamily: "Roboto Slab"),
+          unselectedLabelStyle: TextStyle(fontFamily: "Roboto Slab"),
+        ),
+        appBarTheme: AppBarTheme(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.red,
+          titleTextStyle: TextStyle(
+            fontFamily: "Roboto Slab",
+            fontSize: 20.0,
           ),
-          tabBarTheme: TabBarTheme(
-            labelColor: Colors.white,
-            labelStyle: TextStyle(fontFamily: "Roboto Slab"),
-            unselectedLabelStyle: TextStyle(fontFamily: "Roboto Slab"),
-          ),
-          appBarTheme: AppBarTheme(
-            foregroundColor: Colors.white,
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.white,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            textStyle: TextStyle(
+              color: Colors.white,
+              fontFamily: "Roboto Slab",
+            ),
             backgroundColor: Colors.red,
-            titleTextStyle: TextStyle(
-              fontFamily: "Roboto Slab",
-              fontSize: 20.0,
-            ),
           ),
-          floatingActionButtonTheme: FloatingActionButtonThemeData(
-            backgroundColor: Colors.white,
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              textStyle: TextStyle(
-                color: Colors.white,
-                fontFamily: "Roboto Slab",
-              ),
-              backgroundColor: Colors.red,
-            ),
-          ),
-          textTheme: const TextTheme(
-            bodyText1: TextStyle(
-              color: Colors.black87,
-              fontSize: 20.0,
-              fontWeight: FontWeight.normal,
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            textStyle: TextStyle(
               fontFamily: "Roboto Slab",
             ),
-            bodyText2: TextStyle(
-              color: Colors.red,
-              fontSize: 15.0,
-              fontWeight: FontWeight.normal,
-              fontFamily: "Roboto Slab",
-            ),
-            headline5: TextStyle(
-              color: Colors.black87,
-              fontFamily: "Courgette",
-            ),
-            headline6: TextStyle(
-              color: Colors.black87,
-              fontFamily: "Courgette",
-            ),
           ),
-          listTileTheme: ListTileThemeData(
-            textColor: Colors.black87,
-            iconColor: Colors.red,
-          )),
+        ),
+        textTheme: const TextTheme(
+          bodyText1: TextStyle(
+            color: Color.fromARGB(170, 0, 0, 0),
+            fontSize: 20.0,
+            fontWeight: FontWeight.normal,
+            fontFamily: "Roboto Slab",
+          ),
+          bodyText2: TextStyle(
+            color: Colors.red,
+            fontSize: 15.0,
+            fontWeight: FontWeight.normal,
+            fontFamily: "Roboto Slab",
+          ),
+          headline5: TextStyle(
+            color: Colors.black87,
+            fontFamily: "Courgette",
+          ),
+          headline6: TextStyle(
+            color: Colors.black87,
+            fontFamily: "Courgette",
+          ),
+        ),
+        listTileTheme: ListTileThemeData(
+          textColor: Colors.black87,
+          iconColor: Colors.red,
+        ),
+        snackBarTheme: SnackBarThemeData(
+          contentTextStyle: TextStyle(
+            fontFamily: "Roboto Slab",
+          ),
+        ),
+      ),
       darkTheme: ThemeData.dark().copyWith(
         colorScheme: const ColorScheme.dark(
           primary: Colors.white,
@@ -106,6 +119,13 @@ class MyApp extends StatelessWidget {
             backgroundColor: Color.fromARGB(255, 15, 52, 96),
           ),
         ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            textStyle: TextStyle(
+              fontFamily: "Roboto Slab",
+            ),
+          ),
+        ),
         textTheme: const TextTheme(
           bodyText1: TextStyle(
             fontSize: 20.0,
@@ -131,6 +151,11 @@ class MyApp extends StatelessWidget {
         listTileTheme: ListTileThemeData(
           textColor: Colors.white,
           iconColor: Color.fromARGB(255, 233, 69, 96),
+        ),
+        snackBarTheme: SnackBarThemeData(
+          contentTextStyle: TextStyle(
+            fontFamily: "Roboto Slab",
+          ),
         ),
       ),
       home: MainPage(),

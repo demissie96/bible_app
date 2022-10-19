@@ -228,7 +228,7 @@ class _PassagePageState extends State<PassagePage> {
                                                 .colorScheme
                                                 .tertiary,
                                             content: Text(
-                                              "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (Eng)",
+                                              "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (🇺🇸)",
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 15.0,
@@ -309,7 +309,7 @@ class _PassagePageState extends State<PassagePage> {
                                                 .colorScheme
                                                 .tertiary,
                                             content: Text(
-                                              "${widget.appBarTitle}:${bibleCurrentHu["$chap"][index]["num"]} - Másolva (Hun)",
+                                              "${widget.appBarTitle}:${bibleCurrentHu["$chap"][index]["num"]} - Másolva (🇭🇺)",
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 15.0,
@@ -402,7 +402,7 @@ class _PassagePageState extends State<PassagePage> {
                                                   .colorScheme
                                                   .tertiary,
                                               content: Text(
-                                                "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (Eng)",
+                                                "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (🇺🇸)",
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 15.0,
@@ -535,7 +535,7 @@ class _PassagePageState extends State<PassagePage> {
                                                 .colorScheme
                                                 .tertiary,
                                             content: Text(
-                                              "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index]["num"]} - Másolva (Eng)",
+                                              "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index]["num"]} - Másolva (🇺🇸)",
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 15.0,
@@ -673,7 +673,7 @@ class _PassagePageState extends State<PassagePage> {
                                               .colorScheme
                                               .tertiary,
                                           content: Text(
-                                            "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (Eng)",
+                                            "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (🇺🇸)",
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 15.0,
@@ -754,7 +754,7 @@ class _PassagePageState extends State<PassagePage> {
                                                   .colorScheme
                                                   .tertiary,
                                               content: Text(
-                                                "${widget.appBarTitle}:${bibleCurrentHu["$chap"][index]["num"]} - Másolva (Hun)",
+                                                "${widget.appBarTitle}:${bibleCurrentHu["$chap"][index]["num"]} - Másolva (🇭🇺)",
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 15.0,
@@ -845,7 +845,7 @@ class _PassagePageState extends State<PassagePage> {
                                                 .colorScheme
                                                 .tertiary,
                                             content: Text(
-                                              "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index]["num"]} - Másolva (Eng)",
+                                              "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index]["num"]} - Másolva (🇺🇸)",
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 15.0,
