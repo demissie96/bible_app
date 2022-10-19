@@ -68,12 +68,13 @@ class MyApp extends StatelessWidget {
           bodyText1: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.normal,
+            color: Colors.white70,
           ),
           headline5: TextStyle(
-            color: Colors.white,
+            color: Colors.white70,
           ),
           headline6: TextStyle(
-            color: Colors.white,
+            color: Colors.white70,
           ),
         ),
         listTileTheme: ListTileThemeData(

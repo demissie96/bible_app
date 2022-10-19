@@ -76,7 +76,13 @@ class _MainPageState extends State<MainPage>
     bibleJsonGet();
 
     // We need a TabController to control the selected tab programmatically
-    tabController = TabController(vsync: this, length: 3);
+    tabController = TabController(
+      vsync: this,
+      length: 3,
+      animationDuration: Duration(
+        milliseconds: 1000,
+      ),
+    );
     bookListJson();
     for (var i = 1; i <= 50; i++) {
       totalChapter.add(i);
@@ -94,13 +100,6 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
-    // if (Platform.isAndroid) {
-    //   SystemChrome.setSystemUIOverlayStyle(
-    //     SystemUiOverlayStyle(
-    //       systemNavigationBarColor: Theme.of(context).colorScheme.background,
-    //     ),
-    //   );
-    // }
     return DefaultTabController(
       length: 3,
       child: AnnotatedRegion(
