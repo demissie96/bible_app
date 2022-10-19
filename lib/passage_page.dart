@@ -62,7 +62,6 @@ class _PassagePageState extends State<PassagePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     itemController = AutoScrollController(
         viewportBoundaryGetter: () =>

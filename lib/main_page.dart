@@ -27,6 +27,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
+  final scrollDirection = Axis.vertical;
+
   JumpOneTab() {
     tabController.index += 1;
   }
@@ -140,6 +142,8 @@ class _MainPageState extends State<MainPage>
                           oldTestament.isNotEmpty
                               ? Expanded(
                                   child: ListView.builder(
+                                    key: PageStorageKey("oldTestament"),
+                                    scrollDirection: scrollDirection,
                                     itemCount: oldTestament.length,
                                     itemBuilder: (context, index) {
                                       return Container(
@@ -197,6 +201,8 @@ class _MainPageState extends State<MainPage>
                           newTestament.isNotEmpty
                               ? Expanded(
                                   child: ListView.builder(
+                                    key: PageStorageKey("newTestament"),
+                                    scrollDirection: scrollDirection,
                                     itemCount: newTestament.length,
                                     itemBuilder: (context, index) {
                                       return Container(
