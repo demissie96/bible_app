@@ -254,12 +254,9 @@ class _PassagePageState extends State<PassagePage> {
                                                 TextSpan(
                                                   text:
                                                       "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                                  style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .tertiary,
-                                                    fontSize: 15,
-                                                  ),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2,
                                                 ),
                                                 TextSpan(
                                                   text:
@@ -338,12 +335,9 @@ class _PassagePageState extends State<PassagePage> {
                                                 TextSpan(
                                                   text:
                                                       "${bibleCurrentHu["$chap"][index]["num"]}",
-                                                  style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .tertiary,
-                                                    fontSize: 15,
-                                                  ),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2,
                                                 ),
                                                 TextSpan(
                                                   text:
@@ -445,12 +439,9 @@ class _PassagePageState extends State<PassagePage> {
                                                     TextSpan(
                                                       text:
                                                           "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                                      style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .tertiary,
-                                                        fontSize: 15,
-                                                      ),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2,
                                                     ),
                                                   if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" !=
                                                       "0")
@@ -580,12 +571,9 @@ class _PassagePageState extends State<PassagePage> {
                                                   TextSpan(
                                                     text:
                                                         "${bibleCurrentEn["$chap"][index]["num"]}",
-                                                    style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .tertiary,
-                                                      fontSize: 15,
-                                                    ),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2,
                                                   ),
                                                   TextSpan(
                                                     text:
@@ -711,12 +699,9 @@ class _PassagePageState extends State<PassagePage> {
                                               TextSpan(
                                                 text:
                                                     "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                                style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .tertiary,
-                                                  fontSize: 15,
-                                                ),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2,
                                               ),
                                               TextSpan(
                                                 text:
@@ -795,12 +780,9 @@ class _PassagePageState extends State<PassagePage> {
                                                   TextSpan(
                                                     text:
                                                         "${bibleCurrentHu["$chap"][index]["num"]}",
-                                                    style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .tertiary,
-                                                      fontSize: 15,
-                                                    ),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2,
                                                   ),
                                                   TextSpan(
                                                     text:
@@ -899,12 +881,9 @@ class _PassagePageState extends State<PassagePage> {
                                                   TextSpan(
                                                     text:
                                                         "${bibleCurrentEn["$chap"][index]["num"]}",
-                                                    style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .tertiary,
-                                                      fontSize: 15,
-                                                    ),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2,
                                                   ),
                                                   TextSpan(
                                                     text:

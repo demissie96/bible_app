@@ -117,7 +117,6 @@ class _MainPageState extends State<MainPage>
             ),
             bottom: TabBar(
               indicatorColor: Theme.of(context).colorScheme.tertiary,
-              labelColor: Theme.of(context).appBarTheme.foregroundColor,
               controller: tabController,
               tabs: [
                 Tab(text: "Könyv"),
