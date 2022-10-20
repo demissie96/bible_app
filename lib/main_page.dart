@@ -90,7 +90,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       totalChapter.add(i);
     }
     setState(() {
-      appBarTitle = bookNameHu;
+      appBarTitle = "$bookNameHu $chapter";
       totalChapter;
     });
     updateTitle = () {
@@ -165,6 +165,8 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                             print(oldTestament[index][0]);
                                             bookRef = oldTestament[index][0];
                                             bookNameHu = oldTestament[index][3];
+                                            chapter = 1;
+                                            verse = 1;
                                             totalChapter = [];
                                             for (var i = 1; i <= oldTestament[index][1]; i++) {
                                               totalChapter.add(i);
@@ -172,7 +174,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
                                             print(totalChapter.length);
                                             setState(() {
-                                              appBarTitle = bookNameHu;
+                                              appBarTitle = "$bookNameHu $chapter";
                                             });
                                           },
                                           child: Text(
@@ -216,7 +218,9 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                             oldOrNew = "new";
                                             print(newTestament[index][3]);
                                             bookRef = newTestament[index][0];
-
+                                            bookNameHu = newTestament[index][3];
+                                            chapter = 1;
+                                            verse = 1;
                                             totalChapter = [];
                                             for (var i = 1; i <= newTestament[index][1]; i++) {
                                               totalChapter.add(i);
@@ -224,8 +228,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
                                             print(totalChapter.length);
                                             setState(() {
-                                              bookNameHu = newTestament[index][3];
-                                              appBarTitle = bookNameHu;
+                                              appBarTitle = "$bookNameHu $chapter";
                                             });
                                           },
                                           child: Text(
