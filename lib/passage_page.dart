@@ -55,10 +55,12 @@ class _PassagePageState extends State<PassagePage> {
   Future scroolToIndex() async {
     print("Widgete.verse = ${widget.verse}");
     if (widget.verse > 1) {
-      await itemController.scrollToIndex(
-        widget.verse,
-        preferPosition: AutoScrollPosition.middle,
-      );
+      await itemController
+          .scrollToIndex(
+            widget.verse,
+            preferPosition: AutoScrollPosition.middle,
+          )
+          .then((value) => widget.verse = 1); // Fix language change jumping weirdly bug
     }
   }
 
