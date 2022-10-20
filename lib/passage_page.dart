@@ -118,7 +118,7 @@ class _PassagePageState extends State<PassagePage> {
                                 Visibility(
                                   visible: language == "chapters_hu" ? true : false,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                                     child: Text(
                                       '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
                                       style: Theme.of(context).textTheme.headline5,
@@ -179,7 +179,7 @@ class _PassagePageState extends State<PassagePage> {
                               Visibility(
                                 visible: language == "chapters_hu" ? true : false,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                                   child: Text(
                                     bibleCurrentHu["$chap"][index]["text_hu"],
                                     style: Theme.of(context).textTheme.headline5,
@@ -459,7 +459,7 @@ class _PassagePageState extends State<PassagePage> {
                                 Visibility(
                                   visible: language == "chapters_hu" ? true : false,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                                     child: Text(
                                       '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
                                       style: Theme.of(context).textTheme.headline5,
@@ -583,7 +583,7 @@ class _PassagePageState extends State<PassagePage> {
                                   visible: language == "chapters_hu" ? true : false,
                                   // Hungarian part
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                                     child: Text(
                                       bibleCurrentHu["$chap"][index]["text_hu"],
                                       style: Theme.of(context).textTheme.headline5,
