@@ -15,6 +15,7 @@ class PassagePage extends StatefulWidget {
   var bible;
   int verse;
   int verseSum;
+  var bookList;
 
   String oldOrNew;
   String bookRef;
@@ -29,6 +30,7 @@ class PassagePage extends StatefulWidget {
     required this.chapterSum,
     required this.verse,
     required this.verseSum,
+    required this.bookList,
   });
 
   @override
@@ -51,6 +53,7 @@ class _PassagePageState extends State<PassagePage> {
   }
 
   Future scroolToIndex() async {
+    print("Widgete.verse = ${widget.verse}");
     if (widget.verse > 1) {
       await itemController.scrollToIndex(
         widget.verse,
@@ -66,7 +69,7 @@ class _PassagePageState extends State<PassagePage> {
         viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      scroolToIndex();
+      // scroolToIndex();
     });
   }
 
@@ -74,8 +77,12 @@ class _PassagePageState extends State<PassagePage> {
   Widget build(BuildContext context) {
     var bibleCurrentHu = widget.bible[widget.oldOrNew][widget.bookRef]["chapters_hu"];
     var bibleCurrentEn = widget.bible[widget.oldOrNew][widget.bookRef]["chapters_eng"];
-    print("chapter sum is ====> ${widget.chapterSum}");
-    print("bibleCurrent is ====> $bibleCurrentHu");
+    // print("chapter sum is ====> ${widget.chapterSum}");
+    // print("bibleCurrent is ====> $bibleCurrentHu");
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scroolToIndex();
+    });
 
     return WillPopScope(
       onWillPop: () async {
@@ -103,6 +110,7 @@ class _PassagePageState extends State<PassagePage> {
               children: [
                 for (int chap = 1; chap <= widget.chapterSum; chap++)
                   if (bibleCurrentHu["$chap"].length > bibleCurrentEn["$chap"].length) ...[
+                    // Hungarian based ListView
                     ListView.builder(
                       // To remember scroll position
                       key: PageStorageKey(chap.toString()),
@@ -301,71 +309,7 @@ class _PassagePageState extends State<PassagePage> {
                                             ),
                                           ),
                                           if (bibleCurrentHu["$chap"][index]["ref"] != null)
-                                            Positioned(
-                                              right: 0.0,
-                                              bottom: 0.0,
-                                              child: SizedBox(
-                                                width: 38,
-                                                height: 38,
-                                                child: IconButton(
-                                                  onPressed: () {
-                                                    print(
-                                                      "${bibleCurrentHu["$chap"][index]["ref"]}",
-                                                    );
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          List refList = bibleCurrentHu["$chap"][index]["ref"];
-                                                          return AlertDialog(
-                                                            backgroundColor: Theme.of(context).colorScheme.background,
-                                                            title: Text(
-                                                              bibleCurrentHu["$chap"][index]["ref"].length > 1
-                                                                  ? "Hivatkozások"
-                                                                  : "Hivatkozás",
-                                                              style: Theme.of(context).textTheme.headline5,
-                                                            ),
-                                                            content: SingleChildScrollView(
-                                                              child: Column(
-                                                                mainAxisSize: MainAxisSize.min,
-                                                                children: [
-                                                                  for (var element in refList)
-                                                                    SizedBox(
-                                                                      height: 35.0,
-                                                                      child: TextButton(
-                                                                        style: TextButton.styleFrom(
-                                                                          padding: EdgeInsets.all(0.0),
-                                                                        ),
-                                                                        onPressed: () {
-                                                                          print(element);
-                                                                        },
-                                                                        child: Row(
-                                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                                                          children: [
-                                                                            // Icon(Icons.arrow_drop_down),
-                                                                            Text(
-                                                                              "$element 🔻",
-                                                                              style:
-                                                                                  Theme.of(context).textTheme.bodyText1,
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          );
-                                                        });
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.library_books,
-                                                    color: Theme.of(context).colorScheme.tertiary,
-                                                    size: 20,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
+                                            hungarianReferences(bibleCurrentHu, chap, index, context)
                                         ],
                                       ),
                                     ),
@@ -443,6 +387,7 @@ class _PassagePageState extends State<PassagePage> {
                       },
                     ),
                   ] else ...[
+                    // English based list view
                     ListView.builder(
                       // To remember scroll position
                       key: PageStorageKey(chap.toString()),
@@ -705,72 +650,7 @@ class _PassagePageState extends State<PassagePage> {
                                               ),
                                             ),
                                             if (bibleCurrentHu["$chap"][index]["ref"] != null)
-                                              Positioned(
-                                                right: 0.0,
-                                                bottom: 0.0,
-                                                child: SizedBox(
-                                                  width: 38,
-                                                  height: 38,
-                                                  child: IconButton(
-                                                    onPressed: () {
-                                                      print("${bibleCurrentHu["$chap"][index]["ref"]}");
-
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            List refList = bibleCurrentHu["$chap"][index]["ref"];
-                                                            return AlertDialog(
-                                                              backgroundColor: Theme.of(context).colorScheme.background,
-                                                              title: Text(
-                                                                bibleCurrentHu["$chap"][index]["ref"].length > 1
-                                                                    ? "Hivatkozások"
-                                                                    : "Hivatkozás",
-                                                                style: Theme.of(context).textTheme.headline5,
-                                                              ),
-                                                              content: SingleChildScrollView(
-                                                                child: Column(
-                                                                  mainAxisSize: MainAxisSize.min,
-                                                                  children: [
-                                                                    for (var element in refList)
-                                                                      SizedBox(
-                                                                        height: 35.0,
-                                                                        child: TextButton(
-                                                                          style: TextButton.styleFrom(
-                                                                            padding: EdgeInsets.all(0.0),
-                                                                          ),
-                                                                          onPressed: () {
-                                                                            print(element);
-                                                                          },
-                                                                          child: Row(
-                                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.center,
-                                                                            children: [
-                                                                              // Icon(Icons.arrow_drop_down),
-                                                                              Text(
-                                                                                "$element 🔻",
-                                                                                style: Theme.of(context)
-                                                                                    .textTheme
-                                                                                    .bodyText1,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            );
-                                                          });
-                                                    },
-                                                    icon: Icon(
-                                                      Icons.library_books,
-                                                      color: Theme.of(context).colorScheme.tertiary,
-                                                      size: 20,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
+                                              hungarianReferences(bibleCurrentHu, chap, index, context)
                                           ],
                                         ),
                                       ),
@@ -862,6 +742,201 @@ class _PassagePageState extends State<PassagePage> {
                 }
               });
             },
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Hungarian references with their functions
+  Positioned hungarianReferences(bibleCurrentHu, int chap, int index, BuildContext context) {
+    return Positioned(
+      right: 0.0,
+      bottom: 0.0,
+      child: SizedBox(
+        width: 38,
+        height: 38,
+        child: IconButton(
+          onPressed: () {
+            print("${bibleCurrentHu["$chap"][index]["ref"]}");
+            showDialog(
+                context: context,
+                builder: (context) {
+                  List refList = bibleCurrentHu["$chap"][index]["ref"];
+                  return AlertDialog(
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    title: Text(
+                      bibleCurrentHu["$chap"][index]["ref"].length > 1 ? "Hivatkozások" : "Hivatkozás",
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                    content: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (var element in refList)
+                            SizedBox(
+                              height: 35.0,
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.all(0.0),
+                                ),
+                                onPressed: () {
+// Print preview of the references #############################
+                                  Navigator.pop(context);
+                                  List prepareRef = element.split(" ");
+                                  List prepareRef1 = prepareRef[1].split(",");
+                                  String refBook = prepareRef[0];
+                                  String refChapter = prepareRef1[0];
+                                  String prepareVerse = prepareRef1[1];
+                                  List verseList = [];
+                                  if (prepareVerse.contains(".")) {
+                                    List verseList1 = prepareRef1[1].split(".");
+                                    List verseList2 = [];
+                                    for (var element in verseList1) {
+                                      if (element.contains("-")) {
+                                        verseList2 = element.split("-");
+                                        List verseList3 = [];
+                                        for (var i = int.parse(verseList2[0]); i <= int.parse(verseList2[1]); i++) {
+                                          verseList3.add(i.toString());
+                                        }
+                                        for (var element in verseList3) {
+                                          verseList.add(element);
+                                        }
+                                      } else {
+                                        verseList.add(element);
+                                      }
+                                    }
+                                  } else if (prepareVerse.contains("-")) {
+                                    List verseList2 = prepareRef1[1].split("-");
+                                    List verseList3 = [];
+                                    for (var i = int.parse(verseList2[0]); i <= int.parse(verseList2[1]); i++) {
+                                      verseList3.add(i.toString());
+                                    }
+                                    verseList = verseList3;
+                                  } else {
+                                    verseList.add(prepareVerse);
+                                  }
+
+                                  String refOldOrNew = bookList[refBook]["testament"];
+                                  String refBookName = bookList[refBook]["refName"];
+                                  String refBookNameFull = bookList[refBook]["fullName"];
+                                  // print(bookList);
+
+                                  print("Book: $refBookName");
+                                  print("Testament: $refOldOrNew");
+                                  print("Chapter: $refChapter");
+                                  print("Verses: $verseList");
+
+                                  // print(widget.bible[refOldOrNew][refBookName]
+                                  //     ["chapters_hu"][refChapter]);
+
+                                  int refBookLength = widget.bible[refOldOrNew][refBookName]["chapters_hu"].length;
+
+                                  List refWholeChapter =
+                                      widget.bible[refOldOrNew][refBookName]["chapters_hu"][refChapter];
+                                  List finalVersList = [];
+                                  for (var element in refWholeChapter) {
+                                    if (verseList.contains(element["num"])) {
+                                      String verseCapitalized = element["text_hu"];
+                                      finalVersList.add(
+                                          {"num": element["num"], "verse": verseCapitalized.capitalizeFirstForCopy()});
+                                    }
+                                  }
+                                  print(finalVersList);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        backgroundColor: Theme.of(context).colorScheme.background,
+                                        title: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                "$refBookNameFull $refChapter",
+                                                style: Theme.of(context).textTheme.headline5,
+                                              ),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+// Jump from ref to Passage ###############################################
+                                                print("Continue");
+
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => PassagePage(
+                                                      appBarTitle: "$refBookNameFull $refChapter",
+                                                      chapter: refChapter,
+                                                      bible: widget.bible,
+                                                      oldOrNew: refOldOrNew,
+                                                      bookRef: refBookName,
+                                                      language: "chapters_hu",
+                                                      chapterSum: refBookLength,
+                                                      verse: int.parse(verseList[0]),
+                                                      verseSum: refWholeChapter.length,
+                                                      bookList: widget.bookList,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              icon: Icon(
+                                                Icons.arrow_circle_right_outlined,
+                                                color: Theme.of(context).colorScheme.tertiary,
+                                                size: 30.0,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        content: SingleChildScrollView(
+                                          child: Column(
+                                            children: [
+                                              for (element in finalVersList)
+                                                Padding(
+                                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                                  child: RichText(
+                                                    text: TextSpan(children: [
+                                                      TextSpan(
+                                                        text: "${element["num"]} ",
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                      ),
+                                                      TextSpan(
+                                                        text: "${element["verse"]}",
+                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                      ),
+                                                    ]),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // Icon(Icons.arrow_drop_down),
+                                    Text(
+                                      "$element 🔻",
+                                      style: Theme.of(context).textTheme.bodyText1,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                });
+          },
+          icon: Icon(
+            Icons.library_books,
+            color: Theme.of(context).colorScheme.tertiary,
+            size: 20,
           ),
         ),
       ),

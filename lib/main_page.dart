@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 List oldTestament = [];
 List newTestament = [];
+var bookList = {};
 String bookRef = "GEN";
 String oldOrNew = "old";
 String bookNameHu = "1 Mózes";
@@ -37,11 +38,14 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   Future<void> bookListJson() async {
     final String response = await rootBundle.loadString('data/book_list.json');
     final data = await json.decode(response);
+
     for (var i = 0; i < 39; i++) {
       oldTestament.add(data[i]);
+      bookList[data[i][2]] = {"refName": data[i][0], "testament": "old", "fullName": data[i][3]};
     }
     for (var i = 39; i < 66; i++) {
       newTestament.add(data[i]);
+      bookList[data[i][2]] = {"refName": data[i][0], "testament": "new", "fullName": data[i][3]};
     }
 
     setState(() {
@@ -277,73 +281,6 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   }
 }
 
-class VerseList extends StatefulWidget {
-  const VerseList({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<VerseList> createState() => _VerseListState();
-}
-
-// Delete VerseList and put into ChapterList.
-// Delete Vers tab.
-class _VerseListState extends State<VerseList> {
-  int verseSum = int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Wrap(
-        children: [
-          for (var i = 1; i <= verseSum; i++)
-            Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: SizedBox(
-                height: 50,
-                width: 60,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: verse == i ? Theme.of(context).cardColor : null,
-                  ),
-                  onPressed: () {
-                    print(bibleJson[oldOrNew][bookRef][language]["$chapter"].last);
-
-                    verse = i;
-                    print(verse);
-                    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
-                    print("Verse $i was clicked!");
-                    updateTitle();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PassagePage(
-                            appBarTitle: appBarTitle,
-                            chapter: "$chapter",
-                            bible: bibleJson,
-                            oldOrNew: oldOrNew,
-                            bookRef: bookRef,
-                            language: language,
-                            chapterSum: totalChapter.length,
-                            verse: verse,
-                            verseSum: verseSum,
-                          ),
-                        ));
-                  },
-                  child: Text(
-                    "$i",
-                    style: TextStyle(
-                      fontSize: 25,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
 class ChapterList extends StatefulWidget {
   const ChapterList({
     Key? key,
@@ -378,6 +315,73 @@ class _ChapterListState extends State<ChapterList> {
 
                     print("Chapter $i is selected");
                     tabController.index = 2;
+                  },
+                  child: Text(
+                    "$i",
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class VerseList extends StatefulWidget {
+  const VerseList({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<VerseList> createState() => _VerseListState();
+}
+
+class _VerseListState extends State<VerseList> {
+  int verseSum = int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Wrap(
+        children: [
+          for (var i = 1; i <= verseSum; i++)
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: SizedBox(
+                height: 50,
+                width: 60,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: verse == i ? Theme.of(context).cardColor : null,
+                  ),
+                  onPressed: () {
+                    print(bibleJson[oldOrNew][bookRef][language]["$chapter"].last);
+
+                    verse = i;
+                    print(verse);
+                    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
+                    print("Verse $i was clicked!");
+                    updateTitle();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PassagePage(
+                          appBarTitle: appBarTitle,
+                          chapter: "$chapter",
+                          bible: bibleJson,
+                          oldOrNew: oldOrNew,
+                          bookRef: bookRef,
+                          language: language,
+                          chapterSum: totalChapter.length,
+                          verse: verse,
+                          verseSum: verseSum,
+                          bookList: bookList,
+                        ),
+                      ),
+                    );
                   },
                   child: Text(
                     "$i",
