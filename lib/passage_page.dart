@@ -45,8 +45,7 @@ class _PassagePageState extends State<PassagePage> {
     print("Current Page: " + page.toString());
     widget.chapter = (page + 1).toString();
     setState(() {
-      widget.appBarTitle =
-          "${widget.bible[widget.oldOrNew][widget.bookRef]["short_hu"]} ${widget.chapter}";
+      widget.appBarTitle = "${widget.bible[widget.oldOrNew][widget.bookRef]["short_hu"]} ${widget.chapter}";
     });
     widget.verse = 1;
   }
@@ -64,8 +63,7 @@ class _PassagePageState extends State<PassagePage> {
   void initState() {
     super.initState();
     itemController = AutoScrollController(
-        viewportBoundaryGetter: () =>
-            Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+        viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scroolToIndex();
@@ -74,10 +72,8 @@ class _PassagePageState extends State<PassagePage> {
 
   @override
   Widget build(BuildContext context) {
-    var bibleCurrentHu =
-        widget.bible[widget.oldOrNew][widget.bookRef]["chapters_hu"];
-    var bibleCurrentEn =
-        widget.bible[widget.oldOrNew][widget.bookRef]["chapters_eng"];
+    var bibleCurrentHu = widget.bible[widget.oldOrNew][widget.bookRef]["chapters_hu"];
+    var bibleCurrentEn = widget.bible[widget.oldOrNew][widget.bookRef]["chapters_eng"];
     print("chapter sum is ====> ${widget.chapterSum}");
     print("bibleCurrent is ====> $bibleCurrentHu");
 
@@ -106,8 +102,7 @@ class _PassagePageState extends State<PassagePage> {
               onPageChanged: _onPageViewChange,
               children: [
                 for (int chap = 1; chap <= widget.chapterSum; chap++)
-                  if (bibleCurrentHu["$chap"].length >
-                      bibleCurrentEn["$chap"].length) ...[
+                  if (bibleCurrentHu["$chap"].length > bibleCurrentEn["$chap"].length) ...[
                     ListView.builder(
                       // To remember scroll position
                       key: PageStorageKey(chap.toString()),
@@ -117,32 +112,27 @@ class _PassagePageState extends State<PassagePage> {
                       itemBuilder: (context, index) {
                         // Chapter titles
                         if (bibleCurrentHu["$chap"][index]["num"] == "Title") {
-                          if ('$chap. fejezet' !=
-                              '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
+                          if ('$chap. fejezet' != '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
                             return Column(
                               children: [
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? true : false,
+                                  visible: language == "chapters_hu" ? true : false,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
+                                      style: Theme.of(context).textTheme.headline5,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? false : true,
+                                  visible: language == "chapters_hu" ? false : true,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       'Chapter $chap',
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
+                                      style: Theme.of(context).textTheme.headline5,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -154,27 +144,23 @@ class _PassagePageState extends State<PassagePage> {
                             return Column(
                               children: [
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? true : false,
+                                  visible: language == "chapters_hu" ? true : false,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       '$chap. fejezet',
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
+                                      style: Theme.of(context).textTheme.headline5,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? false : true,
+                                  visible: language == "chapters_hu" ? false : true,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       'Chapter $chap',
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
+                                      style: Theme.of(context).textTheme.headline5,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -182,50 +168,41 @@ class _PassagePageState extends State<PassagePage> {
                               ],
                             );
                           }
-                        } else if (bibleCurrentHu["$chap"][index]["num"] ==
-                            "Subtitle") {
+                        } else if (bibleCurrentHu["$chap"][index]["num"] == "Subtitle") {
                           indexMinus++;
                           // Subtitle and english verse
                           return Column(
-                            crossAxisAlignment: language == "chapters_hu"
-                                ? CrossAxisAlignment.center
-                                : CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                                language == "chapters_hu" ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                             children: [
                               // Hungarian part
                               Visibility(
-                                visible:
-                                    language == "chapters_hu" ? true : false,
+                                visible: language == "chapters_hu" ? true : false,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     bibleCurrentHu["$chap"][index]["text_hu"],
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
+                                    style: Theme.of(context).textTheme.headline5,
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
                               ),
                               if (index <= bibleCurrentEn["$chap"].length)
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? false : true,
+                                  visible: language == "chapters_hu" ? false : true,
                                   // English part
                                   child: GestureDetector(
                                     onDoubleTap: () async {
                                       // Copy selected text to clipboard
                                       await Clipboard.setData(
                                         ClipboardData(
-                                          text:
-                                              "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                  .capitalizeFirstForCopy(),
+                                          text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                              .capitalizeFirstForCopy(),
                                         ),
                                       ).then((_) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
+                                        ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .tertiary,
+                                            backgroundColor: Theme.of(context).colorScheme.tertiary,
                                             content: Text(
                                               "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (🇺🇸)",
                                               style: TextStyle(
@@ -243,27 +220,18 @@ class _PassagePageState extends State<PassagePage> {
                                       child: Stack(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 30.0,
-                                                right: 30.0,
-                                                top: 8.0,
-                                                bottom: 8.0),
+                                            padding:
+                                                const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                             child: RichText(
                                               text: TextSpan(children: [
                                                 TextSpan(
-                                                  text:
-                                                      "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText2,
+                                                  text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
+                                                  style: Theme.of(context).textTheme.bodyText2,
                                                 ),
                                                 TextSpan(
-                                                  text:
-                                                      "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                          .capitalizeFirst(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1,
+                                                  text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                      .capitalizeFirst(),
+                                                  style: Theme.of(context).textTheme.bodyText1,
                                                 ),
                                               ]),
                                             ),
@@ -279,9 +247,7 @@ class _PassagePageState extends State<PassagePage> {
                           // Only verses
 
                           return AutoScrollTag(
-                            key: ValueKey(int.parse(
-                                    bibleCurrentHu["$chap"][index]["num"]) -
-                                indexMinus),
+                            key: ValueKey(int.parse(bibleCurrentHu["$chap"][index]["num"]) - indexMinus),
                             controller: itemController,
                             index: index - indexMinus,
                             child: Column(
@@ -289,24 +255,18 @@ class _PassagePageState extends State<PassagePage> {
                               children: [
                                 // Hungarian part
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? true : false,
+                                  visible: language == "chapters_hu" ? true : false,
                                   child: GestureDetector(
                                     onDoubleTap: () async {
                                       // Copy selected text to clipboard
                                       await Clipboard.setData(
                                         ClipboardData(
-                                          text:
-                                              "${bibleCurrentHu["$chap"][index]["text_hu"]}"
-                                                  .capitalizeFirstForCopy(),
+                                          text: "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirstForCopy(),
                                         ),
                                       ).then((_) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
+                                        ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .tertiary,
+                                            backgroundColor: Theme.of(context).colorScheme.tertiary,
                                             content: Text(
                                               "${widget.appBarTitle}:${bibleCurrentHu["$chap"][index]["num"]} - Másolva (🇭🇺)",
                                               style: TextStyle(
@@ -324,34 +284,23 @@ class _PassagePageState extends State<PassagePage> {
                                       child: Stack(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 30.0,
-                                                right: 30.0,
-                                                top: 8.0,
-                                                bottom: 8.0),
+                                            padding:
+                                                const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                             child: RichText(
                                               text: TextSpan(children: [
                                                 TextSpan(
-                                                  text:
-                                                      "${bibleCurrentHu["$chap"][index]["num"]}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText2,
+                                                  text: "${bibleCurrentHu["$chap"][index]["num"]}",
+                                                  style: Theme.of(context).textTheme.bodyText2,
                                                 ),
                                                 TextSpan(
                                                   text:
-                                                      "${bibleCurrentHu["$chap"][index]["text_hu"]}"
-                                                          .capitalizeFirst(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1,
+                                                      "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirst(),
+                                                  style: Theme.of(context).textTheme.bodyText1,
                                                 ),
                                               ]),
                                             ),
                                           ),
-                                          if (bibleCurrentHu["$chap"][index]
-                                                  ["ref"] !=
-                                              null)
+                                          if (bibleCurrentHu["$chap"][index]["ref"] != null)
                                             Positioned(
                                               right: 0.0,
                                               bottom: 0.0,
@@ -361,13 +310,57 @@ class _PassagePageState extends State<PassagePage> {
                                                 child: IconButton(
                                                   onPressed: () {
                                                     print(
-                                                        "${bibleCurrentHu["$chap"][index]["ref"]}");
+                                                      "${bibleCurrentHu["$chap"][index]["ref"]}",
+                                                    );
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          List refList = bibleCurrentHu["$chap"][index]["ref"];
+                                                          return AlertDialog(
+                                                            backgroundColor: Theme.of(context).colorScheme.background,
+                                                            title: Text(
+                                                              bibleCurrentHu["$chap"][index]["ref"].length > 1
+                                                                  ? "Hivatkozások"
+                                                                  : "Hivatkozás",
+                                                              style: Theme.of(context).textTheme.headline5,
+                                                            ),
+                                                            content: SingleChildScrollView(
+                                                              child: Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  for (var element in refList)
+                                                                    SizedBox(
+                                                                      height: 35.0,
+                                                                      child: TextButton(
+                                                                        style: TextButton.styleFrom(
+                                                                          padding: EdgeInsets.all(0.0),
+                                                                        ),
+                                                                        onPressed: () {
+                                                                          print(element);
+                                                                        },
+                                                                        child: Row(
+                                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            // Icon(Icons.arrow_drop_down),
+                                                                            Text(
+                                                                              "$element 🔻",
+                                                                              style:
+                                                                                  Theme.of(context).textTheme.bodyText1,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        });
                                                   },
                                                   icon: Icon(
                                                     Icons.library_books,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .tertiary,
+                                                    color: Theme.of(context).colorScheme.tertiary,
                                                     size: 20,
                                                   ),
                                                 ),
@@ -381,25 +374,19 @@ class _PassagePageState extends State<PassagePage> {
                                 if (index <= bibleCurrentEn["$chap"].length)
                                   // English part
                                   Visibility(
-                                    visible: language == "chapters_hu"
-                                        ? false
-                                        : true,
+                                    visible: language == "chapters_hu" ? false : true,
                                     child: GestureDetector(
                                       onDoubleTap: () async {
                                         // Copy selected text to clipboard
                                         await Clipboard.setData(
                                           ClipboardData(
-                                            text:
-                                                "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                    .capitalizeFirstForCopy(),
+                                            text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                .capitalizeFirstForCopy(),
                                           ),
                                         ).then((_) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .tertiary,
+                                              backgroundColor: Theme.of(context).colorScheme.tertiary,
                                               content: Text(
                                                 "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (🇺🇸)",
                                                 style: TextStyle(
@@ -417,40 +404,25 @@ class _PassagePageState extends State<PassagePage> {
                                         child: Stack(
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 30.0,
-                                                  right: 30.0,
-                                                  top: 8.0,
-                                                  bottom: 8.0),
+                                              padding:
+                                                  const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                               child: RichText(
                                                 text: TextSpan(children: [
-                                                  if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" ==
-                                                      "0")
+                                                  if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" == "0")
                                                     TextSpan(
-                                                      text:
-                                                          "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline6,
+                                                      text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
+                                                      style: Theme.of(context).textTheme.headline6,
                                                     ),
-                                                  if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" !=
-                                                      "0")
+                                                  if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
                                                     TextSpan(
-                                                      text:
-                                                          "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText2,
+                                                      text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
+                                                      style: Theme.of(context).textTheme.bodyText2,
                                                     ),
-                                                  if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" !=
-                                                      "0")
+                                                  if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
                                                     TextSpan(
-                                                      text:
-                                                          "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                              .capitalizeFirst(),
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText1,
+                                                      text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                          .capitalizeFirst(),
+                                                      style: Theme.of(context).textTheme.bodyText1,
                                                     ),
                                                 ]),
                                               ),
@@ -481,32 +453,27 @@ class _PassagePageState extends State<PassagePage> {
                         // Title part
                         if (index < bibleCurrentHu["$chap"].length &&
                             bibleCurrentHu["$chap"][index]["num"] == "Title") {
-                          if ('$chap. fejezet' !=
-                              '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
+                          if ('$chap. fejezet' != '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
                             return Column(
                               children: [
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? true : false,
+                                  visible: language == "chapters_hu" ? true : false,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
+                                      style: Theme.of(context).textTheme.headline5,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? false : true,
+                                  visible: language == "chapters_hu" ? false : true,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       'Chapter $chap',
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
+                                      style: Theme.of(context).textTheme.headline5,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -514,25 +481,19 @@ class _PassagePageState extends State<PassagePage> {
 
                                 // Verse comes
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? false : true,
+                                  visible: language == "chapters_hu" ? false : true,
                                   // English part
                                   child: GestureDetector(
                                     onDoubleTap: () async {
                                       // Copy selected text to clipboard
                                       await Clipboard.setData(
                                         ClipboardData(
-                                          text:
-                                              "${bibleCurrentEn["$chap"][index]["text_en"]}"
-                                                  .capitalizeFirstForCopy(),
+                                          text: "${bibleCurrentEn["$chap"][index]["text_en"]}".capitalizeFirstForCopy(),
                                         ),
                                       ).then((_) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
+                                        ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .tertiary,
+                                            backgroundColor: Theme.of(context).colorScheme.tertiary,
                                             content: Text(
                                               "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index]["num"]} - Másolva (🇺🇸)",
                                               style: TextStyle(
@@ -550,37 +511,24 @@ class _PassagePageState extends State<PassagePage> {
                                       child: Stack(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 30.0,
-                                                right: 30.0,
-                                                top: 8.0,
-                                                bottom: 8.0),
+                                            padding:
+                                                const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                             child: RichText(
                                               text: TextSpan(children: [
-                                                if ("${bibleCurrentEn["$chap"][index]["num"]}" ==
-                                                    "0") ...[
+                                                if ("${bibleCurrentEn["$chap"][index]["num"]}" == "0") ...[
                                                   TextSpan(
-                                                    text:
-                                                        "${bibleCurrentEn["$chap"][index]["text_en"]}",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline6,
+                                                    text: "${bibleCurrentEn["$chap"][index]["text_en"]}",
+                                                    style: Theme.of(context).textTheme.headline6,
                                                   ),
                                                 ] else ...[
                                                   TextSpan(
-                                                    text:
-                                                        "${bibleCurrentEn["$chap"][index]["num"]}",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText2,
+                                                    text: "${bibleCurrentEn["$chap"][index]["num"]}",
+                                                    style: Theme.of(context).textTheme.bodyText2,
                                                   ),
                                                   TextSpan(
-                                                    text:
-                                                        "${bibleCurrentEn["$chap"][index]["text_en"]}"
-                                                            .capitalizeFirst(),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText1,
+                                                    text: "${bibleCurrentEn["$chap"][index]["text_en"]}"
+                                                        .capitalizeFirst(),
+                                                    style: Theme.of(context).textTheme.bodyText1,
                                                   ),
                                                 ]
                                               ]),
@@ -598,27 +546,23 @@ class _PassagePageState extends State<PassagePage> {
                             return Column(
                               children: [
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? true : false,
+                                  visible: language == "chapters_hu" ? true : false,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       '$chap. fejezet',
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
+                                      style: Theme.of(context).textTheme.headline5,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? false : true,
+                                  visible: language == "chapters_hu" ? false : true,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       'Chapter $chap',
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
+                                      style: Theme.of(context).textTheme.headline5,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -627,33 +571,28 @@ class _PassagePageState extends State<PassagePage> {
                             );
                           }
                         } else if (index < bibleCurrentHu["$chap"].length &&
-                            bibleCurrentHu["$chap"][index]["num"] ==
-                                "Subtitle") {
+                            bibleCurrentHu["$chap"][index]["num"] == "Subtitle") {
                           // Subtitle part
                           indexMinus++;
                           return Column(
-                            crossAxisAlignment: language == "chapters_hu"
-                                ? CrossAxisAlignment.center
-                                : CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                                language == "chapters_hu" ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                             children: [
                               if (index <= bibleCurrentHu["$chap"].length)
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? true : false,
+                                  visible: language == "chapters_hu" ? true : false,
                                   // Hungarian part
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       bibleCurrentHu["$chap"][index]["text_hu"],
-                                      style:
-                                          Theme.of(context).textTheme.headline5,
+                                      style: Theme.of(context).textTheme.headline5,
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),
                               Visibility(
-                                visible:
-                                    language == "chapters_hu" ? false : true,
+                                visible: language == "chapters_hu" ? false : true,
                                 // English part
                                 child: GestureDetector(
                                   onDoubleTap: () async {
@@ -661,16 +600,12 @@ class _PassagePageState extends State<PassagePage> {
                                     await Clipboard.setData(
                                       ClipboardData(
                                         text:
-                                            "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                .capitalizeFirstForCopy(),
+                                            "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirstForCopy(),
                                       ),
                                     ).then((_) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                          backgroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .tertiary,
+                                          backgroundColor: Theme.of(context).colorScheme.tertiary,
                                           content: Text(
                                             "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (🇺🇸)",
                                             style: TextStyle(
@@ -688,27 +623,18 @@ class _PassagePageState extends State<PassagePage> {
                                     child: Stack(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 30.0,
-                                              right: 30.0,
-                                              top: 8.0,
-                                              bottom: 8.0),
+                                          padding:
+                                              const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                           child: RichText(
                                             text: TextSpan(children: [
                                               TextSpan(
-                                                text:
-                                                    "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2,
+                                                text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
+                                                style: Theme.of(context).textTheme.bodyText2,
                                               ),
                                               TextSpan(
-                                                text:
-                                                    "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                        .capitalizeFirst(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1,
+                                                text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                    .capitalizeFirst(),
+                                                style: Theme.of(context).textTheme.bodyText1,
                                               ),
                                             ]),
                                           ),
@@ -723,8 +649,7 @@ class _PassagePageState extends State<PassagePage> {
                         } else {
                           // Only verse
                           return AutoScrollTag(
-                            key: ValueKey(int.parse(
-                                bibleCurrentEn["$chap"][index]["num"])),
+                            key: ValueKey(int.parse(bibleCurrentEn["$chap"][index]["num"])),
                             controller: itemController,
                             index: index,
                             child: Column(
@@ -732,9 +657,7 @@ class _PassagePageState extends State<PassagePage> {
                               children: [
                                 if (index < bibleCurrentHu["$chap"].length)
                                   Visibility(
-                                    visible: language == "chapters_hu"
-                                        ? true
-                                        : false,
+                                    visible: language == "chapters_hu" ? true : false,
                                     // Hungarian part
                                     child: GestureDetector(
                                       onDoubleTap: () async {
@@ -742,16 +665,12 @@ class _PassagePageState extends State<PassagePage> {
                                         await Clipboard.setData(
                                           ClipboardData(
                                             text:
-                                                "${bibleCurrentHu["$chap"][index]["text_hu"]}"
-                                                    .capitalizeFirstForCopy(),
+                                                "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirstForCopy(),
                                           ),
                                         ).then((_) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
-                                              backgroundColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .tertiary,
+                                              backgroundColor: Theme.of(context).colorScheme.tertiary,
                                               content: Text(
                                                 "${widget.appBarTitle}:${bibleCurrentHu["$chap"][index]["num"]} - Másolva (🇭🇺)",
                                                 style: TextStyle(
@@ -769,34 +688,23 @@ class _PassagePageState extends State<PassagePage> {
                                         child: Stack(
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 30.0,
-                                                  right: 30.0,
-                                                  top: 8.0,
-                                                  bottom: 8.0),
+                                              padding:
+                                                  const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                               child: RichText(
                                                 text: TextSpan(children: [
                                                   TextSpan(
-                                                    text:
-                                                        "${bibleCurrentHu["$chap"][index]["num"]}",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText2,
+                                                    text: "${bibleCurrentHu["$chap"][index]["num"]}",
+                                                    style: Theme.of(context).textTheme.bodyText2,
                                                   ),
                                                   TextSpan(
-                                                    text:
-                                                        "${bibleCurrentHu["$chap"][index]["text_hu"]}"
-                                                            .capitalizeFirst(),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText1,
+                                                    text: "${bibleCurrentHu["$chap"][index]["text_hu"]}"
+                                                        .capitalizeFirst(),
+                                                    style: Theme.of(context).textTheme.bodyText1,
                                                   ),
                                                 ]),
                                               ),
                                             ),
-                                            if (bibleCurrentHu["$chap"][index]
-                                                    ["ref"] !=
-                                                null)
+                                            if (bibleCurrentHu["$chap"][index]["ref"] != null)
                                               Positioned(
                                                 right: 0.0,
                                                 bottom: 0.0,
@@ -805,14 +713,59 @@ class _PassagePageState extends State<PassagePage> {
                                                   height: 38,
                                                   child: IconButton(
                                                     onPressed: () {
-                                                      print(
-                                                          "${bibleCurrentHu["$chap"][index]["ref"]}");
+                                                      print("${bibleCurrentHu["$chap"][index]["ref"]}");
+
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            List refList = bibleCurrentHu["$chap"][index]["ref"];
+                                                            return AlertDialog(
+                                                              backgroundColor: Theme.of(context).colorScheme.background,
+                                                              title: Text(
+                                                                bibleCurrentHu["$chap"][index]["ref"].length > 1
+                                                                    ? "Hivatkozások"
+                                                                    : "Hivatkozás",
+                                                                style: Theme.of(context).textTheme.headline5,
+                                                              ),
+                                                              content: SingleChildScrollView(
+                                                                child: Column(
+                                                                  mainAxisSize: MainAxisSize.min,
+                                                                  children: [
+                                                                    for (var element in refList)
+                                                                      SizedBox(
+                                                                        height: 35.0,
+                                                                        child: TextButton(
+                                                                          style: TextButton.styleFrom(
+                                                                            padding: EdgeInsets.all(0.0),
+                                                                          ),
+                                                                          onPressed: () {
+                                                                            print(element);
+                                                                          },
+                                                                          child: Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.center,
+                                                                            children: [
+                                                                              // Icon(Icons.arrow_drop_down),
+                                                                              Text(
+                                                                                "$element 🔻",
+                                                                                style: Theme.of(context)
+                                                                                    .textTheme
+                                                                                    .bodyText1,
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          });
                                                     },
                                                     icon: Icon(
                                                       Icons.library_books,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .tertiary,
+                                                      color: Theme.of(context).colorScheme.tertiary,
                                                       size: 20,
                                                     ),
                                                   ),
@@ -824,25 +777,19 @@ class _PassagePageState extends State<PassagePage> {
                                     ),
                                   ),
                                 Visibility(
-                                  visible:
-                                      language == "chapters_hu" ? false : true,
+                                  visible: language == "chapters_hu" ? false : true,
                                   // English part
                                   child: GestureDetector(
                                     onDoubleTap: () async {
                                       // Copy selected text to clipboard
                                       await Clipboard.setData(
                                         ClipboardData(
-                                          text:
-                                              "${bibleCurrentEn["$chap"][index]["text_en"]}"
-                                                  .capitalizeFirstForCopy(),
+                                          text: "${bibleCurrentEn["$chap"][index]["text_en"]}".capitalizeFirstForCopy(),
                                         ),
                                       ).then((_) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
+                                        ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .tertiary,
+                                            backgroundColor: Theme.of(context).colorScheme.tertiary,
                                             content: Text(
                                               "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index]["num"]} - Másolva (🇺🇸)",
                                               style: TextStyle(
@@ -860,37 +807,24 @@ class _PassagePageState extends State<PassagePage> {
                                       child: Stack(
                                         children: [
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 30.0,
-                                                right: 30.0,
-                                                top: 8.0,
-                                                bottom: 8.0),
+                                            padding:
+                                                const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                             child: RichText(
                                               text: TextSpan(children: [
-                                                if ("${bibleCurrentEn["$chap"][index]["num"]}" ==
-                                                    "0") ...[
+                                                if ("${bibleCurrentEn["$chap"][index]["num"]}" == "0") ...[
                                                   TextSpan(
-                                                    text:
-                                                        "${bibleCurrentEn["$chap"][index]["text_en"]}",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline6,
+                                                    text: "${bibleCurrentEn["$chap"][index]["text_en"]}",
+                                                    style: Theme.of(context).textTheme.headline6,
                                                   ),
                                                 ] else ...[
                                                   TextSpan(
-                                                    text:
-                                                        "${bibleCurrentEn["$chap"][index]["num"]}",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText2,
+                                                    text: "${bibleCurrentEn["$chap"][index]["num"]}",
+                                                    style: Theme.of(context).textTheme.bodyText2,
                                                   ),
                                                   TextSpan(
-                                                    text:
-                                                        "${bibleCurrentEn["$chap"][index]["text_en"]}"
-                                                            .capitalizeFirst(),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText1,
+                                                    text: "${bibleCurrentEn["$chap"][index]["text_en"]}"
+                                                        .capitalizeFirst(),
+                                                    style: Theme.of(context).textTheme.bodyText1,
                                                   ),
                                                 ]
                                               ]),
@@ -914,8 +848,7 @@ class _PassagePageState extends State<PassagePage> {
                   ],
               ]),
           floatingActionButton: FloatingActionButton(
-            backgroundColor:
-                Theme.of(context).floatingActionButtonTheme.backgroundColor,
+            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
             child: Text(
               language == "chapters_hu" ? "🇺🇲" : "🇭🇺",
               style: TextStyle(fontSize: 35.0),

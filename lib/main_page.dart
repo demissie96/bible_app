@@ -15,6 +15,7 @@ String language = "chapters_hu";
 int chapter = 1;
 List totalChapter = [];
 int verse = 1;
+
 String appBarTitle = "Könyvek";
 late TabController tabController;
 late Function updateTitle;
@@ -25,8 +26,7 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage>
-    with SingleTickerProviderStateMixin {
+class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin {
   final scrollDirection = Axis.vertical;
 
   JumpOneTab() {
@@ -152,22 +152,21 @@ class _MainPageState extends State<MainPage>
                                           right: 10.0,
                                         ),
                                         child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            padding: MaterialStateProperty.all<
-                                                EdgeInsets>(
-                                              EdgeInsets.all(13),
-                                            ),
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.all(13.0),
+                                            backgroundColor: bookNameHu == oldTestament[index][3]
+                                                ? Theme.of(context).cardColor
+                                                : null,
                                           ),
                                           key: ValueKey(oldTestament[index][0]),
                                           onPressed: () {
+                                            tabController.index = 1;
                                             oldOrNew = "old";
                                             print(oldTestament[index][0]);
                                             bookRef = oldTestament[index][0];
                                             bookNameHu = oldTestament[index][3];
                                             totalChapter = [];
-                                            for (var i = 1;
-                                                i <= oldTestament[index][1];
-                                                i++) {
+                                            for (var i = 1; i <= oldTestament[index][1]; i++) {
                                               totalChapter.add(i);
                                             }
 
@@ -175,14 +174,11 @@ class _MainPageState extends State<MainPage>
                                             setState(() {
                                               appBarTitle = bookNameHu;
                                             });
-                                            tabController.index = 1;
                                           },
                                           child: Text(
                                             oldTestament[index][3],
                                             style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .appBarTheme
-                                                  .foregroundColor,
+                                              color: Theme.of(context).appBarTheme.foregroundColor,
                                             ),
                                           ),
                                         ),
@@ -206,40 +202,36 @@ class _MainPageState extends State<MainPage>
                                     itemCount: newTestament.length,
                                     itemBuilder: (context, index) {
                                       return Container(
-                                        margin: const EdgeInsets.only(
-                                            left: 10.0, right: 10.0),
+                                        margin: const EdgeInsets.only(left: 10.0, right: 10.0),
                                         child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            padding: MaterialStateProperty.all<
-                                                EdgeInsets>(
-                                              EdgeInsets.all(13),
-                                            ),
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.all(13.0),
+                                            backgroundColor: bookNameHu == newTestament[index][3]
+                                                ? Theme.of(context).cardColor
+                                                : null,
                                           ),
                                           key: ValueKey(newTestament[index][0]),
                                           onPressed: () {
+                                            tabController.index = 1;
                                             oldOrNew = "new";
-                                            print(newTestament[index][0]);
+                                            print(newTestament[index][3]);
                                             bookRef = newTestament[index][0];
-                                            bookNameHu = newTestament[index][3];
+
                                             totalChapter = [];
-                                            for (var i = 1;
-                                                i <= newTestament[index][1];
-                                                i++) {
+                                            for (var i = 1; i <= newTestament[index][1]; i++) {
                                               totalChapter.add(i);
                                             }
 
                                             print(totalChapter.length);
                                             setState(() {
+                                              bookNameHu = newTestament[index][3];
                                               appBarTitle = bookNameHu;
                                             });
-                                            tabController.index = 1;
                                           },
                                           child: Text(
                                             newTestament[index][3],
                                             style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .appBarTheme
-                                                  .foregroundColor,
+                                              color: Theme.of(context).appBarTheme.foregroundColor,
                                             ),
                                           ),
                                         ),
@@ -294,8 +286,7 @@ class VerseList extends StatefulWidget {
 // Delete VerseList and put into ChapterList.
 // Delete Vers tab.
 class _VerseListState extends State<VerseList> {
-  int verseSum =
-      int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
+  int verseSum = int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -308,13 +299,13 @@ class _VerseListState extends State<VerseList> {
                 height: 50,
                 width: 60,
                 child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: verse == i ? Theme.of(context).cardColor : null,
+                  ),
                   onPressed: () {
-                    print(bibleJson[oldOrNew][bookRef][language]["$chapter"]
-                        .last);
+                    print(bibleJson[oldOrNew][bookRef][language]["$chapter"].last);
 
-                    verse = int.parse(bibleJson[oldOrNew][bookRef][language]
-                            ["$chapter"]
-                        .last["num"]);
+                    verse = i;
                     print(verse);
                     // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
                     print("Verse $i was clicked!");
@@ -330,7 +321,7 @@ class _VerseListState extends State<VerseList> {
                             bookRef: bookRef,
                             language: language,
                             chapterSum: totalChapter.length,
-                            verse: i,
+                            verse: verse,
                             verseSum: verseSum,
                           ),
                         ));
@@ -372,6 +363,9 @@ class _ChapterListState extends State<ChapterList> {
                 height: 50,
                 width: 60,
                 child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: chapter == i ? Theme.of(context).cardColor : null,
+                  ),
                   onPressed: () {
                     chapter = i;
 

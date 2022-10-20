@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
           tertiary: Colors.red,
           background: Colors.white,
         ),
+        cardColor: Color.fromARGB(255, 15, 52, 96),
         tabBarTheme: TabBarTheme(
           labelColor: Colors.white,
           labelStyle: TextStyle(fontFamily: "Roboto Slab"),
@@ -90,6 +91,7 @@ class MyApp extends StatelessWidget {
           tertiary: Color.fromARGB(255, 233, 69, 96),
           background: Color.fromARGB(255, 22, 33, 62),
         ),
+        cardColor: Color.fromARGB(255, 233, 69, 96),
         tabBarTheme: TabBarTheme(
           labelColor: Colors.white,
           labelStyle: TextStyle(fontFamily: "Roboto Slab"),
