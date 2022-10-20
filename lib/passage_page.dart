@@ -796,6 +796,7 @@ class _PassagePageState extends State<PassagePage> {
                                     List verseList2 = [];
                                     for (var element in verseList1) {
                                       if (element.contains("-")) {
+                                        // Example (1Sám 1,2-5.19)
                                         verseList2 = element.split("-");
                                         List verseList3 = [];
                                         for (var i = int.parse(verseList2[0]); i <= int.parse(verseList2[1]); i++) {

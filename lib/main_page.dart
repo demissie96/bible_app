@@ -320,6 +320,7 @@ class _ChapterListState extends State<ChapterList> {
                     "$i",
                     style: TextStyle(
                       fontSize: 25,
+                      color: chapter == i ? Colors.white : null,
                     ),
                   ),
                 ),
@@ -387,6 +388,7 @@ class _VerseListState extends State<VerseList> {
                     "$i",
                     style: TextStyle(
                       fontSize: 25,
+                      color: verse == i ? Colors.white : null,
                     ),
                   ),
                 ),
