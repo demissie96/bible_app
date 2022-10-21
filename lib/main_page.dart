@@ -79,8 +79,10 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         Future.delayed(Duration(milliseconds: 500), () {
           Navigator.of(context).pop();
         });
-        return Center(
-          child: CircularProgressIndicator(),
+        return AbsorbPointer(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
       },
     );
@@ -109,8 +111,10 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         Future.delayed(Duration(milliseconds: 500), () {
           Navigator.of(context).pop();
         });
-        return Center(
-          child: CircularProgressIndicator(),
+        return AbsorbPointer(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
       },
     );
@@ -328,8 +332,10 @@ class _ChapterListState extends State<ChapterList> {
         Future.delayed(Duration(milliseconds: 500), () {
           Navigator.of(context).pop();
         });
-        return Center(
-          child: CircularProgressIndicator(),
+        return AbsorbPointer(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
       },
     );
@@ -394,8 +400,10 @@ class _VerseListState extends State<VerseList> {
         Future.delayed(Duration(milliseconds: 500), () {
           Navigator.of(context).pop();
         });
-        return Center(
-          child: CircularProgressIndicator(),
+        return AbsorbPointer(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
       },
     );
