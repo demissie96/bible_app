@@ -72,6 +72,66 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     appBarTitle = "Könyvek";
   }
 
+  Future chooseBookOld(index) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          Navigator.of(context).pop();
+        });
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+    tabController.index = 1;
+    oldOrNew = "old";
+    print(oldTestament[index][0]);
+    bookRef = oldTestament[index][0];
+    bookNameHu = oldTestament[index][3];
+    chapter = 1;
+    verse = 1;
+    totalChapter = [];
+    for (var i = 1; i <= oldTestament[index][1]; i++) {
+      totalChapter.add(i);
+    }
+
+    print(totalChapter.length);
+    setState(() {
+      appBarTitle = "$bookNameHu $chapter";
+    });
+  }
+
+  Future chooseBookNew(index) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          Navigator.of(context).pop();
+        });
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+    tabController.index = 1;
+    oldOrNew = "new";
+    print(newTestament[index][3]);
+    bookRef = newTestament[index][0];
+    bookNameHu = newTestament[index][3];
+    chapter = 1;
+    verse = 1;
+    totalChapter = [];
+    for (var i = 1; i <= newTestament[index][1]; i++) {
+      totalChapter.add(i);
+    }
+
+    print(totalChapter.length);
+    setState(() {
+      appBarTitle = "$bookNameHu $chapter";
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -164,22 +224,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                           ),
                                           key: ValueKey(oldTestament[index][0]),
                                           onPressed: () {
-                                            tabController.index = 1;
-                                            oldOrNew = "old";
-                                            print(oldTestament[index][0]);
-                                            bookRef = oldTestament[index][0];
-                                            bookNameHu = oldTestament[index][3];
-                                            chapter = 1;
-                                            verse = 1;
-                                            totalChapter = [];
-                                            for (var i = 1; i <= oldTestament[index][1]; i++) {
-                                              totalChapter.add(i);
-                                            }
-
-                                            print(totalChapter.length);
-                                            setState(() {
-                                              appBarTitle = "$bookNameHu $chapter";
-                                            });
+                                            chooseBookOld(index);
                                           },
                                           child: Text(
                                             oldTestament[index][3],
@@ -218,22 +263,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                           ),
                                           key: ValueKey(newTestament[index][0]),
                                           onPressed: () {
-                                            tabController.index = 1;
-                                            oldOrNew = "new";
-                                            print(newTestament[index][3]);
-                                            bookRef = newTestament[index][0];
-                                            bookNameHu = newTestament[index][3];
-                                            chapter = 1;
-                                            verse = 1;
-                                            totalChapter = [];
-                                            for (var i = 1; i <= newTestament[index][1]; i++) {
-                                              totalChapter.add(i);
-                                            }
-
-                                            print(totalChapter.length);
-                                            setState(() {
-                                              appBarTitle = "$bookNameHu $chapter";
-                                            });
+                                            chooseBookNew(index);
                                           },
                                           child: Text(
                                             newTestament[index][3],
@@ -291,6 +321,28 @@ class ChapterList extends StatefulWidget {
 }
 
 class _ChapterListState extends State<ChapterList> {
+  Future chooseChapter(i) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          Navigator.of(context).pop();
+        });
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+    tabController.index = 2;
+    chapter = i;
+
+    appBarTitle = "$bookNameHu $chapter";
+    print(appBarTitle);
+    updateTitle();
+
+    print("Chapter $i is selected");
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -307,14 +359,7 @@ class _ChapterListState extends State<ChapterList> {
                     backgroundColor: chapter == i ? Theme.of(context).cardColor : null,
                   ),
                   onPressed: () {
-                    chapter = i;
-
-                    appBarTitle = "$bookNameHu $chapter";
-                    print(appBarTitle);
-                    updateTitle();
-
-                    print("Chapter $i is selected");
-                    tabController.index = 2;
+                    chooseChapter(i);
                   },
                   child: Text(
                     "$i",
@@ -342,6 +387,45 @@ class VerseList extends StatefulWidget {
 }
 
 class _VerseListState extends State<VerseList> {
+  Future chooseVerse(i) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          Navigator.of(context).pop();
+        });
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    print(bibleJson[oldOrNew][bookRef][language]["$chapter"].last);
+
+    verse = i;
+    print(verse);
+    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
+    print("Verse $i was clicked!");
+    updateTitle();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PassagePage(
+          appBarTitle: appBarTitle,
+          chapter: "$chapter",
+          bible: bibleJson,
+          oldOrNew: oldOrNew,
+          bookRef: bookRef,
+          language: language,
+          chapterSum: totalChapter.length,
+          verse: verse,
+          verseSum: verseSum,
+          bookList: bookList,
+        ),
+      ),
+    );
+  }
+
   int verseSum = int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
   @override
   Widget build(BuildContext context) {
@@ -359,30 +443,7 @@ class _VerseListState extends State<VerseList> {
                     backgroundColor: verse == i ? Theme.of(context).cardColor : null,
                   ),
                   onPressed: () {
-                    print(bibleJson[oldOrNew][bookRef][language]["$chapter"].last);
-
-                    verse = i;
-                    print(verse);
-                    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
-                    print("Verse $i was clicked!");
-                    updateTitle();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PassagePage(
-                          appBarTitle: appBarTitle,
-                          chapter: "$chapter",
-                          bible: bibleJson,
-                          oldOrNew: oldOrNew,
-                          bookRef: bookRef,
-                          language: language,
-                          chapterSum: totalChapter.length,
-                          verse: verse,
-                          verseSum: verseSum,
-                          bookList: bookList,
-                        ),
-                      ),
-                    );
+                    chooseVerse(i);
                   },
                   child: Text(
                     "$i",

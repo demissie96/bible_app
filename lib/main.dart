@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
         ),
         textTheme: const TextTheme(
           bodyText1: TextStyle(
-            color: Color.fromARGB(170, 0, 0, 0),
+            color: Colors.black87,
             fontSize: 20.0,
             fontWeight: FontWeight.normal,
             fontFamily: "Roboto Slab",
