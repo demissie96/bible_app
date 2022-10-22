@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'main_page.dart';
-import 'passage_page.dart';
-import 'search_page.dart';
-import 'settings_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -52,7 +48,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        textTheme: const TextTheme(
+        textTheme: TextTheme(
           bodyText1: TextStyle(
             color: Colors.black87,
             fontSize: 20.0,
@@ -128,7 +124,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        textTheme: const TextTheme(
+        textTheme: TextTheme(
           bodyText1: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.normal,

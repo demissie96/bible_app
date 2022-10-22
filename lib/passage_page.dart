@@ -1,12 +1,11 @@
-import 'dart:io';
-
 import 'package:bible_app/main_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:flutter/services.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import "side_menu.dart";
 import 'extension/string_extension.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PassagePage extends StatefulWidget {
   String appBarTitle;
@@ -51,6 +50,7 @@ class _PassagePageState extends State<PassagePage> {
       widget.appBarTitle = "${widget.bible[widget.oldOrNew][widget.bookRef]["short_hu"]} ${widget.chapter}";
     });
     widget.verse = 1;
+    fontMultiplier();
   }
 
   Future scroolToIndex() async {
@@ -65,9 +65,21 @@ class _PassagePageState extends State<PassagePage> {
     }
   }
 
+  double multiplier = 1.0;
+  Future fontMultiplier() async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      multiplier = prefs.getDouble('multiplier') ?? 1.0;
+    });
+    print("Color multiplier in passage: $multiplier");
+  }
+
   @override
   void initState() {
     super.initState();
+    fontMultiplier();
     pageController = PageController(
       initialPage: int.parse(widget.chapter) - 1,
       keepPage: true,
@@ -119,7 +131,7 @@ class _PassagePageState extends State<PassagePage> {
                             backgroundColor: Theme.of(context).colorScheme.background,
                             title: Text(
                               "Fejezetek",
-                              style: Theme.of(context).textTheme.headline5,
+                              style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                             ),
                             content: SingleChildScrollView(
                               child: Column(
@@ -135,7 +147,11 @@ class _PassagePageState extends State<PassagePage> {
                                             duration: Duration(milliseconds: 500), curve: Curves.ease);
                                         Navigator.pop(context);
                                       },
-                                      child: Text("$i. fejezet", style: Theme.of(context).textTheme.headline5),
+                                      child: Text("$i. fejezet",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              ?.copyWith(fontSize: 24 * multiplier)),
                                     )
                                 ],
                               ),
@@ -172,10 +188,10 @@ class _PassagePageState extends State<PassagePage> {
                             Visibility(
                               visible: language == "chapters_hu" ? true : false,
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+                                padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                                 child: Text(
                                   '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -183,10 +199,10 @@ class _PassagePageState extends State<PassagePage> {
                             Visibility(
                               visible: language == "chapters_hu" ? false : true,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Chapter $chap',
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -200,10 +216,10 @@ class _PassagePageState extends State<PassagePage> {
                             Visibility(
                               visible: language == "chapters_hu" ? true : false,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   '$chap. fejezet',
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -211,10 +227,10 @@ class _PassagePageState extends State<PassagePage> {
                             Visibility(
                               visible: language == "chapters_hu" ? false : true,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Chapter $chap',
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -233,10 +249,10 @@ class _PassagePageState extends State<PassagePage> {
                           Visibility(
                             visible: language == "chapters_hu" ? true : false,
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+                              padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                               child: Text(
                                 bibleCurrentHu["$chap"][index]["text_hu"],
-                                style: Theme.of(context).textTheme.headline5,
+                                style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -269,21 +285,27 @@ class _PassagePageState extends State<PassagePage> {
                                   });
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
+                                  padding: EdgeInsets.all(0.0),
                                   child: Stack(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
+                                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                         child: RichText(
                                           text: TextSpan(children: [
                                             TextSpan(
                                               text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                              style: Theme.of(context).textTheme.bodyText2,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2
+                                                  ?.copyWith(fontSize: 15 * multiplier),
                                             ),
                                             TextSpan(
                                               text:
                                                   "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirst(),
-                                              style: Theme.of(context).textTheme.bodyText1,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1
+                                                  ?.copyWith(fontSize: 20 * multiplier),
                                             ),
                                           ]),
                                         ),
@@ -332,20 +354,26 @@ class _PassagePageState extends State<PassagePage> {
                                   });
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
+                                  padding: EdgeInsets.all(0.0),
                                   child: Stack(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
+                                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                         child: RichText(
                                           text: TextSpan(children: [
                                             TextSpan(
                                               text: "${bibleCurrentHu["$chap"][index]["num"]}",
-                                              style: Theme.of(context).textTheme.bodyText2,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2
+                                                  ?.copyWith(fontSize: 15 * multiplier),
                                             ),
                                             TextSpan(
                                               text: "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirst(),
-                                              style: Theme.of(context).textTheme.bodyText1,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1
+                                                  ?.copyWith(fontSize: 20 * multiplier),
                                             ),
                                           ]),
                                         ),
@@ -386,29 +414,37 @@ class _PassagePageState extends State<PassagePage> {
                                     });
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.all(0.0),
+                                    padding: EdgeInsets.all(0.0),
                                     child: Stack(
                                       children: [
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
+                                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                           child: RichText(
                                             text: TextSpan(children: [
                                               if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" == "0")
                                                 TextSpan(
                                                   text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
-                                                  style: Theme.of(context).textTheme.headline6,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline6
+                                                      ?.copyWith(fontSize: 20 * multiplier),
                                                 ),
                                               if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
                                                 TextSpan(
                                                   text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2
+                                                      ?.copyWith(fontSize: 15 * multiplier),
                                                 ),
                                               if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
                                                 TextSpan(
                                                   text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
                                                       .capitalizeFirst(),
-                                                  style: Theme.of(context).textTheme.bodyText1,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1
+                                                      ?.copyWith(fontSize: 20 * multiplier),
                                                 ),
                                             ]),
                                           ),
@@ -445,10 +481,10 @@ class _PassagePageState extends State<PassagePage> {
                             Visibility(
                               visible: language == "chapters_hu" ? true : false,
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+                                padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                                 child: Text(
                                   '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -456,10 +492,10 @@ class _PassagePageState extends State<PassagePage> {
                             Visibility(
                               visible: language == "chapters_hu" ? false : true,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Chapter $chap',
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -493,26 +529,35 @@ class _PassagePageState extends State<PassagePage> {
                                   });
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
+                                  padding: EdgeInsets.all(0.0),
                                   child: Stack(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
+                                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                         child: RichText(
                                           text: TextSpan(children: [
                                             if ("${bibleCurrentEn["$chap"][index]["num"]}" == "0") ...[
                                               TextSpan(
                                                 text: "${bibleCurrentEn["$chap"][index]["text_en"]}",
-                                                style: Theme.of(context).textTheme.headline6,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6
+                                                    ?.copyWith(fontSize: 20 * multiplier),
                                               ),
                                             ] else ...[
                                               TextSpan(
                                                 text: "${bibleCurrentEn["$chap"][index]["num"]}",
-                                                style: Theme.of(context).textTheme.bodyText2,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2
+                                                    ?.copyWith(fontSize: 15 * multiplier),
                                               ),
                                               TextSpan(
                                                 text: "${bibleCurrentEn["$chap"][index]["text_en"]}".capitalizeFirst(),
-                                                style: Theme.of(context).textTheme.bodyText1,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1
+                                                    ?.copyWith(fontSize: 20 * multiplier),
                                               ),
                                             ]
                                           ]),
@@ -532,10 +577,10 @@ class _PassagePageState extends State<PassagePage> {
                             Visibility(
                               visible: language == "chapters_hu" ? true : false,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   '$chap. fejezet',
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -543,10 +588,10 @@ class _PassagePageState extends State<PassagePage> {
                             Visibility(
                               visible: language == "chapters_hu" ? false : true,
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text(
                                   'Chapter $chap',
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -567,10 +612,10 @@ class _PassagePageState extends State<PassagePage> {
                               visible: language == "chapters_hu" ? true : false,
                               // Hungarian part
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+                                padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                                 child: Text(
                                   bibleCurrentHu["$chap"][index]["text_hu"],
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -602,20 +647,26 @@ class _PassagePageState extends State<PassagePage> {
                                 });
                               },
                               child: Padding(
-                                padding: const EdgeInsets.all(0.0),
+                                padding: EdgeInsets.all(0.0),
                                 child: Stack(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
+                                      padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                       child: RichText(
                                         text: TextSpan(children: [
                                           TextSpan(
                                             text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                            style: Theme.of(context).textTheme.bodyText2,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2
+                                                ?.copyWith(fontSize: 15 * multiplier),
                                           ),
                                           TextSpan(
                                             text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirst(),
-                                            style: Theme.of(context).textTheme.bodyText1,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                ?.copyWith(fontSize: 20 * multiplier),
                                           ),
                                         ]),
                                       ),
@@ -664,21 +715,26 @@ class _PassagePageState extends State<PassagePage> {
                                     });
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.all(0.0),
+                                    padding: EdgeInsets.all(0.0),
                                     child: Stack(
                                       children: [
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
+                                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                           child: RichText(
                                             text: TextSpan(children: [
                                               TextSpan(
                                                 text: "${bibleCurrentHu["$chap"][index]["num"]}",
-                                                style: Theme.of(context).textTheme.bodyText2,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2
+                                                    ?.copyWith(fontSize: 15 * multiplier),
                                               ),
                                               TextSpan(
                                                 text: "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirst(),
-                                                style: Theme.of(context).textTheme.bodyText1,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1
+                                                    ?.copyWith(fontSize: 20 * multiplier),
                                               ),
                                             ]),
                                           ),
@@ -717,26 +773,35 @@ class _PassagePageState extends State<PassagePage> {
                                   });
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
+                                  padding: EdgeInsets.all(0.0),
                                   child: Stack(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
+                                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                         child: RichText(
                                           text: TextSpan(children: [
                                             if ("${bibleCurrentEn["$chap"][index]["num"]}" == "0") ...[
                                               TextSpan(
                                                 text: "${bibleCurrentEn["$chap"][index]["text_en"]}",
-                                                style: Theme.of(context).textTheme.headline6,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6
+                                                    ?.copyWith(fontSize: 20 * multiplier),
                                               ),
                                             ] else ...[
                                               TextSpan(
                                                 text: "${bibleCurrentEn["$chap"][index]["num"]}",
-                                                style: Theme.of(context).textTheme.bodyText2,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2
+                                                    ?.copyWith(fontSize: 15 * multiplier),
                                               ),
                                               TextSpan(
                                                 text: "${bibleCurrentEn["$chap"][index]["text_en"]}".capitalizeFirst(),
-                                                style: Theme.of(context).textTheme.bodyText1,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1
+                                                    ?.copyWith(fontSize: 20 * multiplier),
                                               ),
                                             ]
                                           ]),
@@ -799,7 +864,7 @@ class _PassagePageState extends State<PassagePage> {
                     backgroundColor: Theme.of(context).colorScheme.background,
                     title: Text(
                       bibleCurrentHu["$chap"][index]["ref"].length > 1 ? "Hivatkozások" : "Hivatkozás",
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                     ),
                     content: SingleChildScrollView(
                       child: Column(
@@ -887,7 +952,10 @@ class _PassagePageState extends State<PassagePage> {
                                             Flexible(
                                               child: Text(
                                                 "$refBookNameFull $refChapter",
-                                                style: Theme.of(context).textTheme.headline5,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5
+                                                    ?.copyWith(fontSize: 24 * multiplier),
                                               ),
                                             ),
                                             IconButton(
@@ -926,16 +994,22 @@ class _PassagePageState extends State<PassagePage> {
                                             children: [
                                               for (element in finalVersList)
                                                 Padding(
-                                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                                  padding: EdgeInsets.only(bottom: 8.0),
                                                   child: RichText(
                                                     text: TextSpan(children: [
                                                       TextSpan(
                                                         text: "${element["num"]} ",
-                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText2
+                                                            ?.copyWith(fontSize: 15 * multiplier),
                                                       ),
                                                       TextSpan(
                                                         text: "${element["verse"]}",
-                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyText1
+                                                            ?.copyWith(fontSize: 20 * multiplier),
                                                       ),
                                                     ]),
                                                   ),
@@ -954,7 +1028,7 @@ class _PassagePageState extends State<PassagePage> {
                                     // Icon(Icons.arrow_drop_down),
                                     Text(
                                       "$element 🔻",
-                                      style: Theme.of(context).textTheme.bodyText1,
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * multiplier),
                                     ),
                                   ],
                                 ),
