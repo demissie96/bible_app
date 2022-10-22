@@ -38,7 +38,9 @@ class PassagePage extends StatefulWidget {
 
 class _PassagePageState extends State<PassagePage> {
   // To list out subtitles from the AutoScroll list.
-  int indexMinus = 0;
+  int indexMinusHu = 0;
+  int indexMinusEn = 0;
+
   final scrollDirection = Axis.vertical;
   late AutoScrollController itemController;
   late PageController pageController;
@@ -170,97 +172,108 @@ class _PassagePageState extends State<PassagePage> {
           ),
           drawer: SideMenu(),
           body: PageView(controller: pageController, onPageChanged: _onPageViewChange, children: [
+            // Book length
             for (int chap = 1; chap <= widget.chapterSum; chap++)
-              if (bibleCurrentHu["$chap"].length > bibleCurrentEn["$chap"].length) ...[
-                // Hungarian based ListView
-                ListView.builder(
-                  // To remember scroll position
-                  key: PageStorageKey(chap.toString()),
-                  itemCount: bibleCurrentHu["$chap"].length,
-                  scrollDirection: scrollDirection,
-                  controller: itemController,
-                  itemBuilder: (context, index) {
-                    // Chapter titles
-                    if (bibleCurrentHu["$chap"][index]["num"] == "Title") {
-                      if ('$chap. fejezet' != '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
-                        return Column(
-                          children: [
-                            Visibility(
-                              visible: language == "chapters_hu" ? true : false,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
-                                child: Text(
-                                  '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                            Visibility(
-                              visible: language == "chapters_hu" ? false : true,
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Chapter $chap',
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        // Chapter title if chapter has no title
-                        return Column(
-                          children: [
-                            Visibility(
-                              visible: language == "chapters_hu" ? true : false,
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  '$chap. fejezet',
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                            Visibility(
-                              visible: language == "chapters_hu" ? false : true,
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Chapter $chap',
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                    } else if (bibleCurrentHu["$chap"][index]["num"] == "Subtitle") {
-                      indexMinus++;
-                      // Subtitle and english verse
+              // Hungarian based ListView
+              ListView.builder(
+                // To remember scroll position
+                key: PageStorageKey(chap.toString()),
+                itemCount: bibleCurrentHu["$chap"].length + 30, // Chapter length
+                scrollDirection: scrollDirection,
+                controller: itemController,
+                itemBuilder: (context, index) {
+                  // Chapter titles
+                  if (index == 0) {
+                    indexMinusHu = 0;
+                    print("Index minus Hun at zero ---> $indexMinusHu");
+                    if ("${bibleCurrentEn["$chap"][0]["num"]}" == "0") {
+                      indexMinusEn = 1;
+                    }
+                    if ('$chap. fejezet' != '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
                       return Column(
-                        crossAxisAlignment:
-                            language == "chapters_hu" ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                         children: [
-                          // Hungarian part
                           Visibility(
                             visible: language == "chapters_hu" ? true : false,
                             child: Padding(
                               padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                               child: Text(
-                                bibleCurrentHu["$chap"][index]["text_hu"],
+                                '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
                                 style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                          if (index <= bibleCurrentEn["$chap"].length)
-                            Visibility(
-                              visible: language == "chapters_hu" ? false : true,
-                              // English part
+                          Visibility(
+                            visible: language == "chapters_hu" ? false : true,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Chapter $chap',
+                                style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      // Chapter title if chapter has no title
+                      return Column(
+                        children: [
+                          Visibility(
+                            visible: language == "chapters_hu" ? true : false,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                '$chap. fejezet',
+                                style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: language == "chapters_hu" ? false : true,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Chapter $chap',
+                                style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                  } else if (index < bibleCurrentHu["$chap"].length &&
+                      bibleCurrentHu["$chap"][index]["num"] == "Subtitle") {
+                    print("Index minus Hun Before ---> $indexMinusHu");
+                    indexMinusHu++; // For AutoScrollTag proper indexing
+                    print("Index minus Hun After increment---> $indexMinusHu");
+                    // Hungarian subtitle
+                    return Column(
+                      crossAxisAlignment:
+                          language == "chapters_hu" ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                      children: [
+                        Visibility(
+                          visible: language == "chapters_hu" ? true : false,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
+                            child: Text(
+                              bibleCurrentHu["$chap"][index]["text_hu"],
+                              style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        if (index <= bibleCurrentEn["$chap"].length)
+                          // English verse
+                          Visibility(
+                            visible: language == "chapters_hu" ? false : true,
+                            child: AutoScrollTag(
+                              key: ValueKey(index - indexMinusEn),
+                              controller: itemController,
+                              index: index - indexMinusEn,
                               child: GestureDetector(
                                 onDoubleTap: () async {
                                   // Copy selected text to clipboard
@@ -292,21 +305,31 @@ class _PassagePageState extends State<PassagePage> {
                                         padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                         child: RichText(
                                           text: TextSpan(children: [
-                                            TextSpan(
-                                              text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText2
-                                                  ?.copyWith(fontSize: 15 * multiplier),
-                                            ),
-                                            TextSpan(
-                                              text:
-                                                  "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirst(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  ?.copyWith(fontSize: 20 * multiplier),
-                                            ),
+                                            if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" == "0")
+                                              TextSpan(
+                                                text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline6
+                                                    ?.copyWith(fontSize: 20 * multiplier),
+                                              ),
+                                            if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
+                                              TextSpan(
+                                                text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2
+                                                    ?.copyWith(fontSize: 15 * multiplier),
+                                              ),
+                                            if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
+                                              TextSpan(
+                                                text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                    .capitalizeFirst(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1
+                                                    ?.copyWith(fontSize: 20 * multiplier),
+                                              ),
                                           ]),
                                         ),
                                       ),
@@ -315,21 +338,23 @@ class _PassagePageState extends State<PassagePage> {
                                 ),
                               ),
                             ),
-                        ],
-                      );
-                    } else {
-                      // Only verses
+                          ),
+                      ],
+                    );
+                  } else {
+                    // Only verses
 
-                      return AutoScrollTag(
-                        key: ValueKey(int.parse(bibleCurrentHu["$chap"][index]["num"]) - indexMinus),
-                        controller: itemController,
-                        index: index - indexMinus,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Hungarian part
-                            Visibility(
-                              visible: language == "chapters_hu" ? true : false,
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (index < bibleCurrentHu["$chap"].length)
+                          // Hungarian part
+                          Visibility(
+                            visible: language == "chapters_hu" ? true : false,
+                            child: AutoScrollTag(
+                              key: ValueKey(index - indexMinusHu),
+                              controller: itemController,
+                              index: index - indexMinusHu,
                               child: GestureDetector(
                                 onDoubleTap: () async {
                                   // Copy selected text to clipboard
@@ -385,139 +410,28 @@ class _PassagePageState extends State<PassagePage> {
                                 ),
                               ),
                             ),
-                            if (index <= bibleCurrentEn["$chap"].length)
-                              // English part
-                              Visibility(
-                                visible: language == "chapters_hu" ? false : true,
-                                child: GestureDetector(
-                                  onDoubleTap: () async {
-                                    // Copy selected text to clipboard
-                                    await Clipboard.setData(
-                                      ClipboardData(
-                                        text:
-                                            "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirstForCopy(),
-                                      ),
-                                    ).then((_) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: Theme.of(context).colorScheme.tertiary,
-                                          content: Text(
-                                            "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (🇺🇸)",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15.0,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      );
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Stack(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
-                                          child: RichText(
-                                            text: TextSpan(children: [
-                                              if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" == "0")
-                                                TextSpan(
-                                                  text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline6
-                                                      ?.copyWith(fontSize: 20 * multiplier),
-                                                ),
-                                              if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
-                                                TextSpan(
-                                                  text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText2
-                                                      ?.copyWith(fontSize: 15 * multiplier),
-                                                ),
-                                              if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
-                                                TextSpan(
-                                                  text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
-                                                      .capitalizeFirst(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      ?.copyWith(fontSize: 20 * multiplier),
-                                                ),
-                                            ]),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            if (index == bibleCurrentHu["$chap"].length - 1)
-                              SizedBox(
-                                height: 75.0,
-                              ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ] else ...[
-                // English based list view
-                ListView.builder(
-                  // To remember scroll position
-                  key: PageStorageKey(chap.toString()),
-                  itemCount: bibleCurrentEn["$chap"].length,
-                  scrollDirection: scrollDirection,
-                  controller: itemController,
-                  itemBuilder: (context, index) {
-                    // Title part
-                    if (index < bibleCurrentHu["$chap"].length && bibleCurrentHu["$chap"][index]["num"] == "Title") {
-                      if ('$chap. fejezet' != '${bibleCurrentHu["$chap"][index]["text_hu"]}') {
-                        return Column(
-                          children: [
-                            Visibility(
-                              visible: language == "chapters_hu" ? true : false,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
-                                child: Text(
-                                  '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                            Visibility(
-                              visible: language == "chapters_hu" ? false : true,
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Chapter $chap',
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-
-                            // Verse comes
-                            Visibility(
-                              visible: language == "chapters_hu" ? false : true,
-                              // English part
+                          ),
+                        if (index <= bibleCurrentEn["$chap"].length)
+                          // English part
+                          Visibility(
+                            visible: language == "chapters_hu" ? false : true,
+                            child: AutoScrollTag(
+                              key: ValueKey(index - indexMinusEn),
+                              controller: itemController,
+                              index: index - indexMinusEn,
                               child: GestureDetector(
                                 onDoubleTap: () async {
                                   // Copy selected text to clipboard
                                   await Clipboard.setData(
                                     ClipboardData(
-                                      text: "${bibleCurrentEn["$chap"][index]["text_en"]}".capitalizeFirstForCopy(),
+                                      text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirstForCopy(),
                                     ),
                                   ).then((_) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         backgroundColor: Theme.of(context).colorScheme.tertiary,
                                         content: Text(
-                                          "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index]["num"]} - Másolva (🇺🇸)",
+                                          "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (🇺🇸)",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 15.0,
@@ -536,293 +450,50 @@ class _PassagePageState extends State<PassagePage> {
                                         padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
                                         child: RichText(
                                           text: TextSpan(children: [
-                                            if ("${bibleCurrentEn["$chap"][index]["num"]}" == "0") ...[
+                                            if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" == "0")
                                               TextSpan(
-                                                text: "${bibleCurrentEn["$chap"][index]["text_en"]}",
+                                                text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline6
                                                     ?.copyWith(fontSize: 20 * multiplier),
                                               ),
-                                            ] else ...[
+                                            if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
                                               TextSpan(
-                                                text: "${bibleCurrentEn["$chap"][index]["num"]}",
+                                                text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText2
                                                     ?.copyWith(fontSize: 15 * multiplier),
                                               ),
+                                            if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
                                               TextSpan(
-                                                text: "${bibleCurrentEn["$chap"][index]["text_en"]}".capitalizeFirst(),
+                                                text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                    .capitalizeFirst(),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText1
                                                     ?.copyWith(fontSize: 20 * multiplier),
                                               ),
-                                            ]
                                           ]),
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        //  Title part if there is no title
-                        return Column(
-                          children: [
-                            Visibility(
-                              visible: language == "chapters_hu" ? true : false,
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  '$chap. fejezet',
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                            Visibility(
-                              visible: language == "chapters_hu" ? false : true,
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Chapter $chap',
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                    } else if (index < bibleCurrentHu["$chap"].length &&
-                        bibleCurrentHu["$chap"][index]["num"] == "Subtitle") {
-                      // Subtitle part
-                      indexMinus++;
-                      return Column(
-                        crossAxisAlignment:
-                            language == "chapters_hu" ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-                        children: [
-                          if (index <= bibleCurrentHu["$chap"].length)
-                            Visibility(
-                              visible: language == "chapters_hu" ? true : false,
-                              // Hungarian part
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
-                                child: Text(
-                                  bibleCurrentHu["$chap"][index]["text_hu"],
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          Visibility(
-                            visible: language == "chapters_hu" ? false : true,
-                            // English part
-                            child: GestureDetector(
-                              onDoubleTap: () async {
-                                // Copy selected text to clipboard
-                                await Clipboard.setData(
-                                  ClipboardData(
-                                    text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirstForCopy(),
-                                  ),
-                                ).then((_) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      backgroundColor: Theme.of(context).colorScheme.tertiary,
-                                      content: Text(
-                                        "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index - 1]["num"]} - Másolva (🇺🇸)",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15.0,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  );
-                                });
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(0.0),
-                                child: Stack(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
-                                      child: RichText(
-                                        text: TextSpan(children: [
-                                          TextSpan(
-                                            text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2
-                                                ?.copyWith(fontSize: 15 * multiplier),
-                                          ),
-                                          TextSpan(
-                                            text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirst(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1
-                                                ?.copyWith(fontSize: 20 * multiplier),
-                                          ),
-                                        ]),
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ),
                             ),
                           ),
-                        ],
-                      );
-                    } else {
-                      // Only verse
-                      return AutoScrollTag(
-                        key: ValueKey(int.parse(bibleCurrentEn["$chap"][index]["num"])),
-                        controller: itemController,
-                        index: index,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (index < bibleCurrentHu["$chap"].length)
-                              Visibility(
-                                visible: language == "chapters_hu" ? true : false,
-                                // Hungarian part
-                                child: GestureDetector(
-                                  onDoubleTap: () async {
-                                    // Copy selected text to clipboard
-                                    await Clipboard.setData(
-                                      ClipboardData(
-                                        text: "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirstForCopy(),
-                                      ),
-                                    ).then((_) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: Theme.of(context).colorScheme.tertiary,
-                                          content: Text(
-                                            "${widget.appBarTitle}:${bibleCurrentHu["$chap"][index]["num"]} - Másolva (🇭🇺)",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15.0,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      );
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Stack(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
-                                          child: RichText(
-                                            text: TextSpan(children: [
-                                              TextSpan(
-                                                text: "${bibleCurrentHu["$chap"][index]["num"]}",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2
-                                                    ?.copyWith(fontSize: 15 * multiplier),
-                                              ),
-                                              TextSpan(
-                                                text: "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirst(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1
-                                                    ?.copyWith(fontSize: 20 * multiplier),
-                                              ),
-                                            ]),
-                                          ),
-                                        ),
-                                        if (bibleCurrentHu["$chap"][index]["ref"] != null)
-                                          hungarianReferences(bibleCurrentHu, chap, index, context)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            Visibility(
-                              visible: language == "chapters_hu" ? false : true,
-                              // English part
-                              child: GestureDetector(
-                                onDoubleTap: () async {
-                                  // Copy selected text to clipboard
-                                  await Clipboard.setData(
-                                    ClipboardData(
-                                      text: "${bibleCurrentEn["$chap"][index]["text_en"]}".capitalizeFirstForCopy(),
-                                    ),
-                                  ).then((_) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: Theme.of(context).colorScheme.tertiary,
-                                        content: Text(
-                                          "${widget.appBarTitle}:${bibleCurrentEn["$chap"][index]["num"]} - Másolva (🇺🇸)",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15.0,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    );
-                                  });
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Stack(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 8.0, bottom: 8.0),
-                                        child: RichText(
-                                          text: TextSpan(children: [
-                                            if ("${bibleCurrentEn["$chap"][index]["num"]}" == "0") ...[
-                                              TextSpan(
-                                                text: "${bibleCurrentEn["$chap"][index]["text_en"]}",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline6
-                                                    ?.copyWith(fontSize: 20 * multiplier),
-                                              ),
-                                            ] else ...[
-                                              TextSpan(
-                                                text: "${bibleCurrentEn["$chap"][index]["num"]}",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2
-                                                    ?.copyWith(fontSize: 15 * multiplier),
-                                              ),
-                                              TextSpan(
-                                                text: "${bibleCurrentEn["$chap"][index]["text_en"]}".capitalizeFirst(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1
-                                                    ?.copyWith(fontSize: 20 * multiplier),
-                                              ),
-                                            ]
-                                          ]),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (index == bibleCurrentEn["$chap"].length - 1)
-                              SizedBox(
-                                height: 75.0,
-                              ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ],
+                        if (index == bibleCurrentHu["$chap"].length + 29)
+                          // At the end of the page to prevent floating button to hide content
+                          SizedBox(
+                            height: 75.0,
+                          ),
+                      ],
+                    );
+                  }
+                },
+              ),
           ]),
           floatingActionButton: FloatingActionButton(
             backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,

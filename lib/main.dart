@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
           ),
           headline6: TextStyle(
             color: Colors.black87,
-            fontFamily: "Courgette",
+            fontFamily: "Roboto Slab",
           ),
         ),
         listTileTheme: ListTileThemeData(
@@ -143,7 +143,7 @@ class MyApp extends StatelessWidget {
           ),
           headline6: TextStyle(
             color: Colors.white70,
-            fontFamily: "Courgette",
+            fontFamily: "Roboto Slab",
           ),
         ),
         listTileTheme: ListTileThemeData(
