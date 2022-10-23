@@ -1,19 +1,21 @@
-import 'dart:io';
-
 import 'package:bible_app/passage_page.dart';
 import 'package:flutter/material.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import "side_menu.dart";
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 List oldTestament = [];
 List newTestament = [];
 var bookList = {};
+var bookListIndex = {};
 String bookRef = "GEN";
 String oldOrNew = "old";
 String bookNameHu = "1 Mózes";
 String language = "chapters_hu";
 int chapter = 1;
+int chapterSum = 50;
 List totalChapter = [];
 int verse = 1;
 
@@ -22,6 +24,8 @@ late TabController tabController;
 late Function updateTitle;
 late var bibleJson;
 
+var lastRead;
+
 class MainPage extends StatefulWidget {
   @override
   State<MainPage> createState() => _MainPageState();
@@ -29,6 +33,9 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin {
   final scrollDirection = Axis.vertical;
+
+  late AutoScrollController itemControllerOld;
+  late AutoScrollController itemControllerNew;
 
   JumpOneTab() {
     tabController.index += 1;
@@ -42,10 +49,12 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     for (var i = 0; i < 39; i++) {
       oldTestament.add(data[i]);
       bookList[data[i][2]] = {"refName": data[i][0], "testament": "old", "fullName": data[i][3]};
+      bookListIndex[data[i][0]] = {"index": i};
     }
     for (var i = 39; i < 66; i++) {
       newTestament.add(data[i]);
       bookList[data[i][2]] = {"refName": data[i][0], "testament": "new", "fullName": data[i][3]};
+      bookListIndex[data[i][0]] = {"index": i};
     }
 
     setState(() {
@@ -67,6 +76,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     bookNameHu = "1 Mózes";
     language = "chapters_hu";
     chapter = 1;
+    chapterSum = 50;
     totalChapter = [];
     verse = 1;
     appBarTitle = "Könyvek";
@@ -136,12 +146,84 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     });
   }
 
+  Future getLastRead() async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+
+    String checkBook = prefs.getString('book') ?? bookRef;
+    String checkBookNameHu = prefs.getString('bookNameHu') ?? bookNameHu;
+    String checkOldNew = prefs.getString('oldNew') ?? oldOrNew;
+    String checkLanguage = prefs.getString('language') ?? language;
+    int checkChapter = prefs.getInt('chapter') ?? chapter;
+    int checkChapterSum = prefs.getInt('chapterSum') ?? chapterSum;
+    print(
+        "Last read book: $checkOldNew, $checkBook, $checkLanguage, $checkChapter, $checkBookNameHu, $checkChapterSum");
+
+    setState(() {
+      bookRef = checkBook;
+      oldOrNew = checkOldNew;
+      language = language;
+      chapter = checkChapter;
+      bookNameHu = checkBookNameHu;
+      chapterSum = checkChapterSum;
+      appBarTitle = "$bookNameHu $chapter";
+    });
+  }
+
+  // Future fontMultiplier() async {
+  //   // Obtain shared preferences.
+  //   final prefs = await SharedPreferences.getInstance();
+
+  //   setState(() {
+  //     fontSize = prefs.getDouble('multiplier') ?? 1.0;
+  //   });
+  //   print("Color multiplier: $fontSize");
+  // }
+
+  Future scrollToIndex(bookRef) async {
+    print(bookListIndex[bookRef]);
+    print("old or new? $oldOrNew");
+
+    int position = bookListIndex[bookRef]["index"];
+
+    if (oldOrNew == "old") {
+      await itemControllerOld.scrollToIndex(
+        position,
+        preferPosition: AutoScrollPosition.middle,
+      );
+    } else {
+      position -= 39;
+      await itemControllerNew.scrollToIndex(
+        position,
+        preferPosition: AutoScrollPosition.middle,
+      );
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
     restoreData();
+    getLastRead().then((value) {
+      totalChapter = [];
+      print("chapter sum: $chapterSum");
+      print("total chapter length: ${totalChapter.length}");
+      for (var i = 1; i <= chapterSum; i++) {
+        totalChapter.add(i);
+      }
+      print("total chapter length: ${totalChapter.length}");
+      setState(() {
+        appBarTitle = "$bookNameHu $chapter";
+        totalChapter;
+      });
+      updateTitle = () {
+        setState(() {
+          appBarTitle;
+        });
+      };
+    });
 
     bibleJsonGet();
 
@@ -153,19 +235,15 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         milliseconds: 1000,
       ),
     );
-    bookListJson();
-    for (var i = 1; i <= 50; i++) {
-      totalChapter.add(i);
-    }
-    setState(() {
-      appBarTitle = "$bookNameHu $chapter";
-      totalChapter;
-    });
-    updateTitle = () {
-      setState(() {
-        appBarTitle;
-      });
-    };
+
+    itemControllerOld = AutoScrollController(
+        viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+        axis: scrollDirection);
+    itemControllerNew = AutoScrollController(
+        viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+        axis: scrollDirection);
+
+    bookListJson().then((value) => {scrollToIndex(bookRef)});
   }
 
   @override
@@ -179,11 +257,41 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-            title: Text(
-              appBarTitle,
-              style: TextStyle(
-                color: Theme.of(context).appBarTheme.foregroundColor,
-              ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  appBarTitle,
+                  style: TextStyle(
+                    color: Theme.of(context).appBarTheme.foregroundColor,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PassagePage(
+                          appBarTitle: appBarTitle,
+                          chapter: "$chapter",
+                          bible: bibleJson,
+                          oldOrNew: oldOrNew,
+                          bookRef: bookRef,
+                          language: language,
+                          chapterSum: totalChapter.length,
+                          verse: verse,
+                          bookList: bookList,
+                          bookNameHu: bookNameHu,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.keyboard_double_arrow_right,
+                    size: 30.0,
+                  ),
+                ),
+              ],
             ),
             bottom: TabBar(
               indicatorColor: Theme.of(context).colorScheme.tertiary,
@@ -213,27 +321,33 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                     key: PageStorageKey("oldTestament"),
                                     scrollDirection: scrollDirection,
                                     itemCount: oldTestament.length,
+                                    controller: itemControllerOld,
                                     itemBuilder: (context, index) {
-                                      return Container(
-                                        margin: const EdgeInsets.only(
-                                          left: 10.0,
-                                          right: 10.0,
-                                        ),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            padding: EdgeInsets.all(13.0),
-                                            backgroundColor: bookNameHu == oldTestament[index][3]
-                                                ? Theme.of(context).cardColor
-                                                : null,
+                                      return AutoScrollTag(
+                                        key: ValueKey(index),
+                                        controller: itemControllerOld,
+                                        index: index,
+                                        child: Container(
+                                          margin: const EdgeInsets.only(
+                                            left: 10.0,
+                                            right: 10.0,
                                           ),
-                                          key: ValueKey(oldTestament[index][0]),
-                                          onPressed: () {
-                                            chooseBookOld(index);
-                                          },
-                                          child: Text(
-                                            oldTestament[index][3],
-                                            style: TextStyle(
-                                              color: Theme.of(context).appBarTheme.foregroundColor,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              padding: EdgeInsets.all(13.0),
+                                              backgroundColor: bookNameHu == oldTestament[index][3]
+                                                  ? Theme.of(context).cardColor
+                                                  : null,
+                                            ),
+                                            key: ValueKey(oldTestament[index][0]),
+                                            onPressed: () {
+                                              chooseBookOld(index);
+                                            },
+                                            child: Text(
+                                              oldTestament[index][3],
+                                              style: TextStyle(
+                                                color: Theme.of(context).appBarTheme.foregroundColor,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -241,7 +355,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                     },
                                   ),
                                 )
-                              : Container()
+                              : Container(),
                         ],
                       ),
                     ),
@@ -254,25 +368,31 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                   child: ListView.builder(
                                     key: PageStorageKey("newTestament"),
                                     scrollDirection: scrollDirection,
+                                    controller: itemControllerNew,
                                     itemCount: newTestament.length,
                                     itemBuilder: (context, index) {
-                                      return Container(
-                                        margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            padding: EdgeInsets.all(13.0),
-                                            backgroundColor: bookNameHu == newTestament[index][3]
-                                                ? Theme.of(context).cardColor
-                                                : null,
-                                          ),
-                                          key: ValueKey(newTestament[index][0]),
-                                          onPressed: () {
-                                            chooseBookNew(index);
-                                          },
-                                          child: Text(
-                                            newTestament[index][3],
-                                            style: TextStyle(
-                                              color: Theme.of(context).appBarTheme.foregroundColor,
+                                      return AutoScrollTag(
+                                        key: ValueKey(index),
+                                        controller: itemControllerNew,
+                                        index: index,
+                                        child: Container(
+                                          margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              padding: EdgeInsets.all(13.0),
+                                              backgroundColor: bookNameHu == newTestament[index][3]
+                                                  ? Theme.of(context).cardColor
+                                                  : null,
+                                            ),
+                                            key: ValueKey(newTestament[index][0]),
+                                            onPressed: () {
+                                              chooseBookNew(index);
+                                            },
+                                            child: Text(
+                                              newTestament[index][3],
+                                              style: TextStyle(
+                                                color: Theme.of(context).appBarTheme.foregroundColor,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -393,6 +513,7 @@ class VerseList extends StatefulWidget {
 }
 
 class _VerseListState extends State<VerseList> {
+  late int verseSum;
   Future chooseVerse(i) async {
     await showDialog(
       context: context,
@@ -407,7 +528,7 @@ class _VerseListState extends State<VerseList> {
         );
       },
     );
-
+    print("########################### last element #####################");
     print(bibleJson[oldOrNew][bookRef][language]["$chapter"].last);
 
     verse = i;
@@ -427,16 +548,27 @@ class _VerseListState extends State<VerseList> {
           language: language,
           chapterSum: totalChapter.length,
           verse: verse,
-          verseSum: verseSum,
           bookList: bookList,
+          bookNameHu: bookNameHu,
         ),
       ),
     );
   }
 
-  int verseSum = int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("old or new: $oldOrNew, bookref: $bookRef, language: $language, chapter: $chapter");
+    verseSum = int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("Length");
+    print("old or new: $oldOrNew, bookref: $bookRef, language: $language, chapter: $chapter");
+
+    print(bibleJson[oldOrNew][bookRef][language]["$chapter"].length);
     return SingleChildScrollView(
       child: Wrap(
         children: [

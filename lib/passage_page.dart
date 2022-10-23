@@ -13,8 +13,9 @@ class PassagePage extends StatefulWidget {
   int chapterSum;
   var bible;
   int verse;
-  int verseSum;
+
   var bookList;
+  String bookNameHu;
 
   String oldOrNew;
   String bookRef;
@@ -28,8 +29,8 @@ class PassagePage extends StatefulWidget {
     required this.oldOrNew,
     required this.chapterSum,
     required this.verse,
-    required this.verseSum,
     required this.bookList,
+    required this.bookNameHu,
   });
 
   @override
@@ -45,6 +46,27 @@ class _PassagePageState extends State<PassagePage> {
   late AutoScrollController itemController;
   late PageController pageController;
 
+  Future saveLastRead({book, oldNew, language, chapter, bookNameHu, chapterSum}) async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('book', book);
+    await prefs.setString('bookNameHu', bookNameHu);
+    await prefs.setString('oldNew', oldNew);
+    await prefs.setString('language', language);
+    await prefs.setInt('chapter', chapter);
+    await prefs.setInt('chapterSum', chapterSum);
+
+    String checkBook = prefs.getString('book')!;
+    String checkOldNew = prefs.getString('oldNew')!;
+    String checkLanguage = prefs.getString('language')!;
+    int checkChapter = prefs.getInt('chapter')!;
+    int checkChapterSum = prefs.getInt('chapterSum')!;
+    String checkBookNameHu = prefs.getString('bookNameHu')!;
+    print(
+        "Book was added: $checkOldNew, $checkBook, $checkLanguage, $checkChapter, $checkBookNameHu, $checkChapterSum");
+  }
+
   _onPageViewChange(int page) {
     print("Current Page: " + page.toString());
     widget.chapter = (page + 1).toString();
@@ -53,6 +75,13 @@ class _PassagePageState extends State<PassagePage> {
     });
     widget.verse = 1;
     fontMultiplier();
+    saveLastRead(
+        book: widget.bookRef,
+        oldNew: widget.oldOrNew,
+        language: "chapters_hu",
+        chapter: int.parse(widget.chapter),
+        bookNameHu: widget.bookNameHu,
+        chapterSum: widget.chapterSum);
   }
 
   Future scroolToIndex() async {
@@ -82,6 +111,13 @@ class _PassagePageState extends State<PassagePage> {
   void initState() {
     super.initState();
     fontMultiplier();
+    saveLastRead(
+        book: widget.bookRef,
+        oldNew: widget.oldOrNew,
+        language: "chapters_hu",
+        chapter: int.parse(widget.chapter),
+        bookNameHu: widget.bookNameHu,
+        chapterSum: widget.chapterSum);
     pageController = PageController(
       initialPage: int.parse(widget.chapter) - 1,
       keepPage: true,
@@ -509,6 +545,13 @@ class _PassagePageState extends State<PassagePage> {
                   language = "chapters_hu";
                 }
               });
+              saveLastRead(
+                  book: widget.bookRef,
+                  oldNew: widget.oldOrNew,
+                  language: "chapters_hu",
+                  chapter: int.parse(widget.chapter),
+                  bookNameHu: widget.bookNameHu,
+                  chapterSum: widget.chapterSum);
             },
           ),
         ),
@@ -646,8 +689,8 @@ class _PassagePageState extends State<PassagePage> {
                                                       language: "chapters_hu",
                                                       chapterSum: refBookLength,
                                                       verse: int.parse(verseList[0]),
-                                                      verseSum: refWholeChapter.length,
                                                       bookList: widget.bookList,
+                                                      bookNameHu: refBookNameFull,
                                                     ),
                                                   ),
                                                 );

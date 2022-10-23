@@ -16,9 +16,8 @@ class _SettingsPageState extends State<SettingsPage> {
     // Obtain shared preferences.
     final prefs = await SharedPreferences.getInstance();
 
-    // Save an integer value to 'counter' key.
     await prefs.setDouble('multiplier', multiplier);
-// Try reading data from the 'decimal' key. If it doesn't exist, returns null.
+
     fontSize = prefs.getDouble('multiplier')!;
     print("Multiplier is: $fontSize");
     setState(() {
