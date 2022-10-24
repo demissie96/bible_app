@@ -127,7 +127,7 @@ flutter_native_splash:
   # set.
   #color_dark: "#042a49"
   background_image_dark: "images/dark_background.png"
-  image_dark: images/bible_logo_dark.png
+  image_dark: images/bible_logo_light.png
   #branding_dark: assets/dart_dark.png
 
   # Android 12 handles the splash screen differently than previous versions.  Please visit
