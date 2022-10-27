@@ -534,7 +534,7 @@ class _PassagePageState extends State<PassagePage> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
             child: Text(
-              language == "chapters_hu" ? "🇺🇲" : "🇭🇺",
+              language == "chapters_hu" ? "🇭🇺" : "🇺🇲",
               style: TextStyle(fontSize: 35.0),
             ),
             onPressed: () {
