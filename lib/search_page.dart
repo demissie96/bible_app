@@ -224,10 +224,7 @@ class _SearchPageState extends State<SearchPage> {
                       onPressed: textController.clear,
                     )),
                 onChanged: (text) {
-                  setState(() {
-                    searchText = text;
-                    print(searchText);
-                  });
+                  searchText = text;
                 },
               ),
               Row(
@@ -299,6 +296,7 @@ class _SearchPageState extends State<SearchPage> {
                                       child: GestureDetector(
                                         onTap: () {
                                           print("Jump to passage");
+                                          print("searchLanguage : $searchLanguage");
                                           resultListFinal.add({
                                             Navigator.push(
                                               context,

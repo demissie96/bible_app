@@ -111,6 +111,10 @@ class _PassagePageState extends State<PassagePage> {
   void initState() {
     super.initState();
     fontMultiplier();
+    setState(() {
+      language = widget.language;
+      print("language: $language, widget.language: ${widget.language}");
+    });
     saveLastRead(
         book: widget.bookRef,
         oldNew: widget.oldOrNew,
