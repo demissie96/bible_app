@@ -338,7 +338,9 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                             child: Text(
                                               oldTestament[index][3],
                                               style: TextStyle(
-                                                color: Theme.of(context).appBarTheme.foregroundColor,
+                                                color: bookNameHu == oldTestament[index][3]
+                                                    ? null
+                                                    : Theme.of(context).appBarTheme.foregroundColor,
                                               ),
                                             ),
                                           ),
@@ -470,7 +472,7 @@ class _ChapterListState extends State<ChapterList> {
                 width: 60,
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: chapter == i ? Theme.of(context).cardColor : null,
+                    backgroundColor: chapter == i ? Theme.of(context).colorScheme.tertiary : null,
                   ),
                   onPressed: () {
                     chooseChapter(i);
@@ -564,7 +566,7 @@ class _VerseListState extends State<VerseList> {
                 width: 60,
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: verse == i ? Theme.of(context).cardColor : null,
+                    backgroundColor: verse == i ? Theme.of(context).colorScheme.tertiary : null,
                   ),
                   onPressed: () {
                     chooseVerse(i);

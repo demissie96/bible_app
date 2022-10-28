@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
           tertiary: Colors.red,
           background: Colors.white,
         ),
-        cardColor: Color.fromARGB(255, 15, 52, 96),
+        cardColor: Colors.white,
         tabBarTheme: TabBarTheme(
           labelColor: Colors.white,
           labelStyle: TextStyle(fontFamily: "Roboto Slab"),
@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.black87,
             textStyle: TextStyle(
               color: Colors.white,
               fontFamily: "Roboto Slab",
@@ -110,6 +111,7 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
             textStyle: TextStyle(
               color: Colors.white,
               fontFamily: "Roboto Slab",
