@@ -93,7 +93,12 @@ class _PassagePageState extends State<PassagePage> {
     // Obtain shared preferences.
     final prefs = await SharedPreferences.getInstance();
 
-    await prefs.setStringList('bookmark', bookmark);
+    if (bookmark.length == 0) {
+      await prefs.remove('bookmark');
+    } else {
+      await prefs.setStringList('bookmark', bookmark);
+    }
+
     setState(() {
       bookmarkList = bookmark;
     });
@@ -293,9 +298,25 @@ class _PassagePageState extends State<PassagePage> {
                           builder: (context) {
                             return AlertDialog(
                               backgroundColor: Theme.of(context).colorScheme.background,
-                              title: Text(
-                                bookmarkList.length > 1 ? "Könyvjelzők" : "Könyvjelző",
-                                style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    bookmarkList.length > 1 ? "Könyvjelzők" : "Könyvjelző",
+                                    style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      deleteBookmark(bookmark: []);
+                                      Navigator.pop(context);
+                                    },
+                                    icon: Icon(
+                                      Icons.delete_forever,
+                                      size: 30,
+                                      color: Theme.of(context).colorScheme.tertiary,
+                                    ),
+                                  ),
+                                ],
                               ),
                               content: SingleChildScrollView(
                                 child: Column(
@@ -320,7 +341,7 @@ class _PassagePageState extends State<PassagePage> {
                                                         splitListBookmark.last.toString().split(":");
                                                     late String bookBookmark;
                                                     if (splitListBookmark.length > 2) {
-                                                      bookBookmark = splitListBookmark[0] + splitListBookmark[1];
+                                                      bookBookmark = splitListBookmark[0] + " " + splitListBookmark[1];
                                                     } else {
                                                       bookBookmark = splitListBookmark[0];
                                                     }
