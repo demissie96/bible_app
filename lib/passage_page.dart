@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bible_app/main_page.dart';
 import 'package:flutter/material.dart';
 
@@ -46,6 +48,11 @@ class _PassagePageState extends State<PassagePage> {
   late AutoScrollController itemController;
   late PageController pageController;
 
+  // Bookmark
+  List bookmarkList = [];
+  // Book list
+  var bookListPassage = {};
+
   Future saveLastRead({book, oldNew, language, chapter, bookNameHu, chapterSum}) async {
     // Obtain shared preferences.
     final prefs = await SharedPreferences.getInstance();
@@ -65,6 +72,44 @@ class _PassagePageState extends State<PassagePage> {
     String checkBookNameHu = prefs.getString('bookNameHu')!;
     print(
         "Book was added: $checkOldNew, $checkBook, $checkLanguage, $checkChapter, $checkBookNameHu, $checkChapterSum");
+  }
+
+  Future addBookmark({bookmark}) async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+
+    List<String> checkBookmark = prefs.getStringList('bookmark') ?? [];
+    checkBookmark.add(bookmark);
+
+    await prefs.setStringList('bookmark', checkBookmark);
+    setState(() {
+      bookmarkList = checkBookmark;
+    });
+
+    print(bookmarkList);
+  }
+
+  Future deleteBookmark({bookmark}) async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setStringList('bookmark', bookmark);
+    setState(() {
+      bookmarkList = bookmark;
+    });
+
+    print(bookmarkList);
+  }
+
+  Future getBookmark() async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+
+    List<String> checkBookmark = prefs.getStringList('bookmark') ?? [];
+    setState(() {
+      bookmarkList = checkBookmark;
+    });
+    print(bookmarkList);
   }
 
   _onPageViewChange(int page) {
@@ -107,10 +152,36 @@ class _PassagePageState extends State<PassagePage> {
     print("Color multiplier in passage: $multiplier");
   }
 
+  Future<void> bookListJson() async {
+    final String response = await rootBundle.loadString('data/book_list.json');
+    final data = await json.decode(response);
+
+    for (var i = 0; i < 39; i++) {
+      bookListPassage[data[i][3]] = {
+        "refName": data[i][0],
+        "testament": "old",
+        "shortName": data[i][2],
+        "length": data[i][1]
+      };
+    }
+    for (var i = 39; i < 66; i++) {
+      bookListPassage[data[i][3]] = {
+        "refName": data[i][0],
+        "testament": "new",
+        "shortName": data[i][2],
+        "length": data[i][1]
+      };
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     fontMultiplier();
+    bookListJson();
+
+    getBookmark();
+
     setState(() {
       language = widget.language;
       print("language: $language, widget.language: ${widget.language}");
@@ -160,51 +231,167 @@ class _PassagePageState extends State<PassagePage> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
             title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(widget.appBarTitle),
-                IconButton(
-                  onPressed: () {
-                    print("Total chapters number: ${widget.chapterSum}");
+                Row(
+                  children: [
+                    Text(widget.appBarTitle),
+                    GestureDetector(
+                      onTap: () {
+                        print("Total chapters number: ${widget.chapterSum}");
 
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            backgroundColor: Theme.of(context).colorScheme.background,
-                            title: Text(
-                              "Fejezetek",
-                              style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
-                            ),
-                            content: SingleChildScrollView(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  for (var i = 1; i <= widget.chapterSum; i++)
-                                    TextButton(
-                                      style: Theme.of(context).textButtonTheme.style,
-                                      onPressed: () {
-                                        print("$i was clicked");
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: Theme.of(context).colorScheme.background,
+                                title: Text(
+                                  "Fejezetek",
+                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                                ),
+                                content: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      for (var i = 1; i <= widget.chapterSum; i++)
+                                        TextButton(
+                                          style: Theme.of(context).textButtonTheme.style,
+                                          onPressed: () {
+                                            print("$i was clicked");
 
-                                        pageController.animateToPage(i - 1,
-                                            duration: Duration(milliseconds: 500), curve: Curves.ease);
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text("$i. fejezet",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              ?.copyWith(fontSize: 24 * multiplier)),
-                                    )
-                                ],
+                                            pageController.animateToPage(i - 1,
+                                                duration: Duration(milliseconds: 500), curve: Curves.ease);
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("$i. fejezet",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline5
+                                                  ?.copyWith(fontSize: 24 * multiplier)),
+                                        )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
+                      },
+                      child: Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  ],
+                ),
+                Visibility(
+                  visible: bookmarkList.length > 0 ? true : false,
+                  child: GestureDetector(
+                    onTap: () {
+                      print("Bookmark clicked");
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: Theme.of(context).colorScheme.background,
+                              title: Text(
+                                bookmarkList.length > 1 ? "Könyvjelzők" : "Könyvjelző",
+                                style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
                               ),
-                            ),
-                          );
-                        });
-                  },
-                  icon: Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.white,
-                    size: 30,
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    for (var i = 0; i < bookmarkList.length; i++)
+                                      Wrap(
+                                        crossAxisAlignment: WrapCrossAlignment.center,
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              SizedBox(
+                                                width: 190,
+                                                child: TextButton(
+                                                  style: Theme.of(context).textButtonTheme.style,
+                                                  onPressed: () {
+                                                    print("${bookmarkList[i]} was clicked");
+
+                                                    List splitListBookmark = bookmarkList[i].split(" ");
+
+                                                    List chapAndVerseBookmark =
+                                                        splitListBookmark.last.toString().split(":");
+                                                    late String bookBookmark;
+                                                    if (splitListBookmark.length > 2) {
+                                                      bookBookmark = splitListBookmark[0] + splitListBookmark[1];
+                                                    } else {
+                                                      bookBookmark = splitListBookmark[0];
+                                                    }
+
+                                                    String verseBookmark = chapAndVerseBookmark[1];
+                                                    String chapterBookmark = chapAndVerseBookmark[0];
+                                                    print("bookBookmark: $bookBookmark");
+
+                                                    String testamentBookmark =
+                                                        bookListPassage[bookBookmark]["testament"];
+
+                                                    print(
+                                                        "testament: $testamentBookmark, book: $bookBookmark, chapter: $chapterBookmark, verse: $verseBookmark");
+// Jump to passage
+                                                    // Navigator.pop(context);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => PassagePage(
+                                                          appBarTitle: "$bookBookmark $chapterBookmark",
+                                                          chapter: chapterBookmark,
+                                                          bible: widget.bible,
+                                                          oldOrNew: testamentBookmark,
+                                                          bookRef: bookListPassage[bookBookmark]["refName"],
+                                                          language: "chapters_hu",
+                                                          chapterSum: bookListPassage[bookBookmark]["length"],
+                                                          verse: int.parse(verseBookmark),
+                                                          bookList: widget.bookList,
+                                                          bookNameHu: bookBookmark,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    bookmarkList[i],
+                                                    textAlign: TextAlign.center,
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                                          fontSize: 24 * multiplier,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          GestureDetector(
+                                            child: Icon(
+                                              Icons.close,
+                                              color: Theme.of(context).colorScheme.tertiary,
+                                              size: 30,
+                                            ),
+                                            onTap: () {
+                                              print("Delete: ${bookmarkList[i]}");
+                                              bookmarkList.remove(bookmarkList[i]);
+                                              deleteBookmark(bookmark: bookmarkList);
+                                              Navigator.pop(context);
+                                            },
+                                          )
+                                        ],
+                                      )
+                                  ],
+                                ),
+                              ),
+                            );
+                          });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.bookmark,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -443,6 +630,56 @@ class _PassagePageState extends State<PassagePage> {
                                           ]),
                                         ),
                                       ),
+                                      Positioned(
+                                        top: 0,
+                                        left: 0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 14.0),
+                                          child: IconButton(
+                                            onPressed: () {
+                                              String bookmarkRefText =
+                                                  "$bookNameHu $chap:${bibleCurrentHu["$chap"][index]["num"]}";
+
+                                              if (bookmarkList.contains(bookmarkRefText)) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    backgroundColor: Theme.of(context).colorScheme.tertiary,
+                                                    content: Text(
+                                                      "${bookmarkRefText} - Mentve",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15.0,
+                                                      ),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ),
+                                                );
+                                              } else {
+                                                addBookmark(bookmark: bookmarkRefText).then((_) => {
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(
+                                                          backgroundColor: Theme.of(context).colorScheme.tertiary,
+                                                          content: Text(
+                                                            "${bookmarkRefText} - Mentve",
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 15.0,
+                                                            ),
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    });
+                                              }
+                                              print(bookmarkRefText);
+                                            },
+                                            icon: Icon(
+                                              Icons.star,
+                                              color: Colors.transparent,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                       if (bibleCurrentHu["$chap"][index]["ref"] != null)
                                         hungarianReferences(bibleCurrentHu, chap, index, context)
                                     ],
@@ -538,7 +775,7 @@ class _PassagePageState extends State<PassagePage> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
             child: Text(
-              language == "chapters_hu" ? "🇭🇺" : "🇺🇲",
+              language == "chapters_hu" ? "🇭🇺" : "🇺🇸",
               style: TextStyle(fontSize: 35.0),
             ),
             onPressed: () {
