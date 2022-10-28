@@ -47,7 +47,7 @@ class _SearchPageState extends State<SearchPage> {
       barrierColor: Colors.black87,
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 250), () {
+        Future.delayed(Duration(milliseconds: 150), () {
           Navigator.of(context).pop();
         });
         return AbsorbPointer(
@@ -203,6 +203,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
       child: Scaffold(
         appBar: AppBar(
+          titleSpacing: 0,
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           title: Text('Keresés'),
         ),

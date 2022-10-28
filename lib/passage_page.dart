@@ -234,13 +234,17 @@ class _PassagePageState extends State<PassagePage> {
         ),
         child: Scaffold(
           appBar: AppBar(
+            titleSpacing: 0,
             backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    Text(widget.appBarTitle),
+                    Text(
+                      widget.appBarTitle,
+                      style: Theme.of(context).appBarTheme.titleTextStyle,
+                    ),
                     GestureDetector(
                       onTap: () {
                         print("Total chapters number: ${widget.chapterSum}");
@@ -303,7 +307,7 @@ class _PassagePageState extends State<PassagePage> {
                                 children: [
                                   Text(
                                     bookmarkList.length > 1 ? "Könyvjelzők" : "Könyvjelző",
-                                    style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                                    style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24),
                                   ),
                                   IconButton(
                                     onPressed: () {
@@ -329,7 +333,7 @@ class _PassagePageState extends State<PassagePage> {
                                           Stack(
                                             children: [
                                               SizedBox(
-                                                width: 190,
+                                                width: 150,
                                                 child: TextButton(
                                                   style: Theme.of(context).textButtonTheme.style,
                                                   onPressed: () {
@@ -379,7 +383,7 @@ class _PassagePageState extends State<PassagePage> {
                                                     bookmarkList[i],
                                                     textAlign: TextAlign.center,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                                                          fontSize: 24 * multiplier,
+                                                          fontSize: 20,
                                                         ),
                                                   ),
                                                 ),
@@ -840,7 +844,7 @@ class _PassagePageState extends State<PassagePage> {
                     backgroundColor: Theme.of(context).colorScheme.background,
                     title: Text(
                       bibleCurrentHu["$chap"][index]["ref"].length > 1 ? "Hivatkozások" : "Hivatkozás",
-                      style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                      style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24),
                     ),
                     content: SingleChildScrollView(
                       child: Column(
@@ -928,10 +932,7 @@ class _PassagePageState extends State<PassagePage> {
                                             Flexible(
                                               child: Text(
                                                 "$refBookNameFull $refChapter",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline5
-                                                    ?.copyWith(fontSize: 24 * multiplier),
+                                                style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24),
                                               ),
                                             ),
                                             IconButton(
@@ -1004,7 +1005,7 @@ class _PassagePageState extends State<PassagePage> {
                                     // Icon(Icons.arrow_drop_down),
                                     Text(
                                       "$element 🔻",
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * multiplier),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20),
                                     ),
                                   ],
                                 ),

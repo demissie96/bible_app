@@ -49,14 +49,10 @@ class _SettingsPageState extends State<SettingsPage> {
         await showDialog(
           context: context,
           builder: (context) {
-            Future.delayed(Duration(milliseconds: 500), () {
+            Future.delayed(Duration(milliseconds: 150), () {
               Navigator.of(context).pop();
             });
-            return AbsorbPointer(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
+            return AbsorbPointer();
           },
         );
 
@@ -72,104 +68,107 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         child: Scaffold(
           appBar: AppBar(
+            titleSpacing: 0,
             backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
             title: Text('Beállítások'),
           ),
           drawer: SideMenu(),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Betűméret",
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                    RadioListTile(
-                      activeColor: Theme.of(context).colorScheme.tertiary,
-                      title: Text(
-                        "Kicsi",
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * 0.8),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Betűméret",
+                        style: Theme.of(context).textTheme.headline5,
                       ),
-                      value: 0.8,
-                      groupValue: fontSize,
-                      onChanged: (value) {
-                        setState(() {
-                          fontSize = value as double;
-                          addSomeData(value);
-                        });
-                      },
-                    ),
-                    RadioListTile(
-                      activeColor: Theme.of(context).colorScheme.tertiary,
-                      title: Text(
-                        "Közepes",
-                        style: Theme.of(context).textTheme.bodyText1,
+                      RadioListTile(
+                        activeColor: Theme.of(context).colorScheme.tertiary,
+                        title: Text(
+                          "Kicsi",
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * 0.8),
+                        ),
+                        value: 0.8,
+                        groupValue: fontSize,
+                        onChanged: (value) {
+                          setState(() {
+                            fontSize = value as double;
+                            addSomeData(value);
+                          });
+                        },
                       ),
-                      value: 1.0,
-                      groupValue: fontSize,
-                      onChanged: (value) {
-                        setState(() {
-                          fontSize = value as double;
-                          addSomeData(value);
-                        });
-                      },
-                    ),
-                    RadioListTile(
-                      activeColor: Theme.of(context).colorScheme.tertiary,
-                      title: Text(
-                        "Nagy",
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * 1.2),
+                      RadioListTile(
+                        activeColor: Theme.of(context).colorScheme.tertiary,
+                        title: Text(
+                          "Közepes",
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                        value: 1.0,
+                        groupValue: fontSize,
+                        onChanged: (value) {
+                          setState(() {
+                            fontSize = value as double;
+                            addSomeData(value);
+                          });
+                        },
                       ),
-                      value: 1.2,
-                      groupValue: fontSize,
-                      onChanged: (value) {
-                        setState(() {
-                          fontSize = value as double;
-                          addSomeData(value);
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: Theme.of(context).colorScheme.background,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 10,
+                      RadioListTile(
+                        activeColor: Theme.of(context).colorScheme.tertiary,
+                        title: Text(
+                          "Nagy",
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * 1.2),
+                        ),
+                        value: 1.2,
+                        groupValue: fontSize,
+                        onChanged: (value) {
+                          setState(() {
+                            fontSize = value as double;
+                            addSomeData(value);
+                          });
+                        },
                       ),
                     ],
                   ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: RichText(
-                        text: TextSpan(children: [
-                          TextSpan(
-                            text: "16 ",
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 15 * fontSize),
-                          ),
-                          TextSpan(
-                            text:
-                                "Mert úgy szerette Isten e világot, hogy az ő egyszülött Fiát adta, hogy valaki hiszen őbenne, el ne vesszen, hanem örök élete legyen.",
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * fontSize),
-                          ),
-                        ]),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: Theme.of(context).colorScheme.background,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: "16 ",
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 15 * fontSize),
+                            ),
+                            TextSpan(
+                              text:
+                                  "Mert úgy szerette Isten e világot, hogy az ő egyszülött Fiát adta, hogy valaki hiszen őbenne, el ne vesszen, hanem örök élete legyen.",
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * fontSize),
+                            ),
+                          ]),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 50.0,
-                ),
-              ],
+                  SizedBox(
+                    height: 50.0,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -86,7 +86,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 250), () {
+        Future.delayed(Duration(milliseconds: 150), () {
           Navigator.of(context).pop();
         });
         return AbsorbPointer();
@@ -114,7 +114,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 250), () {
+        Future.delayed(Duration(milliseconds: 150), () {
           Navigator.of(context).pop();
         });
         return AbsorbPointer();
@@ -248,6 +248,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         ),
         child: Scaffold(
           appBar: AppBar(
+            titleSpacing: 0,
             backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -319,10 +320,12 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                         key: ValueKey(index),
                                         controller: itemControllerOld,
                                         index: index,
-                                        child: Container(
-                                          margin: const EdgeInsets.only(
-                                            left: 10.0,
-                                            right: 10.0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 8.0,
+                                            right: 8.0,
+                                            top: 2,
+                                            bottom: 2,
                                           ),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
@@ -337,7 +340,10 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                             },
                                             child: Text(
                                               oldTestament[index][3],
+                                              maxLines: 1,
+                                              softWrap: false,
                                               style: TextStyle(
+                                                overflow: TextOverflow.fade,
                                                 color: bookNameHu == oldTestament[index][3]
                                                     ? null
                                                     : Theme.of(context).appBarTheme.foregroundColor,
@@ -369,8 +375,13 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                         key: ValueKey(index),
                                         controller: itemControllerNew,
                                         index: index,
-                                        child: Container(
-                                          margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 8.0,
+                                            right: 8.0,
+                                            top: 2,
+                                            bottom: 2,
+                                          ),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               padding: EdgeInsets.all(13.0),
@@ -384,8 +395,13 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                             },
                                             child: Text(
                                               newTestament[index][3],
+                                              maxLines: 1,
+                                              softWrap: false,
                                               style: TextStyle(
-                                                color: Theme.of(context).appBarTheme.foregroundColor,
+                                                overflow: TextOverflow.fade,
+                                                color: bookNameHu == newTestament[index][3]
+                                                    ? null
+                                                    : Theme.of(context).appBarTheme.foregroundColor,
                                               ),
                                             ),
                                           ),
@@ -443,7 +459,7 @@ class _ChapterListState extends State<ChapterList> {
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 250), () {
+        Future.delayed(Duration(milliseconds: 150), () {
           Navigator.of(context).pop();
         });
         return AbsorbPointer();
@@ -508,7 +524,7 @@ class _VerseListState extends State<VerseList> {
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 250), () {
+        Future.delayed(Duration(milliseconds: 150), () {
           Navigator.of(context).pop();
         });
         return AbsorbPointer();

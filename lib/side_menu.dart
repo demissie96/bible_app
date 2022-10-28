@@ -47,6 +47,15 @@ class SideMenu extends StatelessWidget {
             ),
             child: TextButton(
               onPressed: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    Future.delayed(Duration(milliseconds: 150), () {
+                      Navigator.of(context).pop();
+                    });
+                    return AbsorbPointer();
+                  },
+                );
                 Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage()));
               },
               child: const ListTile(
@@ -66,6 +75,15 @@ class SideMenu extends StatelessWidget {
             ),
             child: TextButton(
               onPressed: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    Future.delayed(Duration(milliseconds: 150), () {
+                      Navigator.of(context).pop();
+                    });
+                    return AbsorbPointer();
+                  },
+                );
                 Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
               },
               child: const ListTile(
@@ -80,7 +98,16 @@ class SideMenu extends StatelessWidget {
             margin: const EdgeInsets.only(left: 40.0, right: 40.0),
             decoration: const BoxDecoration(),
             child: TextButton(
-              onPressed: () {
+              onPressed: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    Future.delayed(Duration(milliseconds: 150), () {
+                      Navigator.of(context).pop();
+                    });
+                    return AbsorbPointer();
+                  },
+                );
                 Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
               },
               child: const ListTile(
