@@ -29,8 +29,7 @@ class SideMenu extends StatelessWidget {
                     Shadow(
                       // offset: Offset(2.0, 2.0), //position of shadow
                       blurRadius: 40.0, //blur intensity of shadow
-                      color: Colors.white
-                          .withOpacity(1.0), //color of shadow with opacity
+                      color: Colors.white.withOpacity(1.0), //color of shadow with opacity
                     ),
                   ],
                   color: Colors.white,
@@ -47,9 +46,8 @@ class SideMenu extends StatelessWidget {
               ),
             ),
             child: TextButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SearchPage()));
+              onPressed: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage()));
               },
               child: const ListTile(
                 leading: Icon(
@@ -67,9 +65,8 @@ class SideMenu extends StatelessWidget {
               ),
             ),
             child: TextButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainPage()));
+              onPressed: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
               },
               child: const ListTile(
                 leading: Icon(
@@ -84,8 +81,7 @@ class SideMenu extends StatelessWidget {
             decoration: const BoxDecoration(),
             child: TextButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
               },
               child: const ListTile(
                 leading: Icon(

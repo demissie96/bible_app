@@ -86,14 +86,10 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 500), () {
+        Future.delayed(Duration(milliseconds: 250), () {
           Navigator.of(context).pop();
         });
-        return AbsorbPointer(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
+        return AbsorbPointer();
       },
     );
     tabController.index = 1;
@@ -118,14 +114,10 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 500), () {
+        Future.delayed(Duration(milliseconds: 250), () {
           Navigator.of(context).pop();
         });
-        return AbsorbPointer(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
+        return AbsorbPointer();
       },
     );
     tabController.index = 1;
@@ -449,14 +441,10 @@ class _ChapterListState extends State<ChapterList> {
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 500), () {
+        Future.delayed(Duration(milliseconds: 250), () {
           Navigator.of(context).pop();
         });
-        return AbsorbPointer(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
+        return AbsorbPointer();
       },
     );
     tabController.index = 2;
@@ -518,14 +506,10 @@ class _VerseListState extends State<VerseList> {
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 500), () {
+        Future.delayed(Duration(milliseconds: 250), () {
           Navigator.of(context).pop();
         });
-        return AbsorbPointer(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
+        return AbsorbPointer();
       },
     );
     print("########################### last element #####################");
