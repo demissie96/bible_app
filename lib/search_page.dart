@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 import 'package:bible_app/main_page.dart';
 import 'package:bible_app/passage_page.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,57 @@ import 'package:flutter/services.dart';
 import "side_menu.dart";
 import 'package:string_similarity/string_similarity.dart';
 import 'extension/string_extension.dart';
+
+String searchText = '';
+var bibleListHu;
+var bibleListEn;
+List resultListPre = [];
+List resultListFinal = [];
+List resultList = [];
+List typingMatchList = [];
+String searchLanguage = "hun";
+var bookRefList = {};
+
+class RequiredArgs {
+  late final SendPort sendPort;
+  late String text;
+  late var hunBible;
+
+  RequiredArgs(this.text, this.hunBible, this.sendPort);
+}
+
+searchInBible(RequiredArgs requiredArgs) {
+  print("Start search in bible");
+  String _currentVerse;
+  String _currentVerseLower;
+  int _totalMatch = 0;
+  List _matchList = [];
+  final SendPort sendPort = requiredArgs.sendPort;
+  final text = requiredArgs.text;
+  final hunBible = requiredArgs.hunBible;
+  print(text);
+
+  if (text.length > 5) {
+    for (var element in hunBible) {
+      _currentVerse = element["text"].split("&")[0];
+      _currentVerseLower = _currentVerse.toLowerCase();
+      if (_currentVerseLower.contains(text.toLowerCase())) {
+        // print(_currentVerse);
+        _totalMatch++;
+        _matchList.add(_currentVerse);
+      }
+    }
+    print("Total match number: $_totalMatch");
+    if (_totalMatch < 5) {
+      print(_matchList);
+
+      // typingMatchList = _matchList;
+
+    }
+  }
+
+  sendPort.send(_matchList);
+}
 
 class SimilarityIndex {
   int index;
@@ -26,14 +78,6 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController textController = TextEditingController();
-  String searchText = '';
-  var bibleListHu;
-  var bibleListEn;
-  List resultListPre = [];
-  List resultListFinal = [];
-  List resultList = [];
-  String searchLanguage = "hun";
-  var bookRefList = {};
 
   Future<void> bibleListGet() async {
     final String res1 = await rootBundle.loadString('data/bible_in_list_hu.json');
@@ -224,8 +268,27 @@ class _SearchPageState extends State<SearchPage> {
                       icon: Icon(Icons.clear),
                       onPressed: textController.clear,
                     )),
-                onChanged: (text) {
-                  searchText = text;
+                onChanged: (text) async {
+// Background search in isolate
+                  if (searchText != text) {
+                    searchText = text;
+                    print(searchText);
+                    print("On changed triggered ::::::::::::");
+                    // searchInBible(typedString: text);
+                    final receivePort = ReceivePort();
+
+                    RequiredArgs requiredArgs = RequiredArgs(text, bibleListHu, receivePort.sendPort);
+
+                    await Isolate.spawn(searchInBible, requiredArgs);
+
+                    receivePort.listen((response) {
+                      print(response);
+                      setState(() {
+                        typingMatchList = response;
+                        resultList = [];
+                      });
+                    });
+                  }
                 },
               ),
               Row(
@@ -251,29 +314,35 @@ class _SearchPageState extends State<SearchPage> {
 
                         setState(() {
                           searchLanguage;
+                          resultList = [];
+                          typingMatchList = [];
                         });
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: FloatingActionButton(
-                      heroTag: "search",
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                      child: Icon(
-                        Icons.manage_search_outlined,
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 35.0,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          resultList = [];
-                        });
+                  Visibility(
+                    visible: typingMatchList.length > 0 ? false : true,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: FloatingActionButton(
+                        heroTag: "search",
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        child: Icon(
+                          Icons.manage_search_outlined,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 35.0,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            resultList = [];
+                            typingMatchList = [];
+                          });
 
-                        if (searchText.length > 1) {
-                          loopThroughBible();
-                        }
-                      },
+                          if (searchText.length > 1) {
+                            loopThroughBible();
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -282,64 +351,82 @@ class _SearchPageState extends State<SearchPage> {
                 child: Column(
                   children: [
                     resultList.isNotEmpty
+                        ? Visibility(
+                            visible: typingMatchList.length > 0 ? false : true,
+                            child: Expanded(
+                              child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: resultList.length,
+                                  itemBuilder: (context, index) {
+                                    String bookName = searchLanguage == "hun"
+                                        ? bookRefList[resultList[index]["book"]]["hunName"].toString()
+                                        : resultList[index]["book"];
+                                    return Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            print("Jump to passage");
+                                            print("searchLanguage : $searchLanguage");
+                                            resultListFinal.add({
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => PassagePage(
+                                                    appBarTitle:
+                                                        "${bookRefList[resultList[index]["book"]]["fullName"]} ${resultList[index]["chapter"]}",
+                                                    chapter: resultList[index]["chapter"].toString(),
+                                                    bible: bibleJson,
+                                                    oldOrNew:
+                                                        bookRefList[resultList[index]["book"]]["testament"].toString(),
+                                                    bookRef: resultList[index]["book"],
+                                                    language: searchLanguage == "hun" ? "chapters_hu" : "chapters_eng",
+                                                    chapterSum: bookRefList[resultList[index]["book"]]["chapterSum"],
+                                                    verse: int.parse(resultList[index]["verse"]),
+                                                    bookList: bookList,
+                                                    bookNameHu: bookRefList[resultList[index]["book"]]["fullName"],
+                                                  ),
+                                                ),
+                                              )
+                                            });
+                                          },
+                                          child: RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text:
+                                                      "$bookName ${resultList[index]["chapter"]}:${resultList[index]["verse"]}",
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                ),
+                                                TextSpan(
+                                                  text: " ${resultList[index]["text"]}",
+                                                  style: Theme.of(context).textTheme.bodyText1,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                            ),
+                          )
+                        : Container(),
+                    typingMatchList.isNotEmpty
                         ? Expanded(
                             child: ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
-                                itemCount: resultList.length,
+                                itemCount: typingMatchList.length,
                                 itemBuilder: (context, index) {
-                                  String bookName = searchLanguage == "hun"
-                                      ? bookRefList[resultList[index]["book"]]["hunName"].toString()
-                                      : resultList[index]["book"];
-                                  return Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          print("Jump to passage");
-                                          print("searchLanguage : $searchLanguage");
-                                          resultListFinal.add({
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => PassagePage(
-                                                  appBarTitle:
-                                                      "${bookRefList[resultList[index]["book"]]["fullName"]} ${resultList[index]["chapter"]}",
-                                                  chapter: resultList[index]["chapter"].toString(),
-                                                  bible: bibleJson,
-                                                  oldOrNew:
-                                                      bookRefList[resultList[index]["book"]]["testament"].toString(),
-                                                  bookRef: resultList[index]["book"],
-                                                  language: searchLanguage == "hun" ? "chapters_hu" : "chapters_eng",
-                                                  chapterSum: bookRefList[resultList[index]["book"]]["chapterSum"],
-                                                  verse: int.parse(resultList[index]["verse"]),
-                                                  bookList: bookList,
-                                                  bookNameHu: bookRefList[resultList[index]["book"]]["fullName"],
-                                                ),
-                                              ),
-                                            )
-                                          });
-                                        },
-                                        child: RichText(
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text:
-                                                    "$bookName ${resultList[index]["chapter"]}:${resultList[index]["verse"]}",
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                              ),
-                                              TextSpan(
-                                                text: " ${resultList[index]["text"]}",
-                                                style: Theme.of(context).textTheme.bodyText1,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: Text(typingMatchList[index]),
                                     ),
                                   );
-                                }),
-                          )
+                                }))
                         : Container(),
                   ],
                 ),
