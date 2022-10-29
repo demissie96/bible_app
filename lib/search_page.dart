@@ -17,6 +17,7 @@ List resultList = [];
 List typingMatchList = [];
 String searchLanguage = "hun";
 var bookRefList = {};
+int previousMillisec = 0;
 
 class RequiredArgs {
   late final SendPort sendPort;
@@ -37,23 +38,21 @@ searchInBible(RequiredArgs requiredArgs) {
   final hunBible = requiredArgs.hunBible;
   print(text);
 
-  if (text.length > 5) {
-    for (var element in hunBible) {
-      _currentVerse = element["text"].split("&")[0];
-      _currentVerseLower = _currentVerse.replaceAll(",", "").toLowerCase();
-      if (_currentVerseLower.contains(text.toLowerCase())) {
-        // print(_currentVerse);
-        _totalMatch++;
-        _matchList.add(_currentVerse);
-      }
+  for (var element in hunBible) {
+    _currentVerse = element["text"].split("&")[0];
+    _currentVerseLower = _currentVerse.replaceAll(",", "").toLowerCase();
+    if (_currentVerseLower.contains(text.toLowerCase())) {
+      // print(_currentVerse);
+      _totalMatch++;
+      _matchList.add(_currentVerse);
     }
-    print("Total match number: $_totalMatch");
-    if (_totalMatch < 5) {
-      print(_matchList);
+  }
+  print("Total match number: $_totalMatch");
+  if (_totalMatch < 5) {
+    print(_matchList);
 
-      // typingMatchList = _matchList;
+    // typingMatchList = _matchList;
 
-    }
   }
 
   sendPort.send(_matchList);
@@ -311,23 +310,35 @@ class _SearchPageState extends State<SearchPage> {
                     )),
                 onChanged: (text) async {
 // Background search in isolate
-                  if (searchText != text) {
+                  if (searchText != text && text.length > 5) {
                     searchText = text;
                     print(searchText);
+                    int currentMillisec = DateTime.now().millisecondsSinceEpoch;
                     print("On changed triggered ::::::::::::");
-                    // searchInBible(typedString: text);
-                    final receivePort = ReceivePort();
 
-                    RequiredArgs requiredArgs = RequiredArgs(text, bibleListHu, receivePort.sendPort);
+                    if (currentMillisec > previousMillisec + 200) {
+                      print("Isolate run triggered");
+                      previousMillisec = currentMillisec;
+// searchInBible(typedString: text);
+                      final receivePort = ReceivePort();
 
-                    await Isolate.spawn(searchInBible, requiredArgs);
+                      RequiredArgs requiredArgs = RequiredArgs(text, bibleListHu, receivePort.sendPort);
 
-                    receivePort.listen((response) {
-                      print(response);
-                      setState(() {
-                        typingMatchList = response;
-                        resultList = [];
+                      await Isolate.spawn(searchInBible, requiredArgs);
+
+                      receivePort.listen((response) {
+                        print(response);
+                        setState(() {
+                          typingMatchList = response;
+                          resultList = [];
+                        });
                       });
+                    }
+                  } else if (searchText != text) {
+                    print("text length smaller than 6");
+                    setState(() {
+                      typingMatchList = [];
+                      resultList = [];
                     });
                   }
                 },
