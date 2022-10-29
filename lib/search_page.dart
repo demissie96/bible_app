@@ -11,13 +11,14 @@ import 'extension/string_extension.dart';
 String searchText = '';
 var bibleListHu;
 var bibleListEn;
-List resultListPre = [];
-List resultListFinal = [];
+// List resultListPre = [];
+// List resultListFinal = [];
 List resultList = [];
 List typingMatchList = [];
 String searchLanguage = "hun";
 var bookRefList = {};
 int previousMillisec = 0;
+bool circularProgressShown = false;
 
 class RequiredArgs {
   late final SendPort sendPort;
@@ -27,7 +28,8 @@ class RequiredArgs {
   RequiredArgs(this.text, this.importedBible, this.sendPort);
 }
 
-searchInBible(RequiredArgs requiredArgs) {
+// Search for exact match
+searchExactMatch(RequiredArgs requiredArgs) {
   // print("Start search in bible");
   String _currentVerse;
   var _currentVerseMap = {};
@@ -57,14 +59,96 @@ searchInBible(RequiredArgs requiredArgs) {
     }
   }
   // print("Total match number: $_totalMatch");
-  if (_totalMatch < 5) {
-    // print(_matchList);
-
-    // typingMatchList = _matchList;
-
-  }
 
   sendPort.send(_matchList);
+}
+
+// Search for similar match
+searchSimilarMatch(RequiredArgs requiredArgs) {
+  final SendPort sendPort = requiredArgs.sendPort;
+  String givenText = requiredArgs.text.toLowerCase();
+  List indexSimilarity = [];
+  int index = 0;
+  List resultListPre = [];
+
+  print("Start looping");
+
+  rankingSearch(list) {
+    for (var element in list) {
+      var similarity = givenText.similarityTo(element["text"].toLowerCase());
+      // indexSimilarity.add({ "index": index, "similarity": similarity });
+      indexSimilarity.add(SimilarityIndex(index, similarity));
+      index++;
+    }
+
+    print(givenText);
+
+    // print("Start sorting");
+    indexSimilarity.sort((a, b) => b.similarity.compareTo(a.similarity));
+
+    // print("Similarity rate: ${indexSimilarity[0].similarity}");
+    // print("Similarity rate: ${indexSimilarity[1].similarity}");
+    // print("Similarity rate: ${indexSimilarity[2].similarity}");
+
+    // List top 10 result
+    for (var i = 0; i < 10; i++) {
+      resultListPre.add(list[indexSimilarity[i].index]);
+    }
+
+    // print("#####################################################");
+    List resultListFinal = [];
+    for (var element in resultListPre) {
+      String text = element["text"].split("&")[0];
+      text = text.capitalizeFirstForCopy();
+      resultListFinal.add({
+        "testament": "${element["testament"]}",
+        "book": "${element["book"]}",
+        "language": "${element["language"]}",
+        "chapter": element["chapter"],
+        "verse": "${element["verse"]}",
+        "text": text
+      });
+    }
+    // // print(resultListFinal);
+    // print(resultListFinal.length);
+    // print("#####################################################");
+
+    List indexSimilarity2 = [];
+    index = 0;
+
+    // List top 10 final result
+    List notSelectedIndex = [];
+
+    for (var element in resultListFinal) {
+      var similarity = givenText.similarityTo(element["text"].toLowerCase());
+
+      if (similarity >= 0.30) {
+        indexSimilarity2.add(SimilarityIndex(index, similarity));
+      } else {
+        notSelectedIndex.add(index);
+      }
+      index++;
+    }
+    // print("Not selected indices --> $notSelectedIndex");
+
+    indexSimilarity2.sort((a, b) => b.similarity.compareTo(a.similarity));
+    // print(indexSimilarity2);
+    // print(indexSimilarity);
+
+    List resultList = [];
+    for (var element in indexSimilarity2) {
+      resultList.add(resultListFinal[element.index]);
+    }
+    for (var element in notSelectedIndex) {
+      resultList.add(resultListFinal[element]);
+    }
+
+    print("Result list length: ${resultList.length}");
+
+    sendPort.send(resultList);
+  }
+
+  rankingSearch(requiredArgs.importedBible);
 }
 
 class SimilarityIndex {
@@ -94,123 +178,7 @@ class _SearchPageState extends State<SearchPage> {
     bibleListEn = await json.decode(res2);
   }
 
-  Future loopThroughBible() async {
-    await showDialog(
-      barrierColor: Colors.black87,
-      context: context,
-      builder: (context) {
-        Future.delayed(Duration(milliseconds: 150), () {
-          Navigator.of(context).pop();
-        });
-        return AbsorbPointer(
-          child: Center(
-            child: Text(
-              "Keresés...",
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                color: Colors.white,
-                fontSize: 40.0,
-                shadows: [
-                  Shadow(
-                    // offset: Offset(2.0, 2.0), //position of shadow
-                    blurRadius: 30.0, //blur intensity of shadow
-                    color: Colors.white.withOpacity(1.0), //color of shadow with opacity
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-
-    searchText = searchText.toLowerCase();
-
-    List indexSimilarity = [];
-    int index = 0;
-    resultListPre = [];
-
-    // print("Start looping");
-
-    rankingSearch(list) {
-      for (var element in list) {
-        var similarity = searchText.similarityTo(element["text"].toLowerCase());
-        // indexSimilarity.add({ "index": index, "similarity": similarity });
-        indexSimilarity.add(SimilarityIndex(index, similarity));
-        index++;
-      }
-
-      // print(searchText);
-
-      // print("Start sorting");
-      indexSimilarity.sort((a, b) => b.similarity.compareTo(a.similarity));
-
-      // print("Similarity rate: ${indexSimilarity[0].similarity}");
-      // print("Similarity rate: ${indexSimilarity[1].similarity}");
-      // print("Similarity rate: ${indexSimilarity[2].similarity}");
-
-      // List top 10 result
-      for (var i = 0; i < 10; i++) {
-        resultListPre.add(list[indexSimilarity[i].index]);
-      }
-
-      // print("#####################################################");
-      resultListFinal = [];
-      for (var element in resultListPre) {
-        String text = element["text"].split("&")[0];
-        text = text.capitalizeFirstForCopy();
-        resultListFinal.add({
-          "testament": "${element["testament"]}",
-          "book": "${element["book"]}",
-          "language": "${element["language"]}",
-          "chapter": element["chapter"],
-          "verse": "${element["verse"]}",
-          "text": text
-        });
-      }
-      // // print(resultListFinal);
-      // print(resultListFinal.length);
-      // print("#####################################################");
-
-      List indexSimilarity2 = [];
-      index = 0;
-
-      // List top 10 final result
-      List notSelectedIndex = [];
-
-      for (var element in resultListFinal) {
-        var similarity = searchText.similarityTo(element["text"].toLowerCase());
-
-        if (similarity >= 0.30) {
-          indexSimilarity2.add(SimilarityIndex(index, similarity));
-        } else {
-          notSelectedIndex.add(index);
-        }
-        index++;
-      }
-      // print("Not selected indices --> $notSelectedIndex");
-
-      indexSimilarity2.sort((a, b) => b.similarity.compareTo(a.similarity));
-      // print(indexSimilarity2);
-      // print(indexSimilarity);
-
-      for (var element in indexSimilarity2) {
-        resultList.add(resultListFinal[element.index]);
-      }
-      for (var element in notSelectedIndex) {
-        resultList.add(resultListFinal[element]);
-      }
-
-      setState(() {
-        resultList;
-      });
-    }
-
-    if (searchLanguage == "hun") {
-      rankingSearch(bibleListHu);
-    } else {
-      rankingSearch(bibleListEn);
-    }
-  }
+  // Loop through the bible
 
   Future<void> bookListJson() async {
     final String response = await rootBundle.loadString('data/book_list.json');
@@ -314,6 +282,7 @@ class _SearchPageState extends State<SearchPage> {
                         textController.clear();
                         setState(() {
                           typingMatchList = [];
+                          resultList = [];
                           searchText = "";
                         });
                       },
@@ -329,13 +298,13 @@ class _SearchPageState extends State<SearchPage> {
                     if (currentMillisec > previousMillisec + 200) {
                       // print("Isolate run triggered");
                       previousMillisec = currentMillisec;
-// searchInBible(typedString: text);
+
                       final receivePort = ReceivePort();
 
                       RequiredArgs requiredArgs = RequiredArgs(
                           searchText, searchLanguage == "hun" ? bibleListHu : bibleListEn, receivePort.sendPort);
 
-                      await Isolate.spawn(searchInBible, requiredArgs);
+                      await Isolate.spawn(searchExactMatch, requiredArgs);
 
                       receivePort.listen((response) {
                         // print(response);
@@ -396,16 +365,32 @@ class _SearchPageState extends State<SearchPage> {
                           color: Theme.of(context).colorScheme.primary,
                           size: 35.0,
                         ),
-                        onPressed: () {
-                          setState(() {
-                            resultList = [];
-                            typingMatchList = [];
-                          });
+// String similarity trigger
+                        onPressed: circularProgressShown
+                            ? null
+                            : () async {
+                                setState(() {
+                                  resultList = [];
+                                  typingMatchList = [];
+                                  circularProgressShown = true;
+                                });
 
-                          if (searchText.length > 1) {
-                            loopThroughBible();
-                          }
-                        },
+                                final receivePort = ReceivePort();
+
+                                RequiredArgs requiredArgs = RequiredArgs(searchText,
+                                    searchLanguage == "hun" ? bibleListHu : bibleListEn, receivePort.sendPort);
+
+                                await Isolate.spawn(searchSimilarMatch, requiredArgs);
+
+                                receivePort.listen((response) {
+                                  // print(response);
+                                  setState(() {
+                                    circularProgressShown = false;
+                                    resultList = response;
+                                  });
+                                  // Navigator.of(context).pop();
+                                });
+                              },
                       ),
                     ),
                   ),
@@ -413,7 +398,12 @@ class _SearchPageState extends State<SearchPage> {
               ),
               Expanded(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Visibility(
+                      visible: circularProgressShown ? true : false,
+                      child: CircularProgressIndicator(),
+                    ),
 // String similarity search results
                     resultList.isNotEmpty
                         ? Visibility(
