@@ -301,7 +301,13 @@ class _SearchPageState extends State<SearchPage> {
                     hintText: searchLanguage == "hun" ? "Keresés..." : "Search...",
                     suffixIcon: IconButton(
                       icon: Icon(Icons.clear),
-                      onPressed: textController.clear,
+                      onPressed: () {
+                        textController.clear();
+                        setState(() {
+                          typingMatchList = [];
+                          searchText = "";
+                        });
+                      },
                     )),
                 onChanged: (text) async {
 // Background search in isolate
@@ -354,7 +360,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   Visibility(
-                    visible: typingMatchList.length > 0 ? false : true,
+                    visible: typingMatchList.length > 0 || searchText.length < 6 ? false : true,
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: FloatingActionButton(
