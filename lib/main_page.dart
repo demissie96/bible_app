@@ -92,19 +92,19 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         return AbsorbPointer();
       },
     );
+
     tabController.index = 1;
     oldOrNew = "old";
-    // print(oldTestament[index][0]);
     bookRef = oldTestament[index][0];
     bookNameHu = oldTestament[index][3];
     chapter = 1;
     verse = 1;
     totalChapter = [];
+
     for (var i = 1; i <= oldTestament[index][1]; i++) {
       totalChapter.add(i);
     }
 
-    // print(totalChapter.length);
     setState(() {
       appBarTitle = "$bookNameHu $chapter";
     });
@@ -120,19 +120,19 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         return AbsorbPointer();
       },
     );
+
     tabController.index = 1;
     oldOrNew = "new";
-    // print(newTestament[index][3]);
     bookRef = newTestament[index][0];
     bookNameHu = newTestament[index][3];
     chapter = 1;
     verse = 1;
     totalChapter = [];
+
     for (var i = 1; i <= newTestament[index][1]; i++) {
       totalChapter.add(i);
     }
 
-    // print(totalChapter.length);
     setState(() {
       appBarTitle = "$bookNameHu $chapter";
     });
@@ -161,20 +161,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     });
   }
 
-  // Future fontMultiplier() async {
-  //   // Obtain shared preferences.
-  //   final prefs = await SharedPreferences.getInstance();
-
-  //   setState(() {
-  //     fontSize = prefs.getDouble('multiplier') ?? 1.0;
-  //   });
-  //   // print("Color multiplier: $fontSize");
-  // }
-
   Future scrollToIndex(bookRef) async {
-    // print(bookListIndex[bookRef]);
-    // print("old or new? $oldOrNew");
-
     int position = bookListIndex[bookRef]["index"];
 
     if (oldOrNew == "old") {
@@ -193,18 +180,16 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     restoreData();
     getLastRead().then((value) {
       totalChapter = [];
-      // print("chapter sum: $chapterSum");
-      // print("total chapter length: ${totalChapter.length}");
+
       for (var i = 1; i <= chapterSum; i++) {
         totalChapter.add(i);
       }
-      // print("total chapter length: ${totalChapter.length}");
+
       setState(() {
         appBarTitle = "$bookNameHu $chapter";
         totalChapter;
@@ -218,7 +203,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
     bibleJsonGet();
 
-    // We need a TabController to control the selected tab programmatically
+    // TabController to control the selected tab programmatically
     tabController = TabController(
       vsync: this,
       length: 3,
@@ -258,6 +243,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                     color: Theme.of(context).appBarTheme.foregroundColor,
                   ),
                 ),
+// Continue where you left off button.
                 IconButton(
                   onPressed: () {
                     Navigator.push(
@@ -299,6 +285,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
           body: TabBarView(
             controller: tabController,
             children: [
+// Tab for select book
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
@@ -306,7 +293,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                     Expanded(
                       child: Column(
                         children: [
-                          // Display the data loaded from sample.json
+// Display old testament book list
                           oldTestament.isNotEmpty
                               ? Expanded(
                                   child: ListView.builder(
@@ -361,7 +348,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                     Expanded(
                       child: Column(
                         children: [
-                          // Display the data loaded from sample.json
+// Display old testament book list
                           newTestament.isNotEmpty
                               ? Expanded(
                                   child: ListView.builder(
@@ -416,6 +403,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                   ],
                 ),
               ),
+// Tab for listing chapters number
               Padding(
                 padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
                 child: Column(
@@ -426,6 +414,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                   ],
                 ),
               ),
+// Tab for listing verses number
               Padding(
                 padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
                 child: Column(
@@ -466,12 +455,9 @@ class _ChapterListState extends State<ChapterList> {
     );
     tabController.index = 2;
     chapter = i;
-
     appBarTitle = "$bookNameHu $chapter";
-    // print(appBarTitle);
-    updateTitle();
 
-    // print("Chapter $i is selected");
+    updateTitle();
   }
 
   @override
@@ -529,14 +515,10 @@ class _VerseListState extends State<VerseList> {
         return AbsorbPointer();
       },
     );
-    // print("########################### last element #####################");
-    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"].last);
 
     verse = i;
-    // print(verse);
-    // // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
-    // print("Verse $i was clicked!");
     updateTitle();
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -558,18 +540,12 @@ class _VerseListState extends State<VerseList> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // print("old or new: $oldOrNew, bookref: $bookRef, language: $language, chapter: $chapter");
     verseSum = int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
   }
 
   @override
   Widget build(BuildContext context) {
-    // print("Length");
-    // print("old or new: $oldOrNew, bookref: $bookRef, language: $language, chapter: $chapter");
-
-    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"].length);
     return SingleChildScrollView(
       child: Wrap(
         children: [

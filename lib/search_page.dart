@@ -11,8 +11,6 @@ import 'extension/string_extension.dart';
 String searchText = '';
 var bibleListHu;
 var bibleListEn;
-// List resultListPre = [];
-// List resultListFinal = [];
 List resultList = [];
 List typingMatchList = [];
 String searchLanguage = "hun";
@@ -30,7 +28,6 @@ class RequiredArgs {
 
 // Search for exact match
 searchExactMatch(RequiredArgs requiredArgs) {
-  // print("Start search in bible");
   String _currentVerse;
   var _currentVerseMap = {};
   String _currentVerseLower;
@@ -39,13 +36,11 @@ searchExactMatch(RequiredArgs requiredArgs) {
   final SendPort sendPort = requiredArgs.sendPort;
   final text = requiredArgs.text.replaceAll(",", "").replaceAll("  ", " ");
   final importedBible = requiredArgs.importedBible;
-  // print(text);
 
   for (var element in importedBible) {
     _currentVerse = element["text"].split("&")[0];
     _currentVerseLower = _currentVerse.replaceAll(",", "").toLowerCase();
     if (_currentVerseLower.contains(text.toLowerCase())) {
-      // // print(_currentVerse);
       _totalMatch++;
       _currentVerseMap = {
         "testament": element["testament"],
@@ -58,7 +53,6 @@ searchExactMatch(RequiredArgs requiredArgs) {
       _matchList.add(_currentVerseMap);
     }
   }
-  // print("Total match number: $_totalMatch");
 
   sendPort.send(_matchList);
 }
@@ -71,31 +65,20 @@ searchSimilarMatch(RequiredArgs requiredArgs) {
   int index = 0;
   List resultListPre = [];
 
-  print("Start looping");
-
   rankingSearch(list) {
     for (var element in list) {
       var similarity = givenText.similarityTo(element["text"].toLowerCase());
-      // indexSimilarity.add({ "index": index, "similarity": similarity });
       indexSimilarity.add(SimilarityIndex(index, similarity));
       index++;
     }
 
-    print(givenText);
-
-    // print("Start sorting");
     indexSimilarity.sort((a, b) => b.similarity.compareTo(a.similarity));
-
-    // print("Similarity rate: ${indexSimilarity[0].similarity}");
-    // print("Similarity rate: ${indexSimilarity[1].similarity}");
-    // print("Similarity rate: ${indexSimilarity[2].similarity}");
 
     // List top 10 result
     for (var i = 0; i < 10; i++) {
       resultListPre.add(list[indexSimilarity[i].index]);
     }
 
-    // print("#####################################################");
     List resultListFinal = [];
     for (var element in resultListPre) {
       String text = element["text"].split("&")[0];
@@ -109,14 +92,9 @@ searchSimilarMatch(RequiredArgs requiredArgs) {
         "text": text
       });
     }
-    // // print(resultListFinal);
-    // print(resultListFinal.length);
-    // print("#####################################################");
 
     List indexSimilarity2 = [];
     index = 0;
-
-    // List top 10 final result
     List notSelectedIndex = [];
 
     for (var element in resultListFinal) {
@@ -129,11 +107,8 @@ searchSimilarMatch(RequiredArgs requiredArgs) {
       }
       index++;
     }
-    // print("Not selected indices --> $notSelectedIndex");
 
     indexSimilarity2.sort((a, b) => b.similarity.compareTo(a.similarity));
-    // print(indexSimilarity2);
-    // print(indexSimilarity);
 
     List resultList = [];
     for (var element in indexSimilarity2) {
@@ -142,8 +117,6 @@ searchSimilarMatch(RequiredArgs requiredArgs) {
     for (var element in notSelectedIndex) {
       resultList.add(resultListFinal[element]);
     }
-
-    print("Result list length: ${resultList.length}");
 
     sendPort.send(resultList);
   }
@@ -159,7 +132,7 @@ class SimilarityIndex {
 
   @override
   String toString() {
-    return '{ ${this.index}, ${this.similarity} }';
+    return '{ $index, $similarity }';
   }
 }
 
@@ -178,8 +151,7 @@ class _SearchPageState extends State<SearchPage> {
     bibleListEn = await json.decode(res2);
   }
 
-  // Loop through the bible
-
+// Create a book reference map
   Future<void> bookListJson() async {
     final String response = await rootBundle.loadString('data/book_list.json');
     final data = await json.decode(response);
@@ -200,19 +172,18 @@ class _SearchPageState extends State<SearchPage> {
         "chapterSum": data[i][1]
       };
     }
-
-    setState(() {
-      oldTestament;
-      newTestament;
-    });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     bibleListGet();
     bookListJson();
+
+    setState(() {
+      resultList = [];
+      typingMatchList = [];
+    });
   }
 
   @override
@@ -228,18 +199,19 @@ class _SearchPageState extends State<SearchPage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Keresés'),
+              const Text('Keresés'),
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
-                child: Container(
+                child: SizedBox(
                   height: 40.0,
                   width: 40.0,
+// Change language button
                   child: FloatingActionButton(
                     heroTag: "language",
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                     child: Text(
                       searchLanguage == "hun" ? "🇭🇺" : "🇺🇲",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 25.0,
                       ),
                     ),
@@ -249,7 +221,7 @@ class _SearchPageState extends State<SearchPage> {
                       } else {
                         searchLanguage = "hun";
                       }
-
+// Delete all result on language change
                       setState(() {
                         searchLanguage;
                         resultList = [];
@@ -262,7 +234,7 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
         ),
-        drawer: SideMenu(),
+        drawer: const SideMenu(),
         body: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -274,10 +246,10 @@ class _SearchPageState extends State<SearchPage> {
                 autofocus: true,
                 textAlign: TextAlign.start,
                 decoration: InputDecoration(
-                    border: UnderlineInputBorder(),
+                    border: const UnderlineInputBorder(),
                     hintText: searchLanguage == "hun" ? "Keresés..." : "Search...",
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.clear),
+                      icon: const Icon(Icons.clear),
                       onPressed: () {
                         textController.clear();
                         setState(() {
@@ -291,23 +263,18 @@ class _SearchPageState extends State<SearchPage> {
 // Background search in isolate
                   if (searchText != text && text.length > 2) {
                     searchText = text;
-                    // print(searchText);
+// Prevent isolate search called too many times when backspace hold down
                     int currentMillisec = DateTime.now().millisecondsSinceEpoch;
-                    // print("On changed triggered ::::::::::::");
-
                     if (currentMillisec > previousMillisec + 200) {
-                      // print("Isolate run triggered");
                       previousMillisec = currentMillisec;
-
+// Creating an isolate
                       final receivePort = ReceivePort();
-
                       RequiredArgs requiredArgs = RequiredArgs(
                           searchText, searchLanguage == "hun" ? bibleListHu : bibleListEn, receivePort.sendPort);
 
                       await Isolate.spawn(searchExactMatch, requiredArgs);
-
+// Get the result from the isolate when finished
                       receivePort.listen((response) {
-                        // print(response);
                         setState(() {
                           typingMatchList = response;
                           resultList = [];
@@ -315,7 +282,7 @@ class _SearchPageState extends State<SearchPage> {
                       });
                     }
                   } else if (searchText != text) {
-                    // print("text length smaller than 6");
+// Delete results except if android back button is pressed
                     setState(() {
                       typingMatchList = [];
                       resultList = [];
@@ -327,7 +294,7 @@ class _SearchPageState extends State<SearchPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-// Result number
+// Total results
                   SizedBox(
                     height: 80.0,
                     child: Center(
@@ -338,12 +305,11 @@ class _SearchPageState extends State<SearchPage> {
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                           Visibility(
-                            visible: resultList.length == 0 ? true : false,
+                            visible: resultList.isEmpty ? true : false,
                             child: Text(
                               " ${typingMatchList.length}",
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(
                                     color: Theme.of(context).colorScheme.tertiary,
-                                    // fontWeight: FontWeight.bold,
                                     fontSize: 30.0,
                                   ),
                             ),
@@ -354,17 +320,12 @@ class _SearchPageState extends State<SearchPage> {
                   ),
 // Search button
                   Visibility(
-                    visible: typingMatchList.length > 0 || searchText.length < 6 ? false : true,
+                    visible: typingMatchList.isNotEmpty || searchText.length < 6 ? false : true,
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: FloatingActionButton(
                         heroTag: "search",
                         backgroundColor: Theme.of(context).colorScheme.secondary,
-                        child: Icon(
-                          Icons.manage_search_outlined,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 35.0,
-                        ),
 // String similarity trigger
                         onPressed: circularProgressShown
                             ? null
@@ -374,23 +335,25 @@ class _SearchPageState extends State<SearchPage> {
                                   typingMatchList = [];
                                   circularProgressShown = true;
                                 });
-
+// Start similarity search in isolate
                                 final receivePort = ReceivePort();
-
                                 RequiredArgs requiredArgs = RequiredArgs(searchText,
                                     searchLanguage == "hun" ? bibleListHu : bibleListEn, receivePort.sendPort);
 
                                 await Isolate.spawn(searchSimilarMatch, requiredArgs);
-
+// Get the isolate result
                                 receivePort.listen((response) {
-                                  // print(response);
                                   setState(() {
                                     circularProgressShown = false;
                                     resultList = response;
                                   });
-                                  // Navigator.of(context).pop();
                                 });
                               },
+                        child: Icon(
+                          Icons.manage_search_outlined,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 35.0,
+                        ),
                       ),
                     ),
                   ),
@@ -402,12 +365,12 @@ class _SearchPageState extends State<SearchPage> {
                   children: [
                     Visibility(
                       visible: circularProgressShown ? true : false,
-                      child: CircularProgressIndicator(),
+                      child: const CircularProgressIndicator(),
                     ),
-// String similarity search results
+// String similarity search result
                     resultList.isNotEmpty
                         ? Visibility(
-                            visible: typingMatchList.length > 0 ? false : true,
+                            visible: typingMatchList.isNotEmpty ? false : true,
                             child: Expanded(
                               child: ListView.builder(
                                   scrollDirection: Axis.vertical,
@@ -422,9 +385,6 @@ class _SearchPageState extends State<SearchPage> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: GestureDetector(
                                           onTap: () {
-                                            // print("Jump to passage");
-                                            // print("searchLanguage : $searchLanguage");
-
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -500,9 +460,7 @@ class _SearchPageState extends State<SearchPage> {
                                           ),
                                         );
                                       },
-                                      child:
-                                          //  Text(typingMatchList[index].toString()),
-                                          RichText(
+                                      child: RichText(
                                         text: TextSpan(
                                           children: [
                                             TextSpan(

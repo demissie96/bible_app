@@ -27,9 +27,8 @@ class SideMenu extends StatelessWidget {
                 style: TextStyle(
                   shadows: [
                     Shadow(
-                      // offset: Offset(2.0, 2.0), //position of shadow
-                      blurRadius: 40.0, //blur intensity of shadow
-                      color: Colors.white.withOpacity(1.0), //color of shadow with opacity
+                      blurRadius: 40.0, // blur intensity of shadow
+                      color: Colors.white.withOpacity(1.0), // color of shadow with opacity
                     ),
                   ],
                   color: Colors.white,
@@ -50,13 +49,12 @@ class SideMenu extends StatelessWidget {
                 await showDialog(
                   context: context,
                   builder: (context) {
-                    Future.delayed(Duration(milliseconds: 150), () {
+                    Future.delayed(const Duration(milliseconds: 150), () {
                       Navigator.of(context).pop();
                     });
-                    return AbsorbPointer();
+                    return const AbsorbPointer();
                   },
-                );
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage()));
+                ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage())));
               },
               child: const ListTile(
                 leading: Icon(
@@ -78,13 +76,12 @@ class SideMenu extends StatelessWidget {
                 await showDialog(
                   context: context,
                   builder: (context) {
-                    Future.delayed(Duration(milliseconds: 150), () {
+                    Future.delayed(const Duration(milliseconds: 150), () {
                       Navigator.of(context).pop();
                     });
-                    return AbsorbPointer();
+                    return const AbsorbPointer();
                   },
-                );
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+                ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage())));
               },
               child: const ListTile(
                 leading: Icon(
@@ -102,13 +99,12 @@ class SideMenu extends StatelessWidget {
                 await showDialog(
                   context: context,
                   builder: (context) {
-                    Future.delayed(Duration(milliseconds: 150), () {
+                    Future.delayed(const Duration(milliseconds: 150), () {
                       Navigator.of(context).pop();
                     });
-                    return AbsorbPointer();
+                    return const AbsorbPointer();
                   },
-                );
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage())));
               },
               child: const ListTile(
                 leading: Icon(

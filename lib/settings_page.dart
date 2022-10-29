@@ -12,54 +12,49 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   double fontSize = 1.0;
 
-  Future addSomeData(multiplier) async {
-    // Obtain shared preferences.
+  Future setFontMultiplier(multiplier) async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setDouble('multiplier', multiplier);
 
     fontSize = prefs.getDouble('multiplier')!;
-    // print("Multiplier is: $fontSize");
+
     setState(() {
       fontSize;
     });
   }
 
-  Future fontMultiplier() async {
-    // Obtain shared preferences.
+  Future getFontMultiplier() async {
     final prefs = await SharedPreferences.getInstance();
 
     setState(() {
       fontSize = prefs.getDouble('multiplier') ?? 1.0;
     });
-    // print("Color multiplier: $fontSize");
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    fontMultiplier();
+    getFontMultiplier();
   }
 
   @override
   Widget build(BuildContext context) {
+    // For controlling system back button action
     return WillPopScope(
       onWillPop: () async {
         await showDialog(
           context: context,
           builder: (context) {
-            Future.delayed(Duration(milliseconds: 150), () {
+            Future.delayed(const Duration(milliseconds: 150), () {
               Navigator.of(context).pop();
             });
-            return AbsorbPointer();
+            return const AbsorbPointer();
           },
-        );
+        ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return MainPage();
+            })));
 
-        // For controlling system back button action
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return MainPage();
-        }));
         return true;
       },
       child: AnnotatedRegion(
@@ -70,9 +65,9 @@ class _SettingsPageState extends State<SettingsPage> {
           appBar: AppBar(
             titleSpacing: 0,
             backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-            title: Text('Beállítások'),
+            title: const Text('Beállítások'),
           ),
-          drawer: SideMenu(),
+          drawer: const SideMenu(),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
@@ -97,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         onChanged: (value) {
                           setState(() {
                             fontSize = value as double;
-                            addSomeData(value);
+                            setFontMultiplier(value);
                           });
                         },
                       ),
@@ -112,7 +107,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         onChanged: (value) {
                           setState(() {
                             fontSize = value as double;
-                            addSomeData(value);
+                            setFontMultiplier(value);
                           });
                         },
                       ),
@@ -127,44 +122,47 @@ class _SettingsPageState extends State<SettingsPage> {
                         onChanged: (value) {
                           setState(() {
                             fontSize = value as double;
-                            addSomeData(value);
+                            setFontMultiplier(value);
                           });
                         },
                       ),
                     ],
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: Theme.of(context).colorScheme.background,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: RichText(
-                          text: TextSpan(children: [
-                            TextSpan(
-                              text: "16 ",
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 15 * fontSize),
-                            ),
-                            TextSpan(
-                              text:
-                                  "Mert úgy szerette Isten e világot, hogy az ő egyszülött Fiát adta, hogy valaki hiszen őbenne, el ne vesszen, hanem örök élete legyen.",
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * fontSize),
-                            ),
-                          ]),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        color: Theme.of(context).colorScheme.background,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: RichText(
+                            text: TextSpan(children: [
+                              TextSpan(
+                                text: "16 ",
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 15 * fontSize),
+                              ),
+                              TextSpan(
+                                text:
+                                    "Mert úgy szerette Isten e világot, hogy az ő egyszülött Fiát adta, hogy valaki hiszen őbenne, el ne vesszen, hanem örök élete legyen.",
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * fontSize),
+                              ),
+                            ]),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 50.0,
                   ),
                 ],
