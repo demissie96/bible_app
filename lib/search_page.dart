@@ -33,14 +33,14 @@ searchInBible(RequiredArgs requiredArgs) {
   int _totalMatch = 0;
   List _matchList = [];
   final SendPort sendPort = requiredArgs.sendPort;
-  final text = requiredArgs.text;
+  final text = requiredArgs.text.replaceAll(",", "");
   final hunBible = requiredArgs.hunBible;
   print(text);
 
   if (text.length > 5) {
     for (var element in hunBible) {
       _currentVerse = element["text"].split("&")[0];
-      _currentVerseLower = _currentVerse.toLowerCase();
+      _currentVerseLower = _currentVerse.replaceAll(",", "").toLowerCase();
       if (_currentVerseLower.contains(text.toLowerCase())) {
         // print(_currentVerse);
         _totalMatch++;
