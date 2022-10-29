@@ -22,9 +22,9 @@ int previousMillisec = 0;
 class RequiredArgs {
   late final SendPort sendPort;
   late String text;
-  late var hunBible;
+  late var importedBible;
 
-  RequiredArgs(this.text, this.hunBible, this.sendPort);
+  RequiredArgs(this.text, this.importedBible, this.sendPort);
 }
 
 searchInBible(RequiredArgs requiredArgs) {
@@ -36,10 +36,10 @@ searchInBible(RequiredArgs requiredArgs) {
   List _matchList = [];
   final SendPort sendPort = requiredArgs.sendPort;
   final text = requiredArgs.text.replaceAll(",", "").replaceAll("  ", " ");
-  final hunBible = requiredArgs.hunBible;
+  final importedBible = requiredArgs.importedBible;
   // print(text);
 
-  for (var element in hunBible) {
+  for (var element in importedBible) {
     _currentVerse = element["text"].split("&")[0];
     _currentVerseLower = _currentVerse.replaceAll(",", "").toLowerCase();
     if (_currentVerseLower.contains(text.toLowerCase())) {
@@ -332,7 +332,8 @@ class _SearchPageState extends State<SearchPage> {
 // searchInBible(typedString: text);
                       final receivePort = ReceivePort();
 
-                      RequiredArgs requiredArgs = RequiredArgs(searchText, bibleListHu, receivePort.sendPort);
+                      RequiredArgs requiredArgs = RequiredArgs(
+                          searchText, searchLanguage == "hun" ? bibleListHu : bibleListEn, receivePort.sendPort);
 
                       await Isolate.spawn(searchInBible, requiredArgs);
 
