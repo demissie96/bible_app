@@ -70,8 +70,7 @@ class _PassagePageState extends State<PassagePage> {
     int checkChapter = prefs.getInt('chapter')!;
     int checkChapterSum = prefs.getInt('chapterSum')!;
     String checkBookNameHu = prefs.getString('bookNameHu')!;
-    print(
-        "Book was added: $checkOldNew, $checkBook, $checkLanguage, $checkChapter, $checkBookNameHu, $checkChapterSum");
+    //print("Book was added: $checkOldNew, $checkBook, $checkLanguage, $checkChapter, $checkBookNameHu, $checkChapterSum");
   }
 
   Future addBookmark({bookmark}) async {
@@ -86,7 +85,7 @@ class _PassagePageState extends State<PassagePage> {
       bookmarkList = checkBookmark;
     });
 
-    print(bookmarkList);
+    //print(bookmarkList);
   }
 
   Future deleteBookmark({bookmark}) async {
@@ -103,7 +102,7 @@ class _PassagePageState extends State<PassagePage> {
       bookmarkList = bookmark;
     });
 
-    print(bookmarkList);
+    //print(bookmarkList);
   }
 
   Future getBookmark() async {
@@ -114,11 +113,11 @@ class _PassagePageState extends State<PassagePage> {
     setState(() {
       bookmarkList = checkBookmark;
     });
-    print(bookmarkList);
+    //print(bookmarkList);
   }
 
   _onPageViewChange(int page) {
-    print("Current Page: " + page.toString());
+    //print("Current Page: " + page.toString());
     widget.chapter = (page + 1).toString();
     setState(() {
       widget.appBarTitle = "${widget.bible[widget.oldOrNew][widget.bookRef]["short_hu"]} ${widget.chapter}";
@@ -135,7 +134,7 @@ class _PassagePageState extends State<PassagePage> {
   }
 
   Future scroolToIndex() async {
-    print("Widgete.verse = ${widget.verse}");
+    //print("Widgete.verse = ${widget.verse}");
     if (widget.verse > 1) {
       await itemController
           .scrollToIndex(
@@ -154,7 +153,7 @@ class _PassagePageState extends State<PassagePage> {
     setState(() {
       multiplier = prefs.getDouble('multiplier') ?? 1.0;
     });
-    print("Color multiplier in passage: $multiplier");
+    //print("Color multiplier in passage: $multiplier");
   }
 
   Future<void> bookListJson() async {
@@ -189,7 +188,7 @@ class _PassagePageState extends State<PassagePage> {
 
     setState(() {
       language = widget.language;
-      print("language: $language, widget.language: ${widget.language}");
+      //print("language: $language, widget.language: ${widget.language}");
     });
     saveLastRead(
         book: widget.bookRef,
@@ -214,8 +213,8 @@ class _PassagePageState extends State<PassagePage> {
   Widget build(BuildContext context) {
     var bibleCurrentHu = widget.bible[widget.oldOrNew][widget.bookRef]["chapters_hu"];
     var bibleCurrentEn = widget.bible[widget.oldOrNew][widget.bookRef]["chapters_eng"];
-    // print("chapter sum is ====> ${widget.chapterSum}");
-    // print("bibleCurrent is ====> $bibleCurrentHu");
+    // //print("chapter sum is ====> ${widget.chapterSum}");
+    // //print("bibleCurrent is ====> $bibleCurrentHu");
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scroolToIndex();
@@ -247,7 +246,7 @@ class _PassagePageState extends State<PassagePage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        print("Total chapters number: ${widget.chapterSum}");
+                        //print("Total chapters number: ${widget.chapterSum}");
 
                         showDialog(
                             context: context,
@@ -266,7 +265,7 @@ class _PassagePageState extends State<PassagePage> {
                                         TextButton(
                                           style: Theme.of(context).textButtonTheme.style,
                                           onPressed: () {
-                                            print("$i was clicked");
+                                            //print("$i was clicked");
 
                                             pageController.animateToPage(i - 1,
                                                 duration: Duration(milliseconds: 500), curve: Curves.ease);
@@ -296,7 +295,7 @@ class _PassagePageState extends State<PassagePage> {
                   visible: bookmarkList.length > 0 ? true : false,
                   child: GestureDetector(
                     onTap: () {
-                      print("Bookmark clicked");
+                      //print("Bookmark clicked");
                       showDialog(
                           context: context,
                           builder: (context) {
@@ -337,7 +336,7 @@ class _PassagePageState extends State<PassagePage> {
                                                 child: TextButton(
                                                   style: Theme.of(context).textButtonTheme.style,
                                                   onPressed: () {
-                                                    print("${bookmarkList[i]} was clicked");
+                                                    //print("${bookmarkList[i]} was clicked");
 
                                                     List splitListBookmark = bookmarkList[i].split(" ");
 
@@ -352,13 +351,12 @@ class _PassagePageState extends State<PassagePage> {
 
                                                     String verseBookmark = chapAndVerseBookmark[1];
                                                     String chapterBookmark = chapAndVerseBookmark[0];
-                                                    print("bookBookmark: $bookBookmark");
+                                                    //print("bookBookmark: $bookBookmark");
 
                                                     String testamentBookmark =
                                                         bookListPassage[bookBookmark]["testament"];
 
-                                                    print(
-                                                        "testament: $testamentBookmark, book: $bookBookmark, chapter: $chapterBookmark, verse: $verseBookmark");
+                                                    //print("testament: $testamentBookmark, book: $bookBookmark, chapter: $chapterBookmark, verse: $verseBookmark");
 // Jump to passage
                                                     // Navigator.pop(context);
                                                     Navigator.push(
@@ -397,7 +395,7 @@ class _PassagePageState extends State<PassagePage> {
                                               size: 30,
                                             ),
                                             onTap: () {
-                                              print("Delete: ${bookmarkList[i]}");
+                                              //print("Delete: ${bookmarkList[i]}");
                                               bookmarkList.remove(bookmarkList[i]);
                                               deleteBookmark(bookmark: bookmarkList);
                                               Navigator.pop(context);
@@ -437,7 +435,7 @@ class _PassagePageState extends State<PassagePage> {
                   // Chapter titles
                   if (index == 0) {
                     indexMinusHu = 0;
-                    print("Index minus Hun at zero ---> $indexMinusHu");
+                    //print("Index minus Hun at zero ---> $indexMinusHu");
                     if ("${bibleCurrentEn["$chap"][0]["num"]}" == "0") {
                       indexMinusEn = 1;
                     }
@@ -499,9 +497,9 @@ class _PassagePageState extends State<PassagePage> {
                     }
                   } else if (index < bibleCurrentHu["$chap"].length &&
                       bibleCurrentHu["$chap"][index]["num"] == "Subtitle") {
-                    print("Index minus Hun Before ---> $indexMinusHu");
+                    //print("Index minus Hun Before ---> $indexMinusHu");
                     indexMinusHu++; // For AutoScrollTag proper indexing
-                    print("Index minus Hun After increment---> $indexMinusHu");
+                    //print("Index minus Hun After increment---> $indexMinusHu");
                     // Hungarian subtitle
                     return Column(
                       crossAxisAlignment:
@@ -696,7 +694,7 @@ class _PassagePageState extends State<PassagePage> {
                                                       ),
                                                     });
                                               }
-                                              print(bookmarkRefText);
+                                              //print(bookmarkRefText);
                                             },
                                             icon: Icon(
                                               Icons.star,
@@ -835,7 +833,7 @@ class _PassagePageState extends State<PassagePage> {
         height: 38,
         child: IconButton(
           onPressed: () {
-            print("${bibleCurrentHu["$chap"][index]["ref"]}");
+            //print("${bibleCurrentHu["$chap"][index]["ref"]}");
             showDialog(
                 context: context,
                 builder: (context) {
@@ -898,14 +896,14 @@ class _PassagePageState extends State<PassagePage> {
                                   String refOldOrNew = bookList[refBook]["testament"];
                                   String refBookName = bookList[refBook]["refName"];
                                   String refBookNameFull = bookList[refBook]["fullName"];
-                                  // print(bookList);
+                                  // //print(bookList);
 
-                                  print("Book: $refBookName");
-                                  print("Testament: $refOldOrNew");
-                                  print("Chapter: $refChapter");
-                                  print("Verses: $verseList");
+                                  //print("Book: $refBookName");
+                                  //print("Testament: $refOldOrNew");
+                                  //print("Chapter: $refChapter");
+                                  //print("Verses: $verseList");
 
-                                  // print(widget.bible[refOldOrNew][refBookName]
+                                  // //print(widget.bible[refOldOrNew][refBookName]
                                   //     ["chapters_hu"][refChapter]);
 
                                   int refBookLength = widget.bible[refOldOrNew][refBookName]["chapters_hu"].length;
@@ -920,7 +918,7 @@ class _PassagePageState extends State<PassagePage> {
                                           {"num": element["num"], "verse": verseCapitalized.capitalizeFirstForCopy()});
                                     }
                                   }
-                                  print(finalVersList);
+                                  //print(finalVersList);
                                   showDialog(
                                     context: context,
                                     builder: (context) {
@@ -938,7 +936,7 @@ class _PassagePageState extends State<PassagePage> {
                                             IconButton(
                                               onPressed: () {
 // Jump from ref to Passage ###############################################
-                                                print("Continue");
+                                                //print("Continue");
 
                                                 Navigator.push(
                                                   context,

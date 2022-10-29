@@ -19,7 +19,7 @@ class _SettingsPageState extends State<SettingsPage> {
     await prefs.setDouble('multiplier', multiplier);
 
     fontSize = prefs.getDouble('multiplier')!;
-    print("Multiplier is: $fontSize");
+    // print("Multiplier is: $fontSize");
     setState(() {
       fontSize;
     });
@@ -32,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       fontSize = prefs.getDouble('multiplier') ?? 1.0;
     });
-    print("Color multiplier: $fontSize");
+    // print("Color multiplier: $fontSize");
   }
 
   @override

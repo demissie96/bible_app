@@ -94,7 +94,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     );
     tabController.index = 1;
     oldOrNew = "old";
-    print(oldTestament[index][0]);
+    // print(oldTestament[index][0]);
     bookRef = oldTestament[index][0];
     bookNameHu = oldTestament[index][3];
     chapter = 1;
@@ -104,7 +104,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       totalChapter.add(i);
     }
 
-    print(totalChapter.length);
+    // print(totalChapter.length);
     setState(() {
       appBarTitle = "$bookNameHu $chapter";
     });
@@ -122,7 +122,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     );
     tabController.index = 1;
     oldOrNew = "new";
-    print(newTestament[index][3]);
+    // print(newTestament[index][3]);
     bookRef = newTestament[index][0];
     bookNameHu = newTestament[index][3];
     chapter = 1;
@@ -132,7 +132,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       totalChapter.add(i);
     }
 
-    print(totalChapter.length);
+    // print(totalChapter.length);
     setState(() {
       appBarTitle = "$bookNameHu $chapter";
     });
@@ -148,8 +148,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     String checkLanguage = prefs.getString('language') ?? language;
     int checkChapter = prefs.getInt('chapter') ?? chapter;
     int checkChapterSum = prefs.getInt('chapterSum') ?? chapterSum;
-    print(
-        "Last read book: $checkOldNew, $checkBook, $checkLanguage, $checkChapter, $checkBookNameHu, $checkChapterSum");
+    // print("Last read book: $checkOldNew, $checkBook, $checkLanguage, $checkChapter, $checkBookNameHu, $checkChapterSum");
 
     setState(() {
       bookRef = checkBook;
@@ -169,12 +168,12 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   //   setState(() {
   //     fontSize = prefs.getDouble('multiplier') ?? 1.0;
   //   });
-  //   print("Color multiplier: $fontSize");
+  //   // print("Color multiplier: $fontSize");
   // }
 
   Future scrollToIndex(bookRef) async {
-    print(bookListIndex[bookRef]);
-    print("old or new? $oldOrNew");
+    // print(bookListIndex[bookRef]);
+    // print("old or new? $oldOrNew");
 
     int position = bookListIndex[bookRef]["index"];
 
@@ -200,12 +199,12 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     restoreData();
     getLastRead().then((value) {
       totalChapter = [];
-      print("chapter sum: $chapterSum");
-      print("total chapter length: ${totalChapter.length}");
+      // print("chapter sum: $chapterSum");
+      // print("total chapter length: ${totalChapter.length}");
       for (var i = 1; i <= chapterSum; i++) {
         totalChapter.add(i);
       }
-      print("total chapter length: ${totalChapter.length}");
+      // print("total chapter length: ${totalChapter.length}");
       setState(() {
         appBarTitle = "$bookNameHu $chapter";
         totalChapter;
@@ -469,10 +468,10 @@ class _ChapterListState extends State<ChapterList> {
     chapter = i;
 
     appBarTitle = "$bookNameHu $chapter";
-    print(appBarTitle);
+    // print(appBarTitle);
     updateTitle();
 
-    print("Chapter $i is selected");
+    // print("Chapter $i is selected");
   }
 
   @override
@@ -530,13 +529,13 @@ class _VerseListState extends State<VerseList> {
         return AbsorbPointer();
       },
     );
-    print("########################### last element #####################");
-    print(bibleJson[oldOrNew][bookRef][language]["$chapter"].last);
+    // print("########################### last element #####################");
+    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"].last);
 
     verse = i;
-    print(verse);
-    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
-    print("Verse $i was clicked!");
+    // print(verse);
+    // // print(bibleJson[oldOrNew][bookRef][language]["$chapter"][0]);
+    // print("Verse $i was clicked!");
     updateTitle();
     Navigator.push(
       context,
@@ -561,16 +560,16 @@ class _VerseListState extends State<VerseList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("old or new: $oldOrNew, bookref: $bookRef, language: $language, chapter: $chapter");
+    // print("old or new: $oldOrNew, bookref: $bookRef, language: $language, chapter: $chapter");
     verseSum = int.parse(bibleJson[oldOrNew][bookRef][language]["$chapter"].last["num"]);
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Length");
-    print("old or new: $oldOrNew, bookref: $bookRef, language: $language, chapter: $chapter");
+    // print("Length");
+    // print("old or new: $oldOrNew, bookref: $bookRef, language: $language, chapter: $chapter");
 
-    print(bibleJson[oldOrNew][bookRef][language]["$chapter"].length);
+    // print(bibleJson[oldOrNew][bookRef][language]["$chapter"].length);
     return SingleChildScrollView(
       child: Wrap(
         children: [

@@ -28,7 +28,7 @@ class RequiredArgs {
 }
 
 searchInBible(RequiredArgs requiredArgs) {
-  print("Start search in bible");
+  // print("Start search in bible");
   String _currentVerse;
   String _currentVerseLower;
   int _totalMatch = 0;
@@ -36,20 +36,20 @@ searchInBible(RequiredArgs requiredArgs) {
   final SendPort sendPort = requiredArgs.sendPort;
   final text = requiredArgs.text.replaceAll(",", "");
   final hunBible = requiredArgs.hunBible;
-  print(text);
+  // print(text);
 
   for (var element in hunBible) {
     _currentVerse = element["text"].split("&")[0];
     _currentVerseLower = _currentVerse.replaceAll(",", "").toLowerCase();
     if (_currentVerseLower.contains(text.toLowerCase())) {
-      // print(_currentVerse);
+      // // print(_currentVerse);
       _totalMatch++;
       _matchList.add(_currentVerse);
     }
   }
-  print("Total match number: $_totalMatch");
+  // print("Total match number: $_totalMatch");
   if (_totalMatch < 5) {
-    print(_matchList);
+    // print(_matchList);
 
     // typingMatchList = _matchList;
 
@@ -120,7 +120,7 @@ class _SearchPageState extends State<SearchPage> {
     int index = 0;
     resultListPre = [];
 
-    print("Start looping");
+    // print("Start looping");
 
     rankingSearch(list) {
       for (var element in list) {
@@ -130,21 +130,21 @@ class _SearchPageState extends State<SearchPage> {
         index++;
       }
 
-      print(searchText);
+      // print(searchText);
 
-      print("Start sorting");
+      // print("Start sorting");
       indexSimilarity.sort((a, b) => b.similarity.compareTo(a.similarity));
 
-      print("Similarity rate: ${indexSimilarity[0].similarity}");
-      print("Similarity rate: ${indexSimilarity[1].similarity}");
-      print("Similarity rate: ${indexSimilarity[2].similarity}");
+      // print("Similarity rate: ${indexSimilarity[0].similarity}");
+      // print("Similarity rate: ${indexSimilarity[1].similarity}");
+      // print("Similarity rate: ${indexSimilarity[2].similarity}");
 
       // List top 10 result
       for (var i = 0; i < 10; i++) {
         resultListPre.add(list[indexSimilarity[i].index]);
       }
 
-      print("#####################################################");
+      // print("#####################################################");
       resultListFinal = [];
       for (var element in resultListPre) {
         String text = element["text"].split("&")[0];
@@ -158,9 +158,9 @@ class _SearchPageState extends State<SearchPage> {
           "text": text
         });
       }
-      // print(resultListFinal);
-      print(resultListFinal.length);
-      print("#####################################################");
+      // // print(resultListFinal);
+      // print(resultListFinal.length);
+      // print("#####################################################");
 
       List indexSimilarity2 = [];
       index = 0;
@@ -178,11 +178,11 @@ class _SearchPageState extends State<SearchPage> {
         }
         index++;
       }
-      print("Not selected indices --> $notSelectedIndex");
+      // print("Not selected indices --> $notSelectedIndex");
 
       indexSimilarity2.sort((a, b) => b.similarity.compareTo(a.similarity));
-      print(indexSimilarity2);
-      print(indexSimilarity);
+      // print(indexSimilarity2);
+      // print(indexSimilarity);
 
       for (var element in indexSimilarity2) {
         resultList.add(resultListFinal[element.index]);
@@ -312,12 +312,12 @@ class _SearchPageState extends State<SearchPage> {
 // Background search in isolate
                   if (searchText != text && text.length > 5) {
                     searchText = text;
-                    print(searchText);
+                    // print(searchText);
                     int currentMillisec = DateTime.now().millisecondsSinceEpoch;
-                    print("On changed triggered ::::::::::::");
+                    // print("On changed triggered ::::::::::::");
 
                     if (currentMillisec > previousMillisec + 200) {
-                      print("Isolate run triggered");
+                      // print("Isolate run triggered");
                       previousMillisec = currentMillisec;
 // searchInBible(typedString: text);
                       final receivePort = ReceivePort();
@@ -327,7 +327,7 @@ class _SearchPageState extends State<SearchPage> {
                       await Isolate.spawn(searchInBible, requiredArgs);
 
                       receivePort.listen((response) {
-                        print(response);
+                        // print(response);
                         setState(() {
                           typingMatchList = response;
                           resultList = [];
@@ -335,7 +335,7 @@ class _SearchPageState extends State<SearchPage> {
                       });
                     }
                   } else if (searchText != text) {
-                    print("text length smaller than 6");
+                    // print("text length smaller than 6");
                     setState(() {
                       typingMatchList = [];
                       resultList = [];
@@ -417,8 +417,8 @@ class _SearchPageState extends State<SearchPage> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: GestureDetector(
                                           onTap: () {
-                                            print("Jump to passage");
-                                            print("searchLanguage : $searchLanguage");
+                                            // print("Jump to passage");
+                                            // print("searchLanguage : $searchLanguage");
                                             resultListFinal.add({
                                               Navigator.push(
                                                 context,
