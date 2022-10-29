@@ -249,7 +249,42 @@ class _SearchPageState extends State<SearchPage> {
         appBar: AppBar(
           titleSpacing: 0,
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          title: Text('Keresés'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Keresés'),
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Container(
+                  height: 40.0,
+                  width: 40.0,
+                  child: FloatingActionButton(
+                    heroTag: "language",
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    child: Text(
+                      searchLanguage == "hun" ? "🇭🇺" : "🇺🇲",
+                      style: TextStyle(
+                        fontSize: 25.0,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (searchLanguage == "hun") {
+                        searchLanguage = "eng";
+                      } else {
+                        searchLanguage = "hun";
+                      }
+
+                      setState(() {
+                        searchLanguage;
+                        resultList = [];
+                        typingMatchList = [];
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         drawer: SideMenu(),
         body: Padding(
@@ -263,7 +298,7 @@ class _SearchPageState extends State<SearchPage> {
                 textAlign: TextAlign.start,
                 decoration: InputDecoration(
                     border: UnderlineInputBorder(),
-                    hintText: searchLanguage == "hun" ? "Mondat keresése..." : "Search for Sentence...",
+                    hintText: searchLanguage == "hun" ? "Keresés..." : "Search...",
                     suffixIcon: IconButton(
                       icon: Icon(Icons.clear),
                       onPressed: textController.clear,
@@ -292,38 +327,36 @@ class _SearchPageState extends State<SearchPage> {
                 },
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: FloatingActionButton(
-                      heroTag: "language",
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                      child: Text(
-                        searchLanguage == "hun" ? "🇭🇺" : "🇺🇲",
-                        style: TextStyle(
-                          fontSize: 35.0,
-                        ),
+                  SizedBox(
+                    height: 80.0,
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Text(
+                            "Találat:",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          Visibility(
+                            visible: resultList.length == 0 ? true : false,
+                            child: Text(
+                              " ${typingMatchList.length}",
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                    color: Theme.of(context).colorScheme.tertiary,
+                                    // fontWeight: FontWeight.bold,
+                                    fontSize: 30.0,
+                                  ),
+                            ),
+                          ),
+                        ],
                       ),
-                      onPressed: () {
-                        if (searchLanguage == "hun") {
-                          searchLanguage = "eng";
-                        } else {
-                          searchLanguage = "hun";
-                        }
-
-                        setState(() {
-                          searchLanguage;
-                          resultList = [];
-                          typingMatchList = [];
-                        });
-                      },
                     ),
                   ),
                   Visibility(
                     visible: typingMatchList.length > 0 ? false : true,
                     child: Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsets.all(12.0),
                       child: FloatingActionButton(
                         heroTag: "search",
                         backgroundColor: Theme.of(context).colorScheme.secondary,
