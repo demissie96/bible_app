@@ -30,11 +30,12 @@ class RequiredArgs {
 searchInBible(RequiredArgs requiredArgs) {
   // print("Start search in bible");
   String _currentVerse;
+  var _currentVerseMap = {};
   String _currentVerseLower;
   int _totalMatch = 0;
   List _matchList = [];
   final SendPort sendPort = requiredArgs.sendPort;
-  final text = requiredArgs.text.replaceAll(",", "");
+  final text = requiredArgs.text.replaceAll(",", "").replaceAll("  ", " ");
   final hunBible = requiredArgs.hunBible;
   // print(text);
 
@@ -44,7 +45,15 @@ searchInBible(RequiredArgs requiredArgs) {
     if (_currentVerseLower.contains(text.toLowerCase())) {
       // // print(_currentVerse);
       _totalMatch++;
-      _matchList.add(_currentVerse);
+      _currentVerseMap = {
+        "testament": element["testament"],
+        "book": element["book"],
+        "language": element["language"],
+        "chapter": element["chapter"],
+        "verse": element["verse"],
+        "text": _currentVerse
+      };
+      _matchList.add(_currentVerseMap);
     }
   }
   // print("Total match number: $_totalMatch");
@@ -290,6 +299,7 @@ class _SearchPageState extends State<SearchPage> {
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
+// Search field
               TextField(
                 style: Theme.of(context).textTheme.bodyText1,
                 controller: textController,
@@ -310,7 +320,7 @@ class _SearchPageState extends State<SearchPage> {
                     )),
                 onChanged: (text) async {
 // Background search in isolate
-                  if (searchText != text && text.length > 5) {
+                  if (searchText != text && text.length > 2) {
                     searchText = text;
                     // print(searchText);
                     int currentMillisec = DateTime.now().millisecondsSinceEpoch;
@@ -322,7 +332,7 @@ class _SearchPageState extends State<SearchPage> {
 // searchInBible(typedString: text);
                       final receivePort = ReceivePort();
 
-                      RequiredArgs requiredArgs = RequiredArgs(text, bibleListHu, receivePort.sendPort);
+                      RequiredArgs requiredArgs = RequiredArgs(searchText, bibleListHu, receivePort.sendPort);
 
                       await Isolate.spawn(searchInBible, requiredArgs);
 
@@ -343,9 +353,11 @@ class _SearchPageState extends State<SearchPage> {
                   }
                 },
               ),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+// Result number
                   SizedBox(
                     height: 80.0,
                     child: Center(
@@ -370,6 +382,7 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
                   ),
+// Search button
                   Visibility(
                     visible: typingMatchList.length > 0 || searchText.length < 6 ? false : true,
                     child: Padding(
@@ -400,6 +413,7 @@ class _SearchPageState extends State<SearchPage> {
               Expanded(
                 child: Column(
                   children: [
+// String similarity search results
                     resultList.isNotEmpty
                         ? Visibility(
                             visible: typingMatchList.length > 0 ? false : true,
@@ -410,7 +424,7 @@ class _SearchPageState extends State<SearchPage> {
                                   itemCount: resultList.length,
                                   itemBuilder: (context, index) {
                                     String bookName = searchLanguage == "hun"
-                                        ? bookRefList[resultList[index]["book"]]["hunName"].toString()
+                                        ? bookRefList[resultList[index]["book"]]["hunName"]
                                         : resultList[index]["book"];
                                     return Center(
                                       child: Padding(
@@ -419,27 +433,25 @@ class _SearchPageState extends State<SearchPage> {
                                           onTap: () {
                                             // print("Jump to passage");
                                             // print("searchLanguage : $searchLanguage");
-                                            resultListFinal.add({
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => PassagePage(
-                                                    appBarTitle:
-                                                        "${bookRefList[resultList[index]["book"]]["fullName"]} ${resultList[index]["chapter"]}",
-                                                    chapter: resultList[index]["chapter"].toString(),
-                                                    bible: bibleJson,
-                                                    oldOrNew:
-                                                        bookRefList[resultList[index]["book"]]["testament"].toString(),
-                                                    bookRef: resultList[index]["book"],
-                                                    language: searchLanguage == "hun" ? "chapters_hu" : "chapters_eng",
-                                                    chapterSum: bookRefList[resultList[index]["book"]]["chapterSum"],
-                                                    verse: int.parse(resultList[index]["verse"]),
-                                                    bookList: bookList,
-                                                    bookNameHu: bookRefList[resultList[index]["book"]]["fullName"],
-                                                  ),
+
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => PassagePage(
+                                                  appBarTitle:
+                                                      "${bookRefList[resultList[index]["book"]]["fullName"]} ${resultList[index]["chapter"]}",
+                                                  chapter: resultList[index]["chapter"].toString(),
+                                                  bible: bibleJson,
+                                                  oldOrNew: bookRefList[resultList[index]["book"]]["testament"],
+                                                  bookRef: resultList[index]["book"],
+                                                  language: searchLanguage == "hun" ? "chapters_hu" : "chapters_eng",
+                                                  chapterSum: bookRefList[resultList[index]["book"]]["chapterSum"],
+                                                  verse: int.parse(resultList[index]["verse"]),
+                                                  bookList: bookList,
+                                                  bookNameHu: bookRefList[resultList[index]["book"]]["fullName"],
                                                 ),
-                                              )
-                                            });
+                                              ),
+                                            );
                                           },
                                           child: RichText(
                                             text: TextSpan(
@@ -463,6 +475,7 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                           )
                         : Container(),
+// Exact matches search result
                     typingMatchList.isNotEmpty
                         ? Expanded(
                             child: ListView.builder(
@@ -470,10 +483,49 @@ class _SearchPageState extends State<SearchPage> {
                                 shrinkWrap: true,
                                 itemCount: typingMatchList.length,
                                 itemBuilder: (context, index) {
+                                  String bookName = searchLanguage == "hun"
+                                      ? bookRefList[typingMatchList[index]["book"]]["hunName"]
+                                      : typingMatchList[index]["book"];
                                   return Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      child: Text(typingMatchList[index]),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => PassagePage(
+                                              appBarTitle:
+                                                  "${bookRefList[typingMatchList[index]["book"]]["fullName"]} ${typingMatchList[index]["chapter"]}",
+                                              chapter: typingMatchList[index]["chapter"].toString(),
+                                              bible: bibleJson,
+                                              oldOrNew: bookRefList[typingMatchList[index]["book"]]["testament"],
+                                              bookRef: typingMatchList[index]["book"],
+                                              language: searchLanguage == "hun" ? "chapters_hu" : "chapters_eng",
+                                              chapterSum: bookRefList[typingMatchList[index]["book"]]["chapterSum"],
+                                              verse: int.parse(typingMatchList[index]["verse"]),
+                                              bookList: bookList,
+                                              bookNameHu: bookRefList[typingMatchList[index]["book"]]["fullName"],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child:
+                                          //  Text(typingMatchList[index].toString()),
+                                          RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  "$bookName ${typingMatchList[index]["chapter"]}:${typingMatchList[index]["verse"]}",
+                                              style: Theme.of(context).textTheme.bodyText2,
+                                            ),
+                                            TextSpan(
+                                              text: " ${typingMatchList[index]["text"]}",
+                                              style: Theme.of(context).textTheme.bodyText1,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   );
                                 }))
