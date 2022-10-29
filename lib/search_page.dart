@@ -275,16 +275,25 @@ class _SearchPageState extends State<SearchPage> {
                       await Isolate.spawn(searchExactMatch, requiredArgs);
 // Get the result from the isolate when finished
                       receivePort.listen((response) {
-                        setState(() {
+// To prevent show results when backspace pressed long and emptied the text field
+                        if (searchText == "") {
+                          typingMatchList = [];
+                        } else {
                           typingMatchList = response;
+                        }
+                        setState(() {
+                          typingMatchList;
                           resultList = [];
                         });
                       });
                     }
                   } else if (searchText != text) {
 // Delete results except if android back button is pressed
+                    searchText = "";
+                    typingMatchList = [];
                     setState(() {
-                      typingMatchList = [];
+                      searchText;
+                      typingMatchList;
                       resultList = [];
                     });
                   }
