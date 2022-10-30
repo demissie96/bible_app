@@ -199,27 +199,28 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
           appBarTitle;
         });
       };
+      bibleJsonGet();
+
+      // TabController to control the selected tab programmatically
+      tabController = TabController(
+        vsync: this,
+        length: 3,
+        animationDuration: Duration(
+          milliseconds: 500,
+        ),
+      );
+
+      itemControllerOld = AutoScrollController(
+          viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+          axis: scrollDirection);
+      itemControllerNew = AutoScrollController(
+          viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+          axis: scrollDirection);
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bookListJson().then((value) => {scrollToIndex(bookRef)});
+      });
     });
-
-    bibleJsonGet();
-
-    // TabController to control the selected tab programmatically
-    tabController = TabController(
-      vsync: this,
-      length: 3,
-      animationDuration: Duration(
-        milliseconds: 1000,
-      ),
-    );
-
-    itemControllerOld = AutoScrollController(
-        viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
-        axis: scrollDirection);
-    itemControllerNew = AutoScrollController(
-        viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
-        axis: scrollDirection);
-
-    bookListJson().then((value) => {scrollToIndex(bookRef)});
   }
 
   @override
