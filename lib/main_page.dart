@@ -181,6 +181,14 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
+    // TabController to control the selected tab programmatically
+    tabController = TabController(
+      vsync: this,
+      length: 3,
+      animationDuration: Duration(
+        milliseconds: 500,
+      ),
+    );
 
     restoreData();
     getLastRead().then((value) {
@@ -200,15 +208,6 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         });
       };
       bibleJsonGet();
-
-      // TabController to control the selected tab programmatically
-      tabController = TabController(
-        vsync: this,
-        length: 3,
-        animationDuration: Duration(
-          milliseconds: 500,
-        ),
-      );
 
       itemControllerOld = AutoScrollController(
           viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),

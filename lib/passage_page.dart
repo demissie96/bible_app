@@ -263,104 +263,108 @@ class _PassagePageState extends State<PassagePage> {
                         context: context,
                         builder: (context) {
 // Show bookmark list
-                          return AlertDialog(
-                            backgroundColor: Theme.of(context).colorScheme.background,
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  bookmarkList.length > 1 ? "Könyvjelzők" : "Könyvjelző",
-                                  style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    deleteBookmark(bookmark: []);
-                                    Navigator.pop(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.delete_forever,
-                                    size: 30,
-                                    color: Theme.of(context).colorScheme.tertiary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            content: SingleChildScrollView(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
+                          return StatefulBuilder(builder: (context, setState) {
+                            return AlertDialog(
+                              backgroundColor: Theme.of(context).colorScheme.background,
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  for (var i = 0; i < bookmarkList.length; i++)
-                                    Wrap(
-                                      crossAxisAlignment: WrapCrossAlignment.center,
-                                      children: [
-                                        Stack(
-                                          children: [
-                                            SizedBox(
-                                              width: 150,
-                                              child: TextButton(
-                                                style: Theme.of(context).textButtonTheme.style,
-                                                onPressed: () {
-// Interpret the bookmark reference
-                                                  List splitListBookmark = bookmarkList[i].split(" ");
-                                                  List chapAndVerseBookmark =
-                                                      splitListBookmark.last.toString().split(":");
-                                                  late String bookBookmark;
-                                                  if (splitListBookmark.length > 2) {
-                                                    bookBookmark = splitListBookmark[0] + " " + splitListBookmark[1];
-                                                  } else {
-                                                    bookBookmark = splitListBookmark[0];
-                                                  }
-                                                  String verseBookmark = chapAndVerseBookmark[1];
-                                                  String chapterBookmark = chapAndVerseBookmark[0];
-                                                  String testamentBookmark = bookListPassage[bookBookmark]["testament"];
-// Jump to bookmarked passage
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => PassagePage(
-                                                        appBarTitle: "$bookBookmark $chapterBookmark",
-                                                        chapter: chapterBookmark,
-                                                        bible: widget.bible,
-                                                        oldOrNew: testamentBookmark,
-                                                        bookRef: bookListPassage[bookBookmark]["refName"],
-                                                        language: "chapters_hu",
-                                                        chapterSum: bookListPassage[bookBookmark]["length"],
-                                                        verse: int.parse(verseBookmark),
-                                                        bookList: widget.bookList,
-                                                        bookNameHu: bookBookmark,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                                child: Text(
-                                                  bookmarkList[i],
-                                                  textAlign: TextAlign.center,
-                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                                                        fontSize: 20,
-                                                      ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        GestureDetector(
-                                          child: Icon(
-                                            Icons.close,
-                                            color: Theme.of(context).colorScheme.tertiary,
-                                            size: 30,
-                                          ),
-                                          onTap: () {
-                                            bookmarkList.remove(bookmarkList[i]);
-                                            deleteBookmark(bookmark: bookmarkList);
-                                            Navigator.pop(context);
-                                          },
-                                        )
-                                      ],
-                                    )
+                                  Text(
+                                    bookmarkList.length > 1 ? "Könyvjelzők" : "Könyvjelző",
+                                    style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      deleteBookmark(bookmark: []);
+                                      Navigator.pop(context);
+                                    },
+                                    icon: Icon(
+                                      Icons.delete_forever,
+                                      size: 30,
+                                      color: Theme.of(context).colorScheme.tertiary,
+                                    ),
+                                  ),
                                 ],
                               ),
-                            ),
-                          );
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    for (var i = 0; i < bookmarkList.length; i++)
+                                      Wrap(
+                                        crossAxisAlignment: WrapCrossAlignment.center,
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              SizedBox(
+                                                width: 150,
+                                                child: TextButton(
+                                                  style: Theme.of(context).textButtonTheme.style,
+                                                  onPressed: () {
+// Interpret the bookmark reference
+                                                    List splitListBookmark = bookmarkList[i].split(" ");
+                                                    List chapAndVerseBookmark =
+                                                        splitListBookmark.last.toString().split(":");
+                                                    late String bookBookmark;
+                                                    if (splitListBookmark.length > 2) {
+                                                      bookBookmark = splitListBookmark[0] + " " + splitListBookmark[1];
+                                                    } else {
+                                                      bookBookmark = splitListBookmark[0];
+                                                    }
+                                                    String verseBookmark = chapAndVerseBookmark[1];
+                                                    String chapterBookmark = chapAndVerseBookmark[0];
+                                                    String testamentBookmark =
+                                                        bookListPassage[bookBookmark]["testament"];
+// Jump to bookmarked passage
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => PassagePage(
+                                                          appBarTitle: "$bookBookmark $chapterBookmark",
+                                                          chapter: chapterBookmark,
+                                                          bible: widget.bible,
+                                                          oldOrNew: testamentBookmark,
+                                                          bookRef: bookListPassage[bookBookmark]["refName"],
+                                                          language: "chapters_hu",
+                                                          chapterSum: bookListPassage[bookBookmark]["length"],
+                                                          verse: int.parse(verseBookmark),
+                                                          bookList: widget.bookList,
+                                                          bookNameHu: bookBookmark,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    bookmarkList[i],
+                                                    textAlign: TextAlign.center,
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                                          fontSize: 20,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+// Delete the corresponding bookmark
+                                          GestureDetector(
+                                            child: Icon(
+                                              Icons.close,
+                                              color: Theme.of(context).colorScheme.tertiary,
+                                              size: 30,
+                                            ),
+                                            onTap: () {
+                                              bookmarkList.remove(bookmarkList[i]);
+                                              deleteBookmark(bookmark: bookmarkList);
+                                              setState(() => bookmarkList);
+                                            },
+                                          )
+                                        ],
+                                      )
+                                  ],
+                                ),
+                              ),
+                            );
+                          });
                         });
                   },
                   child: const Padding(
