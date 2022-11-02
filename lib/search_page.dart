@@ -48,7 +48,7 @@ searchExactMatch(RequiredArgs requiredArgs) {
         "language": element["language"],
         "chapter": element["chapter"],
         "verse": element["verse"],
-        "text": _currentVerse
+        "text": _currentVerse.capitalizeFirstElement()
       };
       _matchList.add(_currentVerseMap);
     }
@@ -82,7 +82,7 @@ searchSimilarMatch(RequiredArgs requiredArgs) {
     List resultListFinal = [];
     for (var element in resultListPre) {
       String text = element["text"].split("&")[0];
-      text = text.capitalizeFirstForCopy();
+      text = text.capitalizeFirstElement();
       resultListFinal.add({
         "testament": "${element["testament"]}",
         "book": "${element["book"]}",

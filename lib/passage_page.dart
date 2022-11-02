@@ -484,7 +484,7 @@ class _PassagePageState extends State<PassagePage> {
 // Copy selected text to clipboard
                                 await Clipboard.setData(
                                   ClipboardData(
-                                    text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirstForCopy(),
+                                    text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirstElement(),
                                   ),
                                 ).then((_) {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -529,8 +529,8 @@ class _PassagePageState extends State<PassagePage> {
                                             ),
                                           if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
                                             TextSpan(
-                                              text:
-                                                  "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirst(),
+                                              text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                  .capitalizeFirstWithSpace(),
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyText1
@@ -565,7 +565,7 @@ class _PassagePageState extends State<PassagePage> {
                               onDoubleTap: () async {
                                 await Clipboard.setData(
                                   ClipboardData(
-                                    text: "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirstForCopy(),
+                                    text: "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirstElement(),
                                   ),
                                 ).then((_) {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -599,7 +599,8 @@ class _PassagePageState extends State<PassagePage> {
                                                 ?.copyWith(fontSize: 15 * multiplier),
                                           ),
                                           TextSpan(
-                                            text: "${bibleCurrentHu["$chap"][index]["text_hu"]}".capitalizeFirst(),
+                                            text: "${bibleCurrentHu["$chap"][index]["text_hu"]}"
+                                                .capitalizeFirstWithSpace(),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyText1
@@ -680,7 +681,7 @@ class _PassagePageState extends State<PassagePage> {
 // Copy selected text to clipboard
                                 await Clipboard.setData(
                                   ClipboardData(
-                                    text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirstForCopy(),
+                                    text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirstElement(),
                                   ),
                                 ).then((_) {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -725,8 +726,8 @@ class _PassagePageState extends State<PassagePage> {
                                             ),
                                           if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
                                             TextSpan(
-                                              text:
-                                                  "${bibleCurrentEn["$chap"][index - 1]["text_en"]}".capitalizeFirst(),
+                                              text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}"
+                                                  .capitalizeFirstWithSpace(),
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyText1
@@ -861,7 +862,7 @@ class _PassagePageState extends State<PassagePage> {
                                     if (verseList.contains(element["num"])) {
                                       String verseCapitalized = element["text_hu"];
                                       finalVersList.add(
-                                          {"num": element["num"], "verse": verseCapitalized.capitalizeFirstForCopy()});
+                                          {"num": element["num"], "verse": verseCapitalized.capitalizeFirstElement()});
                                     }
                                   }
 // Preview of the references

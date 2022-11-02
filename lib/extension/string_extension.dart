@@ -1,9 +1,9 @@
 extension StringExtension on String {
-  String capitalizeFirst() {
+  String capitalizeFirstWithSpace() {
     return " ${this[0].toUpperCase()}${this.substring(1)}";
   }
 
-  String capitalizeFirstForCopy() {
+  String capitalizeFirstElement() {
     return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }
