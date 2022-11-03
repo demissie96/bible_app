@@ -852,7 +852,7 @@ class _PassagePageState extends State<PassagePage> {
 
                                   String refOldOrNew = bookList[refBook]["testament"];
                                   String refBookName = bookList[refBook]["refName"];
-                                  widget.bookNameHu = refBookName;
+
                                   String refBookNameFull = bookList[refBook]["fullName"];
                                   int refBookLength = widget.bible[refOldOrNew][refBookName]["chapters_hu"].length;
                                   List refWholeChapter =
@@ -884,6 +884,7 @@ class _PassagePageState extends State<PassagePage> {
                                             IconButton(
                                               onPressed: () {
 // Jump to hungarian reference passage.
+                                                widget.bookNameHu = refBookName;
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
