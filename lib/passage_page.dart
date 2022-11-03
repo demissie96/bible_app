@@ -618,7 +618,7 @@ class _PassagePageState extends State<PassagePage> {
                                         child: IconButton(
                                           onPressed: () {
                                             String bookmarkRefText =
-                                                "$bookNameHu $chap:${bibleCurrentHu["$chap"][index]["num"]}";
+                                                "${widget.bookNameHu} $chap:${bibleCurrentHu["$chap"][index]["num"]}";
 
                                             if (bookmarkList.contains(bookmarkRefText)) {
                                               ScaffoldMessenger.of(context).showSnackBar(
@@ -852,6 +852,7 @@ class _PassagePageState extends State<PassagePage> {
 
                                   String refOldOrNew = bookList[refBook]["testament"];
                                   String refBookName = bookList[refBook]["refName"];
+                                  widget.bookNameHu = refBookName;
                                   String refBookNameFull = bookList[refBook]["fullName"];
                                   int refBookLength = widget.bible[refOldOrNew][refBookName]["chapters_hu"].length;
                                   List refWholeChapter =
