@@ -1,16 +1,21 @@
-# bible_app
+# Bible app
 
-A new Flutter project.
+A bilingual bible app for studying the Word of God. The app uses the Flutter framework.
 
-## Getting Started
+In the app, you can select books, chapters, and verses, create bookmarks, search in the bible, and much more.
 
-This project is a starting point for a Flutter application.
+You can get a glimpse into this project by checking out this **[YouTube video](https://www.youtube.com/watch?v=9KmKDCU6l3g)**.
 
-A few resources to get you started if this is your first Flutter project:
+### Tech Stack:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Dart
+- Flutter
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+![Image](https://s4.gifyu.com/images/bible_app_1.jpg) 
+![Image](https://s4.gifyu.com/images/bible_app_2.jpg) 
+![Image](https://s1.gifyu.com/images/bible_app_3.jpg) 
+![Image](https://s1.gifyu.com/images/bible_app_4.jpg) 
+![Image](https://s4.gifyu.com/images/bible_app_5.jpg) 
+
