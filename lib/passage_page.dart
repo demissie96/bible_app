@@ -101,8 +101,9 @@ class _PassagePageState extends State<PassagePage> {
 
   _onPageViewChange(int page) {
     widget.chapter = (page + 1).toString();
+    widget.bookNameHu = widget.bible[widget.oldOrNew][widget.bookRef]["short_hu"];
     setState(() {
-      widget.appBarTitle = "${widget.bible[widget.oldOrNew][widget.bookRef]["short_hu"]} ${widget.chapter}";
+      widget.appBarTitle = "${widget.bookNameHu} ${widget.chapter}";
     });
     widget.verse = 1;
     fontMultiplier();
@@ -814,7 +815,6 @@ class _PassagePageState extends State<PassagePage> {
                                 ),
                                 onPressed: () {
 // Decipher bookmarks like --> (1Sám 1,2-5.19)
-                                  Navigator.pop(context);
                                   List prepareRef = element.split(" ");
                                   List prepareRef1 = prepareRef[1].split(",");
                                   String refBook = prepareRef[0];
@@ -884,7 +884,7 @@ class _PassagePageState extends State<PassagePage> {
                                             IconButton(
                                               onPressed: () {
 // Jump to hungarian reference passage.
-                                                widget.bookNameHu = refBookName;
+                                                widget.bookNameHu = refBookNameFull;
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
