@@ -915,7 +915,7 @@ class _PassagePageState extends State<PassagePage> {
                                         content: SingleChildScrollView(
                                           child: Column(
                                             children: [
-                                              for (element in finalVersList)
+                                              for (var element in finalVersList)
                                                 Padding(
                                                   padding: const EdgeInsets.only(bottom: 8.0),
                                                   child: RichText(
