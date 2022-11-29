@@ -298,7 +298,7 @@ class _PassagePageState extends State<PassagePage> {
                                           Stack(
                                             children: [
                                               SizedBox(
-                                                width: 150,
+                                                width: 200,
                                                 child: TextButton(
                                                   style: Theme.of(context).textButtonTheme.style,
                                                   onPressed: () {
