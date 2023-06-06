@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'package:bible_app/main_page.dart';
@@ -144,6 +145,8 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   TextEditingController textController = TextEditingController();
 
+  get onChanged => null;
+
   Future<void> bibleListGet() async {
     final String res1 = await rootBundle.loadString('data/bible_in_list_hu.json');
     bibleListHu = await json.decode(res1);
@@ -188,6 +191,9 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    Timer? timer;
+    ValueChanged<String>? previousOnChanged;
+
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
         systemNavigationBarColor: Theme.of(context).colorScheme.background,
@@ -260,35 +266,44 @@ class _SearchPageState extends State<SearchPage> {
                       },
                     )),
                 onChanged: (text) async {
-// Background search in isolate
+                  // Background search in isolate
                   if (searchText != text && text.length > 2) {
                     searchText = text;
-// Prevent isolate search called too many times when backspace hold down
-                    int currentMillisec = DateTime.now().millisecondsSinceEpoch;
-                    if (currentMillisec > previousMillisec + 200) {
-                      previousMillisec = currentMillisec;
-// Creating an isolate
-                      final receivePort = ReceivePort();
-                      RequiredArgs requiredArgs = RequiredArgs(
-                          searchText, searchLanguage == "hun" ? bibleListHu : bibleListEn, receivePort.sendPort);
 
-                      await Isolate.spawn(searchExactMatch, requiredArgs);
-// Get the result from the isolate when finished
-                      receivePort.listen((response) {
-// To prevent show results when backspace pressed long and emptied the text field
-                        if (searchText == "") {
-                          typingMatchList = [];
-                        } else {
-                          typingMatchList = response;
-                        }
-                        setState(() {
-                          typingMatchList;
-                          resultList = [];
+                    // Cancel the previous timer if it exists
+                    timer?.cancel();
+
+                    // Start a new timer to delay the execution
+                    timer = Timer(Duration(milliseconds: 250), () async {
+                      // Check if the current onChanged function is the same as the previous one
+                      if (onChanged == previousOnChanged) {
+                        // Creating an isolate
+                        final receivePort = ReceivePort();
+                        RequiredArgs requiredArgs = RequiredArgs(
+                          searchText,
+                          searchLanguage == "hun" ? bibleListHu : bibleListEn,
+                          receivePort.sendPort,
+                        );
+
+                        await Isolate.spawn(searchExactMatch, requiredArgs);
+
+                        // Get the result from the isolate when finished
+                        receivePort.listen((response) {
+                          // To prevent showing results when backspace is pressed for long and the text field is emptied
+                          if (searchText == "") {
+                            typingMatchList = [];
+                          } else {
+                            typingMatchList = response;
+                          }
+                          setState(() {
+                            typingMatchList;
+                            resultList = [];
+                          });
                         });
-                      });
-                    }
+                      }
+                    });
                   } else if (searchText != text) {
-// Delete results except if android back button is pressed
+                    // Delete results except if the Android back button is pressed
                     searchText = "";
                     typingMatchList = [];
                     setState(() {
@@ -297,6 +312,8 @@ class _SearchPageState extends State<SearchPage> {
                       resultList = [];
                     });
                   }
+                  // Store the current onChanged function for comparison in the next execution
+                  previousOnChanged = onChanged;
                 },
               ),
 
