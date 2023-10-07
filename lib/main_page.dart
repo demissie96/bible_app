@@ -27,6 +27,8 @@ late var bibleJson;
 var lastRead;
 
 class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
   @override
   State<MainPage> createState() => _MainPageState();
 }
@@ -86,10 +88,10 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 150), () {
+        Future.delayed(const Duration(milliseconds: 150), () {
           Navigator.of(context).pop();
         });
-        return AbsorbPointer();
+        return const AbsorbPointer();
       },
     );
 
@@ -114,10 +116,10 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 150), () {
+        Future.delayed(const Duration(milliseconds: 150), () {
           Navigator.of(context).pop();
         });
-        return AbsorbPointer();
+        return const AbsorbPointer();
       },
     );
 
@@ -185,7 +187,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     tabController = TabController(
       vsync: this,
       length: 3,
-      animationDuration: Duration(
+      animationDuration: const Duration(
         milliseconds: 500,
       ),
     );
@@ -264,7 +266,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                       ),
                     );
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.keyboard_double_arrow_right,
                     size: 30.0,
                   ),
@@ -274,14 +276,14 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
             bottom: TabBar(
               indicatorColor: Theme.of(context).colorScheme.tertiary,
               controller: tabController,
-              tabs: [
+              tabs: const [
                 Tab(text: "Könyv"),
                 Tab(text: "Fejezet"),
                 Tab(text: "Vers"),
               ],
             ),
           ),
-          drawer: SideMenu(),
+          drawer: const SideMenu(),
           body: TabBarView(
             controller: tabController,
             children: [
@@ -297,7 +299,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                           oldTestament.isNotEmpty
                               ? Expanded(
                                   child: ListView.builder(
-                                    key: PageStorageKey("oldTestament"),
+                                    key: const PageStorageKey("oldTestament"),
                                     scrollDirection: scrollDirection,
                                     itemCount: oldTestament.length,
                                     controller: itemControllerOld,
@@ -315,7 +317,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                           ),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              padding: EdgeInsets.all(13.0),
+                                              padding: const EdgeInsets.all(13.0),
                                               backgroundColor: bookNameHu == oldTestament[index][3]
                                                   ? Theme.of(context).cardColor
                                                   : null,
@@ -352,7 +354,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                           newTestament.isNotEmpty
                               ? Expanded(
                                   child: ListView.builder(
-                                    key: PageStorageKey("newTestament"),
+                                    key: const PageStorageKey("newTestament"),
                                     scrollDirection: scrollDirection,
                                     controller: itemControllerNew,
                                     itemCount: newTestament.length,
@@ -370,7 +372,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                           ),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              padding: EdgeInsets.all(13.0),
+                                              padding: const EdgeInsets.all(13.0),
                                               backgroundColor: bookNameHu == newTestament[index][3]
                                                   ? Theme.of(context).cardColor
                                                   : null,
@@ -404,8 +406,8 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                 ),
               ),
 // Tab for listing chapters number
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+              const Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                 child: Column(
                   children: [
                     Expanded(
@@ -415,8 +417,8 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                 ),
               ),
 // Tab for listing verses number
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+              const Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                 child: Column(
                   children: [
                     Expanded(
@@ -447,10 +449,10 @@ class _ChapterListState extends State<ChapterList> {
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 150), () {
+        Future.delayed(const Duration(milliseconds: 150), () {
           Navigator.of(context).pop();
         });
-        return AbsorbPointer();
+        return const AbsorbPointer();
       },
     );
     tabController.index = 2;
@@ -509,10 +511,10 @@ class _VerseListState extends State<VerseList> {
     await showDialog(
       context: context,
       builder: (context) {
-        Future.delayed(Duration(milliseconds: 150), () {
+        Future.delayed(const Duration(milliseconds: 150), () {
           Navigator.of(context).pop();
         });
-        return AbsorbPointer();
+        return const AbsorbPointer();
       },
     );
 

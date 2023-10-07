@@ -21,7 +21,7 @@ class PassagePage extends StatefulWidget {
   String bookRef;
   String language;
 
-  PassagePage({
+  PassagePage({super.key, 
     required this.appBarTitle,
     required this.bible,
     required this.chapter,
@@ -221,7 +221,7 @@ class _PassagePageState extends State<PassagePage> {
                               backgroundColor: Theme.of(context).colorScheme.background,
                               title: Text(
                                 "Fejezetek",
-                                style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 24 * multiplier),
                               ),
                               content: SingleChildScrollView(
                                 child: Column(
@@ -238,7 +238,7 @@ class _PassagePageState extends State<PassagePage> {
                                         child: Text("$i. fejezet",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline5
+                                                .headlineSmall
                                                 ?.copyWith(fontSize: 24 * multiplier)),
                                       )
                                   ],
@@ -272,7 +272,7 @@ class _PassagePageState extends State<PassagePage> {
                                 children: [
                                   Text(
                                     bookmarkList.length > 1 ? "Könyvjelzők" : "Könyvjelző",
-                                    style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24),
+                                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 24),
                                   ),
                                   IconButton(
                                     onPressed: () {
@@ -338,7 +338,7 @@ class _PassagePageState extends State<PassagePage> {
                                                   child: Text(
                                                     bookmarkList[i],
                                                     textAlign: TextAlign.center,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                                           fontSize: 20,
                                                         ),
                                                   ),
@@ -406,7 +406,7 @@ class _PassagePageState extends State<PassagePage> {
                             padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                             child: Text(
                               '$chap. fejezet\n${bibleCurrentHu["$chap"][index]["text_hu"]}',
-                              style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 24 * multiplier),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -417,7 +417,7 @@ class _PassagePageState extends State<PassagePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'Chapter $chap',
-                              style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 24 * multiplier),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -434,7 +434,7 @@ class _PassagePageState extends State<PassagePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               '$chap. fejezet',
-                              style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 24 * multiplier),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -445,7 +445,7 @@ class _PassagePageState extends State<PassagePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'Chapter $chap',
-                              style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 24 * multiplier),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -467,7 +467,7 @@ class _PassagePageState extends State<PassagePage> {
                           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0, right: 16.0),
                           child: Text(
                             bibleCurrentHu["$chap"][index]["text_hu"],
-                            style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24 * multiplier),
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 24 * multiplier),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -517,7 +517,7 @@ class _PassagePageState extends State<PassagePage> {
                                               text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline6
+                                                  .titleLarge
                                                   ?.copyWith(fontSize: 20 * multiplier),
                                             ),
                                           if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
@@ -525,7 +525,7 @@ class _PassagePageState extends State<PassagePage> {
                                               text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2
+                                                  .bodyMedium
                                                   ?.copyWith(fontSize: 15 * multiplier),
                                             ),
                                           if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
@@ -534,7 +534,7 @@ class _PassagePageState extends State<PassagePage> {
                                                   .capitalizeFirstWithSpace(),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText1
+                                                  .bodyLarge
                                                   ?.copyWith(fontSize: 20 * multiplier),
                                             ),
                                         ]),
@@ -596,7 +596,7 @@ class _PassagePageState extends State<PassagePage> {
                                             text: "${bibleCurrentHu["$chap"][index]["num"]}",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText2
+                                                .bodyMedium
                                                 ?.copyWith(fontSize: 15 * multiplier),
                                           ),
                                           TextSpan(
@@ -604,7 +604,7 @@ class _PassagePageState extends State<PassagePage> {
                                                 .capitalizeFirstWithSpace(),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1
+                                                .bodyLarge
                                                 ?.copyWith(fontSize: 20 * multiplier),
                                           ),
                                         ]),
@@ -626,7 +626,7 @@ class _PassagePageState extends State<PassagePage> {
                                                 SnackBar(
                                                   backgroundColor: Theme.of(context).colorScheme.tertiary,
                                                   content: Text(
-                                                    "${bookmarkRefText} - Mentve",
+                                                    "$bookmarkRefText - Mentve",
                                                     style: const TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 15.0,
@@ -641,7 +641,7 @@ class _PassagePageState extends State<PassagePage> {
                                                       SnackBar(
                                                         backgroundColor: Theme.of(context).colorScheme.tertiary,
                                                         content: Text(
-                                                          "${bookmarkRefText} - Mentve",
+                                                          "$bookmarkRefText - Mentve",
                                                           style: const TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 15.0,
@@ -714,7 +714,7 @@ class _PassagePageState extends State<PassagePage> {
                                               text: "${bibleCurrentEn["$chap"][index - 1]["text_en"]}",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline6
+                                                  .titleLarge
                                                   ?.copyWith(fontSize: 20 * multiplier),
                                             ),
                                           if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
@@ -722,7 +722,7 @@ class _PassagePageState extends State<PassagePage> {
                                               text: "${bibleCurrentEn["$chap"][index - 1]["num"]}",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText2
+                                                  .bodyMedium
                                                   ?.copyWith(fontSize: 15 * multiplier),
                                             ),
                                           if ("${bibleCurrentEn["$chap"][index - 1]["num"]}" != "0")
@@ -731,7 +731,7 @@ class _PassagePageState extends State<PassagePage> {
                                                   .capitalizeFirstWithSpace(),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText1
+                                                  .bodyLarge
                                                   ?.copyWith(fontSize: 20 * multiplier),
                                             ),
                                         ]),
@@ -800,7 +800,7 @@ class _PassagePageState extends State<PassagePage> {
                     backgroundColor: Theme.of(context).colorScheme.background,
                     title: Text(
                       bibleCurrentHu["$chap"][index]["ref"].length > 1 ? "Hivatkozások" : "Hivatkozás",
-                      style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24),
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 24),
                     ),
                     content: SingleChildScrollView(
                       child: Column(
@@ -878,7 +878,7 @@ class _PassagePageState extends State<PassagePage> {
                                             Flexible(
                                               child: Text(
                                                 "$refBookNameFull $refChapter",
-                                                style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 24),
+                                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 24),
                                               ),
                                             ),
                                             IconButton(
@@ -924,14 +924,14 @@ class _PassagePageState extends State<PassagePage> {
                                                         text: "${element["num"]} ",
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText2
+                                                            .bodyMedium
                                                             ?.copyWith(fontSize: 15 * multiplier),
                                                       ),
                                                       TextSpan(
                                                         text: "${element["verse"]}",
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText1
+                                                            .bodyLarge
                                                             ?.copyWith(fontSize: 20 * multiplier),
                                                       ),
                                                     ]),
@@ -951,7 +951,7 @@ class _PassagePageState extends State<PassagePage> {
 // Show hungarian references text
                                     Text(
                                       "$element 🔻",
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20),
+                                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 20),
                                     ),
                                   ],
                                 ),

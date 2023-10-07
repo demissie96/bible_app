@@ -54,7 +54,7 @@ class SideMenu extends StatelessWidget {
                     });
                     return const AbsorbPointer();
                   },
-                ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage())));
+                ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchPage())));
               },
               child: const ListTile(
                 leading: Icon(
@@ -81,7 +81,7 @@ class SideMenu extends StatelessWidget {
                     });
                     return const AbsorbPointer();
                   },
-                ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage())));
+                ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage())));
               },
               child: const ListTile(
                 leading: Icon(
@@ -104,7 +104,7 @@ class SideMenu extends StatelessWidget {
                     });
                     return const AbsorbPointer();
                   },
-                ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage())));
+                ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage())));
               },
               child: const ListTile(
                 leading: Icon(

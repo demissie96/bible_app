@@ -5,6 +5,8 @@ import "side_menu.dart";
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
@@ -52,7 +54,7 @@ class _SettingsPageState extends State<SettingsPage> {
             return const AbsorbPointer();
           },
         ).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return MainPage();
+              return const MainPage();
             })));
 
         return true;
@@ -79,13 +81,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: [
                       Text(
                         "Betűméret",
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       RadioListTile(
                         activeColor: Theme.of(context).colorScheme.tertiary,
                         title: Text(
                           "Kicsi",
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * 0.8),
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 20 * 0.8),
                         ),
                         value: 0.8,
                         groupValue: fontSize,
@@ -100,7 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         activeColor: Theme.of(context).colorScheme.tertiary,
                         title: Text(
                           "Közepes",
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         value: 1.0,
                         groupValue: fontSize,
@@ -115,7 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         activeColor: Theme.of(context).colorScheme.tertiary,
                         title: Text(
                           "Nagy",
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * 1.2),
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 20 * 1.2),
                         ),
                         value: 1.2,
                         groupValue: fontSize,
@@ -149,12 +151,12 @@ class _SettingsPageState extends State<SettingsPage> {
                             text: TextSpan(children: [
                               TextSpan(
                                 text: "16 ",
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 15 * fontSize),
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 15 * fontSize),
                               ),
                               TextSpan(
                                 text:
                                     "Mert úgy szerette Isten e világot, hogy az ő egyszülött Fiát adta, hogy valaki hiszen őbenne, el ne vesszen, hanem örök élete legyen.",
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontSize: 20 * fontSize),
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 20 * fontSize),
                               ),
                             ]),
                           ),

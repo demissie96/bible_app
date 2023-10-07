@@ -29,33 +29,33 @@ class RequiredArgs {
 
 // Search for exact match
 searchExactMatch(RequiredArgs requiredArgs) {
-  String _currentVerse;
-  var _currentVerseMap = {};
-  String _currentVerseLower;
-  int _totalMatch = 0;
-  List _matchList = [];
+  String currentVerse;
+  var currentVerseMap = {};
+  String currentVerseLower;
+  int totalMatch = 0;
+  List matchList = [];
   final SendPort sendPort = requiredArgs.sendPort;
   final text = requiredArgs.text.replaceAll(",", "").replaceAll("  ", " ");
   final importedBible = requiredArgs.importedBible;
 
   for (var element in importedBible) {
-    _currentVerse = element["text"].split("&")[0];
-    _currentVerseLower = _currentVerse.replaceAll(",", "").toLowerCase();
-    if (_currentVerseLower.contains(text.toLowerCase())) {
-      _totalMatch++;
-      _currentVerseMap = {
+    currentVerse = element["text"].split("&")[0];
+    currentVerseLower = currentVerse.replaceAll(",", "").toLowerCase();
+    if (currentVerseLower.contains(text.toLowerCase())) {
+      totalMatch++;
+      currentVerseMap = {
         "testament": element["testament"],
         "book": element["book"],
         "language": element["language"],
         "chapter": element["chapter"],
         "verse": element["verse"],
-        "text": _currentVerse.capitalizeFirstElement()
+        "text": currentVerse.capitalizeFirstElement()
       };
-      _matchList.add(_currentVerseMap);
+      matchList.add(currentVerseMap);
     }
   }
 
-  sendPort.send(_matchList);
+  sendPort.send(matchList);
 }
 
 // Search for similar match
@@ -138,6 +138,8 @@ class SimilarityIndex {
 }
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
@@ -247,7 +249,7 @@ class _SearchPageState extends State<SearchPage> {
             children: [
 // Search field
               TextField(
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
                 controller: textController,
                 autofocus: true,
                 textAlign: TextAlign.start,
@@ -274,7 +276,7 @@ class _SearchPageState extends State<SearchPage> {
                     timer?.cancel();
 
                     // Start a new timer to delay the execution
-                    timer = Timer(Duration(milliseconds: 250), () async {
+                    timer = Timer(const Duration(milliseconds: 250), () async {
                       // Check if the current onChanged function is the same as the previous one
                       if (onChanged == previousOnChanged) {
                         // Creating an isolate
@@ -328,13 +330,13 @@ class _SearchPageState extends State<SearchPage> {
                         children: [
                           Text(
                             "Találat:",
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           Visibility(
                             visible: resultList.isEmpty ? true : false,
                             child: Text(
                               " ${typingMatchList.length}",
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                     color: Theme.of(context).colorScheme.tertiary,
                                     fontSize: 30.0,
                                   ),
@@ -436,11 +438,11 @@ class _SearchPageState extends State<SearchPage> {
                                                 TextSpan(
                                                   text:
                                                       "$bookName ${resultList[index]["chapter"]}:${resultList[index]["verse"]}",
-                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  style: Theme.of(context).textTheme.bodyMedium,
                                                 ),
                                                 TextSpan(
                                                   text: " ${resultList[index]["text"]}",
-                                                  style: Theme.of(context).textTheme.bodyText1,
+                                                  style: Theme.of(context).textTheme.bodyLarge,
                                                 ),
                                               ],
                                             ),
@@ -492,11 +494,11 @@ class _SearchPageState extends State<SearchPage> {
                                             TextSpan(
                                               text:
                                                   "$bookName ${typingMatchList[index]["chapter"]}:${typingMatchList[index]["verse"]}",
-                                              style: Theme.of(context).textTheme.bodyText2,
+                                              style: Theme.of(context).textTheme.bodyMedium,
                                             ),
                                             TextSpan(
                                               text: " ${typingMatchList[index]["text"]}",
-                                              style: Theme.of(context).textTheme.bodyText1,
+                                              style: Theme.of(context).textTheme.bodyLarge,
                                             ),
                                           ],
                                         ),

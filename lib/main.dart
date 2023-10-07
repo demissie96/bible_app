@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'main_page.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -50,23 +52,23 @@ class MyApp extends StatelessWidget {
           ),
         ),
         textTheme: const TextTheme(
-          bodyText1: TextStyle(
+          bodyLarge: TextStyle(
             color: Colors.black87,
             fontSize: 20.0,
             fontWeight: FontWeight.normal,
             fontFamily: "Roboto Slab",
           ),
-          bodyText2: TextStyle(
+          bodyMedium: TextStyle(
             color: Colors.red,
             fontSize: 15.0,
             fontWeight: FontWeight.normal,
             fontFamily: "Roboto Slab",
           ),
-          headline5: TextStyle(
+          headlineSmall: TextStyle(
             color: Colors.black87,
             fontFamily: "Courgette",
           ),
-          headline6: TextStyle(
+          titleLarge: TextStyle(
             color: Colors.black87,
             fontFamily: "Roboto Slab",
           ),
@@ -127,23 +129,23 @@ class MyApp extends StatelessWidget {
           ),
         ),
         textTheme: const TextTheme(
-          bodyText1: TextStyle(
+          bodyLarge: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.normal,
             color: Colors.white70,
             fontFamily: "Roboto Slab",
           ),
-          bodyText2: TextStyle(
+          bodyMedium: TextStyle(
             color: Color.fromARGB(255, 233, 69, 96),
             fontSize: 15.0,
             fontWeight: FontWeight.normal,
             fontFamily: "Roboto Slab",
           ),
-          headline5: TextStyle(
+          headlineSmall: TextStyle(
             color: Colors.white70,
             fontFamily: "Courgette",
           ),
-          headline6: TextStyle(
+          titleLarge: TextStyle(
             color: Colors.white70,
             fontFamily: "Roboto Slab",
           ),
@@ -158,7 +160,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: MainPage(),
+      home: const MainPage(),
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
